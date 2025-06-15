@@ -14,11 +14,15 @@ export async function GET(request: NextRequest) {
     const client = await clientPromise
     const db = client.db()
     const timeEntries = db.collection("timeEntries")
+    const projects = db.collection("projects")
 
     const { searchParams } = new URL(request.url)
     const startDate = searchParams.get("startDate")
     const endDate = searchParams.get("endDate")
+    const project = searchParams.get("project")
 
+    // Time entries are only visible to the owner
+    // Collaborators cannot see time tracking data
     let query: any = { userId: (session.user as any).id }
     
     if (startDate && endDate) {
@@ -26,6 +30,10 @@ export async function GET(request: NextRequest) {
         $gte: new Date(startDate),
         $lte: new Date(endDate)
       }
+    }
+
+    if (project) {
+      query.project = project
     }
 
     const entries = await timeEntries

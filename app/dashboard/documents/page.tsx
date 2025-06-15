@@ -21,6 +21,7 @@ interface Document {
   tags: string[]
   fileType: "text" | "markdown" | "code" | "other"
   size?: number
+  projectId?: string
   createdAt: string
   updatedAt: string
 }
@@ -29,6 +30,7 @@ export default function DocumentsPage() {
   const { data: session, status } = useSession()
   const router = useRouter()
   const [documents, setDocuments] = useState<Document[]>([])
+  const [projects, setProjects] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("all")
@@ -44,7 +46,8 @@ export default function DocumentsPage() {
     content: "",
     category: "",
     tags: "",
-    fileType: "text" as "text" | "markdown" | "code" | "other"
+    fileType: "text" as "text" | "markdown" | "code" | "other",
+    projectId: ""
   })
 
   const categories = ["Work", "Personal", "Projects", "Notes", "Code", "Documentation", "Templates", "Archive"]
@@ -55,10 +58,10 @@ export default function DocumentsPage() {
       router.push("/auth/signin")
     }
   }, [status, router])
-
   useEffect(() => {
     if (session) {
       fetchDocuments()
+      fetchProjects()
     }
   }, [session])
 
@@ -73,6 +76,18 @@ export default function DocumentsPage() {
       console.error("Error fetching documents:", error)
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const fetchProjects = async () => {
+    try {
+      const response = await fetch("/api/projects")
+      if (response.ok) {
+        const data = await response.json()
+        setProjects(data)
+      }
+    } catch (error) {
+      console.error("Error fetching projects:", error)
     }
   }
 
@@ -101,24 +116,26 @@ export default function DocumentsPage() {
       console.error("Error saving document:", error)
     }
   }
-
   const resetDocumentForm = () => {
     setDocumentForm({
       title: "",
       content: "",
       category: "",
       tags: "",
-      fileType: "text"
+      fileType: "text",
+      projectId: ""
     })
     setEditingDocument(null)
   }
 
   const editDocument = (document: Document) => {
-    setDocumentForm({      title: document.title,
+    setDocumentForm({
+      title: document.title,
       content: document.content,
       category: document.category,
       tags: document.tags.join(", "),
-      fileType: document.fileType as "text" | "markdown" | "code" | "other"
+      fileType: document.fileType as "text" | "markdown" | "code" | "other",
+      projectId: document.projectId || ""
     })
     setEditingDocument(document)
     setIsDocumentDialogOpen(true)
@@ -139,11 +156,11 @@ export default function DocumentsPage() {
 
       if (response.ok) {
         await fetchDocuments()
-      }
-    } catch (error) {
+      }    } catch (error) {
       console.error("Error deleting document:", error)
     }
   }
+
   const exportDocument = (doc: Document) => {
     const dataStr = JSON.stringify(doc, null, 2)
     const dataUri = "data:application/json;charset=utf-8," + encodeURIComponent(dataStr)
@@ -154,6 +171,11 @@ export default function DocumentsPage() {
     linkElement.setAttribute("href", dataUri)
     linkElement.setAttribute("download", exportFileDefaultName)
     linkElement.click()
+  }
+
+  const getLinkedProject = (projectId?: string) => {
+    if (!projectId) return null
+    return projects.find(p => p._id === projectId)
   }
 
   const filteredDocuments = documents.filter(document => {
@@ -335,12 +357,12 @@ export default function DocumentsPage() {
                 <CardDescription className="text-slate-400">
                   {document.category} • {new Date(document.createdAt).toLocaleDateString()}
                 </CardDescription>
-              </CardHeader>
-              <CardContent>
+              </CardHeader>              <CardContent>
                 <p className="text-slate-300 text-sm mb-3 line-clamp-3">
                   {document.content.substring(0, 120)}...
                 </p>
-                <div className="flex flex-wrap gap-1">
+                
+                <div className="flex flex-wrap gap-1 mb-2">
                   {document.tags.slice(0, 3).map((tag, index) => (
                     <span
                       key={index}
@@ -355,6 +377,24 @@ export default function DocumentsPage() {
                     </span>
                   )}
                 </div>
+
+                {/* Project Link */}
+                {document.projectId && (
+                  <div className="mt-2">
+                    {(() => {
+                      const linkedProject = getLinkedProject(document.projectId)
+                      return linkedProject ? (
+                        <span className="inline-block px-2 py-1 text-xs rounded-full bg-orange-100 bg-orange-900/20 text-orange-800 text-orange-300">
+                          📁 {linkedProject.name}
+                        </span>
+                      ) : (
+                        <span className="inline-block px-2 py-1 text-xs rounded-full bg-gray-100 bg-gray-900/20 text-gray-800 text-gray-300">
+                          📁 Project
+                        </span>
+                      )
+                    })()}
+                  </div>
+                )}
               </CardContent>
             </Card>
           ))}
@@ -439,9 +479,7 @@ export default function DocumentsPage() {
                     </SelectContent>
                   </Select>
                 </div>
-              </div>
-
-              <div>
+              </div>              <div>
                 <Label htmlFor="tags" className="text-slate-300">Tags (comma separated)</Label>
                 <Input
                   id="tags"
@@ -450,6 +488,24 @@ export default function DocumentsPage() {
                   className="bg-slate-700 border-slate-600 text-white"
                   placeholder="tag1, tag2, tag3"
                 />
+              </div>              <div>
+                <Label htmlFor="project" className="text-slate-300">Project (optional)</Label>
+                <Select 
+                  value={documentForm.projectId || "no-project"} 
+                  onValueChange={(value) => setDocumentForm({ ...documentForm, projectId: value === "no-project" ? "" : value })}
+                >
+                  <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
+                    <SelectValue placeholder="Select project (optional)" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-slate-700 border-slate-600">
+                    <SelectItem value="no-project">No project</SelectItem>
+                    {projects.map(project => (
+                      <SelectItem key={project._id} value={project._id}>
+                        📁 {project.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               <div>

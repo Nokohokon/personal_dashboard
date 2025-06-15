@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Calendar as CalendarIcon, Clock, Plus, ChevronLeft, ChevronRight } from "lucide-react"
+import { Calendar as CalendarIcon, Clock, Plus, ChevronLeft, ChevronRight, Edit, Trash2 } from "lucide-react"
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, startOfWeek, endOfWeek } from "date-fns"
 
 interface CalendarEvent {
@@ -34,13 +34,13 @@ export default function CalendarPage() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
-  
-  const [eventForm, setEventForm] = useState({
+  const [editingEvent, setEditingEvent] = useState<CalendarEvent | null>(null)
+    const [eventForm, setEventForm] = useState({
     title: "",
     description: "",
     date: "",
     time: "",
-    type: "meeting" as const,
+    type: "meeting" as "meeting" | "task" | "reminder" | "other",
     projectId: "",
     contactId: ""
   })
@@ -114,37 +114,93 @@ export default function CalendarPage() {
       console.error("Error fetching contacts:", error)
     }
   }
-  
-  const handleCreateEvent = async () => {
+    const handleCreateEvent = async () => {
     if (!eventForm.title || !eventForm.date) return
 
     try {
-      const res = await fetch("/api/events", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(eventForm)
-      })
-
-      if (res.ok) {
-        const newEvent = await res.json()
-        setEvents(prev => [...prev, newEvent])
-        setEventForm({
-          title: "",
-          description: "",
-          date: "",          time: "",
-          type: "meeting",
-          projectId: "",
-          contactId: ""
+      if (editingEvent) {
+        // Update existing event
+        const res = await fetch("/api/events", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: editingEvent._id,
+            ...eventForm
+          })
         })
-        setIsDialogOpen(false)
+
+        if (res.ok) {
+          const updatedEvent = await res.json()
+          setEvents(prev => prev.map(event => 
+            event._id === editingEvent._id ? updatedEvent : event
+          ))
+          resetForm()
+        }
+      } else {
+        // Create new event
+        const res = await fetch("/api/events", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(eventForm)
+        })
+
+        if (res.ok) {
+          const newEvent = await res.json()
+          setEvents(prev => [...prev, newEvent])
+          resetForm()
+        }
       }
     } catch (error) {
-      console.error("Error creating event:", error)
+      console.error("Error saving event:", error)
     }
   }
 
+  const handleEditEvent = (event: CalendarEvent) => {
+    setEditingEvent(event)
+    setEventForm({
+      title: event.title,
+      description: event.description || "",
+      date: event.date,
+      time: event.time || "",
+      type: event.type,
+      projectId: event.projectId || "",
+      contactId: event.contactId || ""
+    })
+    setIsDialogOpen(true)
+  }
+
+  const handleDeleteEvent = async (eventId: string) => {
+    if (!confirm("Are you sure you want to delete this event?")) return
+
+    try {
+      const res = await fetch(`/api/events?id=${eventId}`, {
+        method: "DELETE"
+      })
+
+      if (res.ok) {
+        setEvents(prev => prev.filter(event => event._id !== eventId))
+      }
+    } catch (error) {
+      console.error("Error deleting event:", error)
+    }
+  }
+
+  const resetForm = () => {
+    setEventForm({
+      title: "",
+      description: "",
+      date: "",
+      time: "",
+      type: "meeting",
+      projectId: "",
+      contactId: ""
+    })
+    setEditingEvent(null)
+    setIsDialogOpen(false)
+  }
+
   const openEventDialog = (date?: Date) => {
-    if (date) {
+    if (date && !editingEvent) {
       setEventForm(prev => ({
         ...prev,
         date: format(date, 'yyyy-MM-dd')
@@ -213,7 +269,9 @@ export default function CalendarPage() {
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Create New Event</DialogTitle>
+                <DialogTitle>
+                  {editingEvent ? "Edit Event" : "Create New Event"}
+                </DialogTitle>
               </DialogHeader>
               <div className="space-y-4">
                 <div>
@@ -297,14 +355,23 @@ export default function CalendarPage() {
                     rows={3}
                   />
                 </div>
-                
-                <Button 
-                  onClick={handleCreateEvent} 
-                  className="w-full"
-                  disabled={!eventForm.title || !eventForm.date}
-                >
-                  Create Event
-                </Button>
+                  <div className="flex gap-2">
+                  <Button 
+                    onClick={handleCreateEvent} 
+                    className="flex-1"
+                    disabled={!eventForm.title || !eventForm.date}
+                  >
+                    {editingEvent ? "Update Event" : "Create Event"}
+                  </Button>
+                  {editingEvent && (
+                    <Button 
+                      onClick={() => resetForm()} 
+                      variant="outline"
+                    >
+                      Cancel
+                    </Button>
+                  )}
+                </div>
               </div>
             </DialogContent>
           </Dialog>
@@ -399,19 +466,40 @@ export default function CalendarPage() {
                     .slice(0, 5)                    .map(event => {
                       const linkedProject = getLinkedProject(event.projectId)
                       const linkedContact = getLinkedContact(event.contactId)
-                      
-                      return (
+                        return (
                       <div key={event._id} className="p-3 bg-slate-800 rounded-lg">
-                        <h4 className="font-medium text-sm">{event.title}</h4>
-                        <div className="flex items-center text-xs text-slate-400 mt-1">
-                          <CalendarIcon className="h-3 w-3 mr-1" />
-                          {format(new Date(event.date), 'MMM dd')}
-                          {event.time && (
-                            <>
-                              <Clock className="h-3 w-3 ml-2 mr-1" />
-                              {event.time}
-                            </>
-                          )}
+                        <div className="flex justify-between items-start">
+                          <div className="flex-1">
+                            <h4 className="font-medium text-sm">{event.title}</h4>
+                            <div className="flex items-center text-xs text-slate-400 mt-1">
+                              <CalendarIcon className="h-3 w-3 mr-1" />
+                              {format(new Date(event.date), 'MMM dd')}
+                              {event.time && (
+                                <>
+                                  <Clock className="h-3 w-3 ml-2 mr-1" />
+                                  {event.time}
+                                </>
+                              )}
+                            </div>
+                          </div>
+                          <div className="flex gap-1 ml-2">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => handleEditEvent(event)}
+                              className="h-6 w-6 p-0 text-slate-400 hover:text-white"
+                            >
+                              <Edit className="h-3 w-3" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => handleDeleteEvent(event._id)}
+                              className="h-6 w-6 p-0 text-slate-400 hover:text-red-400"
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </Button>
+                          </div>
                         </div>
                         {event.description && (
                           <p className="text-xs text-slate-500 mt-1 line-clamp-2">

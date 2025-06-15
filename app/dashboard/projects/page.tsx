@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
-import { FolderOpen, Plus, Edit, Trash2, Calendar, Users, Target, CheckCircle, Clock, AlertCircle } from "lucide-react"
+import { FolderOpen, Plus, Edit, Trash2, Calendar, Users, Target, CheckCircle, Clock, AlertCircle, Eye } from "lucide-react"
 import { format } from "date-fns"
 
 interface Project {
@@ -27,9 +27,18 @@ interface Project {
   budget?: number
   tags: string[]
   progress: number
-  teamMembers: string[]
+  teamMembers: (string | { email?: string; name?: string; [key: string]: any })[]
   createdAt: string
   updatedAt: string
+  userRole?: {
+    isOwner: boolean
+    isCollaborator: boolean
+    canEditProject: boolean
+    canEditContent: boolean
+    canViewAnalytics: boolean
+    canViewTimeTracking: boolean
+    canManageTeam: boolean
+  }
 }
 
 export default function ProjectsPage() {
@@ -131,7 +140,6 @@ export default function ProjectsPage() {
       console.error("Error saving project:", error)
     }
   }
-
   const handleEdit = (project: Project) => {
     setEditingProject(project)
     setName(project.name)
@@ -144,7 +152,22 @@ export default function ProjectsPage() {
     setBudget(project.budget?.toString() || "")
     setTags(project.tags.join(", "))
     setProgress(project.progress)
-    setTeamMembers(project.teamMembers.join(", "))
+      // Handle teamMembers - check if they are objects or strings
+    if (project.teamMembers && project.teamMembers.length > 0) {
+      const teamMemberStrings = project.teamMembers.map(member => {
+        // If member is an object, extract email or name
+        if (typeof member === 'object' && member !== null) {
+          const memberObj = member as { email?: string; name?: string; [key: string]: any }
+          return memberObj.email || memberObj.name || String(member)
+        }
+        // If member is already a string, use it as is
+        return String(member)
+      })
+      setTeamMembers(teamMemberStrings.join(", "))
+    } else {
+      setTeamMembers("")
+    }
+    
     setIsDialogOpen(true)
   }
 
@@ -441,25 +464,49 @@ export default function ProjectsPage() {
                       <StatusIcon className="w-5 h-5 text-blue-400" />
                       <CardTitle className="text-white text-lg truncate">
                         {project.name}
-                      </CardTitle>
-                    </div>
+                      </CardTitle>                    </div>
                     <div className="flex gap-1">
+                      {/* View Details button for all users */}
                       <Button
                         size="sm"
                         variant="ghost"
-                        onClick={() => handleEdit(project)}
+                        onClick={() => router.push(`/dashboard/projects/${project._id}`)}
                         className="text-gray-400 hover:text-white hover:bg-gray-700"
+                        title="View Project Details"
                       >
-                        <Edit className="w-4 h-4" />
+                        <Eye className="w-4 h-4" />
                       </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => handleDelete(project._id)}
-                        className="text-gray-400 hover:text-red-400 hover:bg-gray-700"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
+                      
+                      {/* Edit button only for project owners */}
+                      {project.userRole?.canEditProject && (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => handleEdit(project)}
+                          className="text-gray-400 hover:text-white hover:bg-gray-700"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </Button>
+                      )}
+                      
+                      {/* Delete button only for project owners */}
+                      {project.userRole?.isOwner && (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => handleDelete(project._id)}
+                          className="text-gray-400 hover:text-red-400 hover:bg-gray-700"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      )}
+                      
+                      {/* Show role badge for non-owners */}
+                      {!project.userRole?.isOwner && (
+                        <Badge variant="secondary" className="text-xs ml-2">
+                          Kollaborateur
+                        </Badge>
+                      )}
                     </div>
                   </div>
                 </CardHeader>

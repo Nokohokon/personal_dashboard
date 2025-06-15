@@ -12,9 +12,7 @@ export async function PUT(
     const session = await getServerSession(authOptions)
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-
-    const { title, content, category, tags, fileType } = await request.json()
+    }    const { title, content, category, tags, fileType, projectId } = await request.json()
 
     if (!title || !content) {
       return NextResponse.json(
@@ -26,14 +24,34 @@ export async function PUT(
     const client = await clientPromise
     const db = client.db()
     const documents = db.collection("documents")
+    const projects = db.collection("projects")
 
+    // Check if user has access to the document (owner or collaborator)
     const document = await documents.findOne({
       _id: new ObjectId(params.id),
-      userId: (session.user as any).id
+      $or: [
+        { userId: (session.user as any).id },
+        { collaborators: (session.user as any).id }
+      ]
     })
 
     if (!document) {
       return NextResponse.json({ error: "Document not found" }, { status: 404 })
+    }
+
+    // If projectId is provided, validate that user has access to that project
+    if (projectId) {
+      const project = await projects.findOne({
+        _id: new ObjectId(projectId),
+        $or: [
+          { userId: (session.user as any).id },
+          { collaborators: (session.user as any).id }
+        ]
+      })
+      
+      if (!project) {
+        return NextResponse.json({ error: "Project access denied" }, { status: 403 })
+      }
     }
 
     const updateData = {
@@ -42,6 +60,7 @@ export async function PUT(
       category: category || "General",
       tags: Array.isArray(tags) ? tags : [],
       fileType: fileType || "text",
+      projectId: projectId || null,
       size: content.length,
       updatedAt: new Date()
     }
@@ -68,15 +87,17 @@ export async function DELETE(
     const session = await getServerSession(authOptions)
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
-
-    const client = await clientPromise
+    }    const client = await clientPromise
     const db = client.db()
     const documents = db.collection("documents")
 
+    // Check if user has access to the document (owner or collaborator)
     const document = await documents.findOne({
       _id: new ObjectId(params.id),
-      userId: (session.user as any).id
+      $or: [
+        { userId: (session.user as any).id },
+        { collaborators: (session.user as any).id }
+      ]
     })
 
     if (!document) {

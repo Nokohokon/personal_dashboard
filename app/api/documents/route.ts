@@ -14,9 +14,50 @@ export async function GET(request: NextRequest) {
     const client = await clientPromise
     const db = client.db()
     const documents = db.collection("documents")
+    const projects = db.collection("projects")
+
+    const { searchParams } = new URL(request.url)
+    const projectId = searchParams.get("projectId")
+
+    // Get all projects the user has access to (as owner or collaborator)
+    const accessibleProjects = await projects.find({
+      $or: [
+        { userId: (session.user as any).id },
+        { collaborators: (session.user as any).id }
+      ]
+    }).toArray()
+
+    const accessibleProjectIds = accessibleProjects.map(p => p._id.toString())
+
+    let query: any = {
+      $or: [
+        // Documents owned by user
+        { userId: (session.user as any).id },
+        // Documents shared with user
+        { collaborators: (session.user as any).id },
+        // Documents belonging to projects user has access to
+        { projectId: { $in: accessibleProjectIds } }
+      ]
+    }
+
+    // If projectId is specified, filter to only this project's documents
+    if (projectId) {
+      if (!accessibleProjectIds.includes(projectId)) {
+        return NextResponse.json({ error: "Project access denied" }, { status: 403 })
+      }
+      
+      query = {
+        projectId: projectId,
+        $or: [
+          { userId: (session.user as any).id },
+          { collaborators: (session.user as any).id },
+          { projectId: projectId } // Include all documents for this project if user has access
+        ]
+      }
+    }
 
     const docs = await documents
-      .find({ userId: (session.user as any).id })
+      .find(query)
       .sort({ createdAt: -1 })
       .toArray()
 
@@ -34,18 +75,36 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const { title, content, category, tags, fileType } = await request.json()
+    const { title, content, category, tags, fileType, sharedWith, projectId } = await request.json()
 
     if (!title || !content) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
       )
-    }
-
-    const client = await clientPromise
+    }    const client = await clientPromise
     const db = client.db()
     const documents = db.collection("documents")
+    const users = db.collection("users")
+
+    // Validate shared users if provided
+    let validatedSharedWith = []
+    if (sharedWith && sharedWith.length > 0) {
+      const sharedEmails = Array.isArray(sharedWith) ? sharedWith : 
+        sharedWith.split(',').map((email: string) => email.trim().toLowerCase()).filter((email: string) => email)
+      
+      for (const email of sharedEmails) {
+        const user = await users.findOne({ email })
+        if (user) {
+          validatedSharedWith.push({
+            email,
+            userId: user._id.toString(),
+            name: user.name,
+            sharedAt: new Date()
+          })
+        }
+      }
+    }
 
     const newDocument = {
       userId: (session.user as any).id,
@@ -55,6 +114,9 @@ export async function POST(request: NextRequest) {
       tags: Array.isArray(tags) ? tags : [],
       fileType: fileType || "text",
       size: content.length,
+      projectId: projectId || null,
+      sharedWith: validatedSharedWith,
+      collaborators: validatedSharedWith.map(sw => sw.userId),
       createdAt: new Date(),
       updatedAt: new Date()
     }

@@ -27,6 +27,41 @@ Ein hochprofessionelles und modernes Personal Dashboard mit umfassenden Produkti
 - **Markdown-Unterstützung** - Rich-Text Notizen
 - **Kontakt-Verknüpfung** - Notizen können mit Kontakten verknüpft werden
 - **Tag-System** - Flexible Kategorisierung
+- **Kollaborative Notizen** - Notizen mit anderen Personen teilen
+- **Projekt-Integration** - Notizen an Projekte koppeln
+
+### 🤝 Projekt-Kollaboration
+- **Team-Management** - Teammitglieder per E-Mail hinzufügen
+- **Rollenbasierte Berechtigungen** - Projektbesitzer vs. Kollaborateure
+- **Projektbasierte Zugriffskontrolle** - Automatische Berechtigung für Inhalte
+- **E-Mail-basierte Einladungen** - Registrierte und unregistrierte Benutzer
+- **Kollaborative Inhalte** - Geteilte Notizen, Dokumente, Kontakte und Events
+
+### 🔒 Zugriffs- und Berechtigungsmanagement
+- **Projektbesitzer-Rechte** - Vollzugriff auf alle Projektdaten und Projekt-Bearbeitung
+- **Kollaborateur-Rechte** - Lese-/Schreibzugriff NUR auf projektbezogene Inhalte (NICHT das Projekt selbst)
+- **Klare Trennung** - Kollaborateure können Projekt-Details NICHT bearbeiten
+- **Geschützte Analytics** - Time-Tracking und Analytics nur für Besitzer
+- **Granulare Freigaben** - Einzelne Notizen und Dokumente teilen
+
+#### **📊 Berechtigungsmatrix**
+| Feature | Projektbesitzer | Kollaborateur | Individual Sharing |
+|---------|----------------|---------------|-------------------|
+| **Projekt bearbeiten** | ✅ | ❌ | ❌ |
+| **Team verwalten** | ✅ | ❌ | ❌ |
+| **Projekt-Details ändern** | ✅ | ❌ | ❌ |
+| **Status/Budget ändern** | ✅ | ❌ | ❌ |
+| **Notizen (projektbezogen)** | ✅ | ✅ | ✅ |
+| **Dokumente (projektbezogen)** | ✅ | ✅ | ✅ |
+| **Kontakte (projektbezogen)** | ✅ | ✅ | ✅ |
+| **Kalender (projektbezogen)** | ✅ | ✅ | ✅ |
+| **Time-Tracking** | ✅ | ❌ | ❌ |
+| **Analytics** | ✅ | ❌ | ❌ |
+
+**🔐 Wichtige Klarstellung:**
+- Kollaborateure können **NICHT** das Projekt selbst bearbeiten (Name, Status, Budget, etc.)
+- Kollaborateure können **NUR** projektbezogene Inhalte bearbeiten (Notizen, Dokumente, Kontakte, Events)
+- Nur der Projektbesitzer kann das Projekt und Team verwalten
 
 ### 📊 Analytics & Berichte
 - **Produktivitäts-Dashboard** - Detaillierte Einblicke in Ihre Arbeit
@@ -39,6 +74,11 @@ Ein hochprofessionelles und modernes Personal Dashboard mit umfassenden Produkti
 - **Verschiedene Event-Typen** - Meetings, Tasks, Reminders
 - **Monatsansicht** - Übersichtlicher Kalender
 - **Upcoming Events** - Anstehende Termine im Überblick
+- **Erweiterte Wiederkehrende Events** - Komplexe Wiederholungsmuster
+- **Flexible Wiederholungen** - Täglich, wöchentlich, monatlich, jährlich
+- **Spezielle Wochentage** - Z.B. jeden 2. Montag im Monat
+- **End-Optionen** - Nach Datum, Anzahl oder unendlich
+- **Event-Sharing** - Events mit Team-Mitgliedern teilen
 
 ### 🎨 Modernes Design
 - **Dark Mode Only** - Konsistentes dunkles Design
