@@ -301,10 +301,10 @@ export default function CRMPage() {
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
+            <h1 className="text-3xl font-bold text-white">
               CRM & Notes
             </h1>
-            <p className="text-slate-600 dark:text-slate-400">
+            <p className="text-slate-400">
               Manage your contacts and keep track of important notes
             </p>
           </div>
@@ -542,7 +542,7 @@ export default function CRMPage() {
               <Card>
                 <CardContent className="flex flex-col items-center justify-center py-12">
                   <User className="h-12 w-12 text-slate-400 mb-4" />
-                  <p className="text-center text-slate-500 dark:text-slate-400">
+                  <p className="text-center text-slate-500 text-slate-400">
                     {contacts.length === 0 ? "No contacts yet. Add your first contact!" : "No contacts match your search."}
                   </p>
                 </CardContent>
@@ -558,12 +558,12 @@ export default function CRMPage() {
                         <div>
                           <CardTitle className="text-lg">{contact.name}</CardTitle>
                           {contact.position && contact.company && (
-                            <p className="text-sm text-slate-600 dark:text-slate-400">
+                            <p className="text-sm text-slate-400">
                               {contact.position} at {contact.company}
                             </p>
                           )}
                           {linkedProject && (
-                            <p className="text-sm text-blue-600 dark:text-blue-400 mt-1">
+                            <p className="text-sm text-blue-600 text-blue-400 mt-1">
                               📁 {linkedProject.name}
                             </p>
                           )}
@@ -609,7 +609,7 @@ export default function CRMPage() {
                             {contact.tags.map((tag, index) => (
                               <span 
                                 key={index}
-                                className="px-2 py-1 bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300 text-xs rounded-full"
+                                className="px-2 py-1 bg-blue-100 bg-blue-900/20 text-blue-800 text-blue-300 text-xs rounded-full"
                               >
                                 {tag}
                               </span>
@@ -632,7 +632,7 @@ export default function CRMPage() {
               <Card>
                 <CardContent className="flex flex-col items-center justify-center py-12">
                   <FileText className="h-12 w-12 text-slate-400 mb-4" />
-                  <p className="text-center text-slate-500 dark:text-slate-400">
+                  <p className="text-center text-slate-500 text-slate-400">
                     {notes.length === 0 ? "No notes yet. Create your first note!" : "No notes match your search."}
                   </p>
                 </CardContent>
@@ -649,16 +649,16 @@ export default function CRMPage() {
                           <div className="flex-1">
                             <CardTitle className="text-lg">{note.title}</CardTitle>
                             <div className="flex items-center gap-2 mt-1">
-                              <span className="px-2 py-1 bg-purple-100 dark:bg-purple-900/20 text-purple-800 dark:text-purple-300 text-xs rounded-full">
+                              <span className="px-2 py-1 bg-purple-100 bg-purple-900/20 text-purple-800 text-purple-300 text-xs rounded-full">
                                 {note.category}
                               </span>
                               {linkedContact && (
-                                <span className="px-2 py-1 bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-300 text-xs rounded-full">
+                                <span className="px-2 py-1 bg-green-100 bg-green-900/20 text-green-800 text-green-300 text-xs rounded-full">
                                   👤 {linkedContact.name}
                                 </span>
                               )}
                               {linkedProject && (
-                                <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300 text-xs rounded-full">
+                                <span className="px-2 py-1 bg-blue-100 bg-blue-900/20 text-blue-800 text-blue-300 text-xs rounded-full">
                                   📁 {linkedProject.name}
                                 </span>
                               )}
@@ -683,7 +683,7 @@ export default function CRMPage() {
                         </div>
                       </CardHeader>
                       <CardContent>
-                        <p className="text-sm text-slate-600 dark:text-slate-400 mb-3 line-clamp-3">
+                        <p className="text-sm text-slate-400 mb-3 line-clamp-3">
                           {note.content}
                         </p>
                         {note.tags.length > 0 && (
@@ -691,7 +691,7 @@ export default function CRMPage() {
                             {note.tags.map((tag, index) => (
                               <span 
                                 key={index}
-                                className="px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs rounded-full"
+                                className="px-2 py-1 bg-slate-100 bg-slate-700 text-slate-700 text-slate-300 text-xs rounded-full"
                               >
                                 #{tag}
                               </span>

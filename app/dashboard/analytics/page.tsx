@@ -267,10 +267,10 @@ export default function AnalyticsPage() {
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
+            <h1 className="text-3xl font-bold text-white">
               Analytics
             </h1>
-            <p className="text-slate-600 dark:text-slate-400">
+            <p className="text-slate-400">
               Insights into your productivity and activity
             </p>
           </div>
@@ -298,7 +298,7 @@ export default function AnalyticsPage() {
               <div className="text-2xl font-bold">
                 {timeAnalytics.totalHours.toFixed(1)}h
               </div>
-              <p className="text-xs text-slate-600 dark:text-slate-400">
+              <p className="text-xs text-slate-400">
                 {timeAnalytics.totalSessions} sessions
               </p>
             </CardContent>
@@ -311,7 +311,7 @@ export default function AnalyticsPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{contactAnalytics.totalContacts}</div>
-              <p className="text-xs text-slate-600 dark:text-slate-400">
+              <p className="text-xs text-slate-400">
                 +{contactAnalytics.recentContacts} this month
               </p>
             </CardContent>
@@ -324,7 +324,7 @@ export default function AnalyticsPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{noteAnalytics.totalNotes}</div>
-              <p className="text-xs text-slate-600 dark:text-slate-400">
+              <p className="text-xs text-slate-400">
                 +{noteAnalytics.recentNotes} this month
               </p>
             </CardContent>
@@ -342,7 +342,7 @@ export default function AnalyticsPage() {
                   : "0"
                 }h
               </div>
-              <p className="text-xs text-slate-600 dark:text-slate-400">
+              <p className="text-xs text-slate-400">
                 per day average
               </p>
             </CardContent>

@@ -7,6 +7,8 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import Footer from "@/components/ui/footer"
+import Navbar from "@/components/ui/navbar"
 import { Eye, EyeOff, Lock, Mail } from "lucide-react"
 
 export default function SignIn() {
@@ -43,32 +45,32 @@ export default function SignIn() {
       setIsLoading(false)
     }
   }
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 dark:from-slate-950 dark:via-purple-950 dark:to-slate-950">
-      <div className="max-w-md w-full space-y-8 p-8 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800">
+    <div className="min-h-screen flex flex-col">
+      <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 from-slate-950 via-purple-950 to-slate-950">
+      <div className="max-w-md w-full space-y-8 p-8 bg-slate-900 rounded-2xl shadow-2xl border border-slate-800">
         <div className="text-center">
           <div className="mx-auto h-12 w-12 bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl flex items-center justify-center mb-4">
             <Lock className="h-6 w-6 text-white" />
           </div>
-          <h2 className="text-3xl font-bold text-slate-900 dark:text-white">
+          <h2 className="text-3xl font-bold text-white">
             Welcome back
           </h2>
-          <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
+          <p className="mt-2 text-sm text-slate-400">
             Sign in to your personal dashboard
           </p>
         </div>
 
         <form className="space-y-6" onSubmit={handleSubmit}>
           {error && (
-            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 px-4 py-3 rounded-lg text-sm">
+            <div className="bg-red-50 bg-red-900/20 border border-red-200 border-red-800 text-red-600 text-red-400 px-4 py-3 rounded-lg text-sm">
               {error}
             </div>
           )}
 
           <div className="space-y-4">
             <div>
-              <Label htmlFor="email" className="text-slate-700 dark:text-slate-300">
+              <Label htmlFor="email" className="text-slate-700 text-slate-300">
                 Email address
               </Label>
               <div className="mt-1 relative">
@@ -87,7 +89,7 @@ export default function SignIn() {
             </div>
 
             <div>
-              <Label htmlFor="password" className="text-slate-700 dark:text-slate-300">
+              <Label htmlFor="password" className="text-slate-700 text-slate-300">
                 Password
               </Label>
               <div className="mt-1 relative">
@@ -126,18 +128,19 @@ export default function SignIn() {
           </Button>
 
           <div className="text-center">
-            <p className="text-sm text-slate-600 dark:text-slate-400">
+            <p className="text-sm text-slate-400">
               Don't have an account?{" "}
               <Link
                 href="/auth/signup"
-                className="font-medium text-purple-600 hover:text-purple-500 dark:text-purple-400"
+                className="font-medium text-purple-600 hover:text-purple-500 text-purple-400"
               >
                 Sign up
-              </Link>
-            </p>
+              </Link>            </p>
           </div>
         </form>
       </div>
+      </div>
+
     </div>
   )
 }

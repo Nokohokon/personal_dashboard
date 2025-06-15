@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import Footer from "@/components/ui/footer"
+import Navbar from "@/components/ui/navbar"
 import { ArrowRight, BarChart3, Clock, Users, Zap } from "lucide-react"
 
 export default function Home() {
@@ -27,13 +29,13 @@ export default function Home() {
 
   if (status === "authenticated") {
     return null // Will redirect
-  }
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 dark:from-slate-950 dark:via-purple-950 dark:to-slate-950">
-      {/* Hero Section */}
-      <div className="relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+  }  return (
+    <div className="min-h-screen flex flex-col">
+      <Navbar />
+      <div className="flex-1 bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
+        {/* Hero Section */}
+        <div className="relative overflow-hidden">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
           <div className="text-center">
             <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
               Your Personal
@@ -59,10 +61,8 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Features Section */}
-      <div className="py-24 bg-white/5 backdrop-blur-sm">
+      </div>      {/* Features Section */}
+      <div id="features" className="py-24 bg-white/5 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
@@ -115,6 +115,7 @@ export default function Home() {
             </div>
           </div>
         </div>
+      </div>
       </div>
     </div>
   )

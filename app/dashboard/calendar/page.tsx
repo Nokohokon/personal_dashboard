@@ -196,10 +196,10 @@ export default function CalendarPage() {
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
+            <h1 className="text-3xl font-bold text-white">
               Calendar
             </h1>
-            <p className="text-slate-600 dark:text-slate-400">
+            <p className="text-slate-400">
               Manage your schedule and important events
             </p>
           </div>
@@ -247,7 +247,7 @@ export default function CalendarPage() {
                   <select
                     value={eventForm.type}
                     onChange={(e) => setEventForm(prev => ({ ...prev, type: e.target.value as any }))}
-                    className="w-full h-10 px-3 py-2 border border-slate-200 dark:border-slate-800 rounded-md bg-white dark:bg-slate-950"
+                    className="w-full h-10 px-3 py-2 border border-slate-800 rounded-md bg-slate-950"
                   >
                     <option value="meeting">Meeting</option>
                     <option value="task">Task</option>
@@ -332,7 +332,7 @@ export default function CalendarPage() {
               <CardContent>
                 <div className="grid grid-cols-7 gap-1 mb-4">
                   {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                    <div key={day} className="p-2 text-center text-sm font-medium text-slate-600 dark:text-slate-400">
+                    <div key={day} className="p-2 text-center text-sm font-medium text-slate-400">
                       {day}
                     </div>
                   ))}
@@ -347,14 +347,14 @@ export default function CalendarPage() {
                     return (
                       <div
                         key={day.toString()}
-                        className={`min-h-[80px] p-1 border rounded-lg cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors ${
-                          !isCurrentMonth ? 'text-slate-400 dark:text-slate-600' : ''
+                        className={`min-h-[80px] p-1 border rounded-lg cursor-pointer hover:bg-slate-50 hover:bg-slate-800 transition-colors ${
+                          !isCurrentMonth ? 'text-slate-400 text-slate-600' : ''
                         } ${
-                          isToday ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800' : 'border-slate-200 dark:border-slate-700'
+                          isToday ? 'bg-blue-50 bg-blue-900/20 border-blue-200 border-blue-800' : 'border-slate-700'
                         }`}
                         onClick={() => openEventDialog(day)}
                       >
-                        <div className={`text-sm font-medium mb-1 ${isToday ? 'text-blue-600 dark:text-blue-400' : ''}`}>
+                        <div className={`text-sm font-medium mb-1 ${isToday ? 'text-blue-600 text-blue-400' : ''}`}>
                           {format(day, 'd')}
                         </div>
                         <div className="space-y-1">
@@ -362,17 +362,17 @@ export default function CalendarPage() {
                             <div
                               key={event._id}
                               className={`text-xs p-1 rounded truncate ${
-                                event.type === 'meeting' ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300' :
-                                event.type === 'task' ? 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-300' :
-                                event.type === 'reminder' ? 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-300' :
-                                'bg-purple-100 dark:bg-purple-900/20 text-purple-800 dark:text-purple-300'
+                                event.type === 'meeting' ? 'bg-blue-100 bg-blue-900/20 text-blue-800 text-blue-300' :
+                                event.type === 'task' ? 'bg-green-100 bg-green-900/20 text-green-800 text-green-300' :
+                                event.type === 'reminder' ? 'bg-yellow-100 bg-yellow-900/20 text-yellow-800 text-yellow-300' :
+                                'bg-purple-100 bg-purple-900/20 text-purple-800 text-purple-300'
                               }`}
                             >
                               {event.time && `${event.time} `}{event.title}
                             </div>
                           ))}
                           {dayEvents.length > 2 && (
-                            <div className="text-xs text-slate-500 dark:text-slate-400">
+                            <div className="text-xs text-slate-500 text-slate-400">
                               +{dayEvents.length - 2} more
                             </div>
                           )}
@@ -401,9 +401,9 @@ export default function CalendarPage() {
                       const linkedContact = getLinkedContact(event.contactId)
                       
                       return (
-                      <div key={event._id} className="p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
+                      <div key={event._id} className="p-3 bg-slate-800 rounded-lg">
                         <h4 className="font-medium text-sm">{event.title}</h4>
-                        <div className="flex items-center text-xs text-slate-600 dark:text-slate-400 mt-1">
+                        <div className="flex items-center text-xs text-slate-400 mt-1">
                           <CalendarIcon className="h-3 w-3 mr-1" />
                           {format(new Date(event.date), 'MMM dd')}
                           {event.time && (
@@ -420,20 +420,20 @@ export default function CalendarPage() {
                         )}
                         <div className="flex flex-wrap gap-1 mt-2">
                           <span className={`inline-block px-2 py-1 text-xs rounded-full ${
-                            event.type === 'meeting' ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300' :
-                            event.type === 'task' ? 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-300' :
-                            event.type === 'reminder' ? 'bg-yellow-100 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-300' :
-                            'bg-purple-100 dark:bg-purple-900/20 text-purple-800 dark:text-purple-300'
+                            event.type === 'meeting' ? 'bg-blue-100 bg-blue-900/20 text-blue-800 text-blue-300' :
+                            event.type === 'task' ? 'bg-green-100 bg-green-900/20 text-green-800 text-green-300' :
+                            event.type === 'reminder' ? 'bg-yellow-100 bg-yellow-900/20 text-yellow-800 text-yellow-300' :
+                            'bg-purple-100 bg-purple-900/20 text-purple-800 text-purple-300'
                           }`}>
                             {event.type}
                           </span>
                           {linkedProject && (
-                            <span className="inline-block px-2 py-1 text-xs rounded-full bg-orange-100 dark:bg-orange-900/20 text-orange-800 dark:text-orange-300">
+                            <span className="inline-block px-2 py-1 text-xs rounded-full bg-orange-100 bg-orange-900/20 text-orange-800 text-orange-300">
                               📁 {linkedProject.name}
                             </span>
                           )}
                           {linkedContact && (
-                            <span className="inline-block px-2 py-1 text-xs rounded-full bg-cyan-100 dark:bg-cyan-900/20 text-cyan-800 dark:text-cyan-300">
+                            <span className="inline-block px-2 py-1 text-xs rounded-full bg-cyan-100 bg-cyan-900/20 text-cyan-800 text-cyan-300">
                               👤 {linkedContact.name}
                             </span>
                           )}
@@ -442,7 +442,7 @@ export default function CalendarPage() {
                       )
                     })}
                   {events.filter(event => new Date(event.date) >= new Date()).length === 0 && (
-                    <p className="text-center text-slate-500 dark:text-slate-400 py-4">
+                    <p className="text-center text-slate-500 text-slate-400 py-4">
                       No upcoming events
                     </p>
                   )}
@@ -457,11 +457,11 @@ export default function CalendarPage() {
               <CardContent>
                 <div className="space-y-2">
                   <div className="flex justify-between">
-                    <span className="text-sm text-slate-600 dark:text-slate-400">Total Events</span>
+                    <span className="text-sm text-slate-400">Total Events</span>
                     <span className="font-medium">{events.length}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-slate-600 dark:text-slate-400">This Month</span>
+                    <span className="text-sm text-slate-400">This Month</span>
                     <span className="font-medium">
                       {events.filter(event => 
                         isSameMonth(new Date(event.date), currentDate)
@@ -469,13 +469,13 @@ export default function CalendarPage() {
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-slate-600 dark:text-slate-400">Meetings</span>
+                    <span className="text-sm text-slate-400">Meetings</span>
                     <span className="font-medium">
                       {events.filter(event => event.type === 'meeting').length}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-slate-600 dark:text-slate-400">Tasks</span>
+                    <span className="text-sm text-slate-400">Tasks</span>
                     <span className="font-medium">
                       {events.filter(event => event.type === 'task').length}
                     </span>

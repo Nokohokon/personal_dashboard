@@ -172,10 +172,10 @@ export default function SettingsPage() {
       <div className="space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
+          <h1 className="text-3xl font-bold text-white">
             Settings
           </h1>
-          <p className="text-slate-600 dark:text-slate-400">
+          <p className="text-slate-400">
             Manage your account settings and preferences
           </p>
         </div>
@@ -279,10 +279,10 @@ export default function SettingsPage() {
               <CardContent className="space-y-4">
                 <div className="text-center py-8">
                   <Settings className="h-12 w-12 text-slate-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-slate-900 dark:text-white mb-2">
+                  <h3 className="text-lg font-medium text-white mb-2">
                     Dark Mode Enabled
                   </h3>
-                  <p className="text-slate-600 dark:text-slate-400">
+                  <p className="text-slate-400">
                     The dashboard is currently in dark mode for optimal viewing experience.
                   </p>
                 </div>
@@ -303,7 +303,7 @@ export default function SettingsPage() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="font-medium">Time Tracking Reminders</p>
-                      <p className="text-sm text-slate-600 dark:text-slate-400">
+                      <p className="text-sm text-slate-400">
                         Get reminders to start or stop time tracking
                       </p>
                     </div>
@@ -319,7 +319,7 @@ export default function SettingsPage() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="font-medium">New Contact Notifications</p>
-                      <p className="text-sm text-slate-600 dark:text-slate-400">
+                      <p className="text-sm text-slate-400">
                         Get notified when new contacts are added
                       </p>
                     </div>
@@ -335,7 +335,7 @@ export default function SettingsPage() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="font-medium">Daily Summary</p>
-                      <p className="text-sm text-slate-600 dark:text-slate-400">
+                      <p className="text-sm text-slate-400">
                         Receive daily productivity summaries
                       </p>
                     </div>
@@ -361,7 +361,7 @@ export default function SettingsPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-slate-600 dark:text-slate-400 mb-4">
+                <p className="text-slate-400 mb-4">
                   Download all your data including time entries, contacts, and notes as a JSON file.
                 </p>
                 <Button onClick={exportData} disabled={isLoading}>
@@ -370,15 +370,15 @@ export default function SettingsPage() {
               </CardContent>
             </Card>
 
-            <Card className="border-red-200 dark:border-red-800">
+            <Card className="border-red-200 border-red-800">
               <CardHeader>
-                <CardTitle className="flex items-center text-red-600 dark:text-red-400">
+                <CardTitle className="flex items-center text-red-600 text-red-400">
                   <Trash2 className="mr-2 h-5 w-5" />
                   Danger Zone
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-slate-600 dark:text-slate-400 mb-4">
+                <p className="text-slate-400 mb-4">
                   Permanently delete all your data. This action cannot be undone.
                 </p>
                 <Button 

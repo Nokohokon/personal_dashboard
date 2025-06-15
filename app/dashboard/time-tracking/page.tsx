@@ -304,10 +304,10 @@ export default function TimeTrackingPage() {
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
+            <h1 className="text-3xl font-bold text-white">
               Time Tracking
             </h1>
-            <p className="text-slate-600 dark:text-slate-400">
+            <p className="text-slate-400">
               Track your time across projects and tasks
             </p>
           </div>
@@ -468,11 +468,11 @@ export default function TimeTrackingPage() {
 
         {/* Current Timer */}
         {currentTimer && (
-          <Card className="border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20">
+          <Card className="border-green-200 border-green-800 bg-green-50 bg-green-900/20">
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
                 <div className="flex items-center">
-                  <Clock className="mr-2 h-5 w-5 text-green-600 dark:text-green-400" />
+                  <Clock className="mr-2 h-5 w-5 text-green-600 text-green-400" />
                   Active Timer
                 </div>
                 <Button onClick={stopTimer} variant="destructive" size="sm">
@@ -485,13 +485,13 @@ export default function TimeTrackingPage() {
               <div className="flex justify-between items-center">
                 <div>
                   <h3 className="font-semibold text-lg">{currentTimer.project} - {currentTimer.task}</h3>
-                  <p className="text-slate-600 dark:text-slate-400">{currentTimer.description}</p>
+                  <p className="text-slate-400">{currentTimer.description}</p>
                   <p className="text-sm text-slate-500">
                     Started at {format(new Date(currentTimer.startTime), "HH:mm")}
                   </p>
                 </div>
                 <div className="text-right">
-                  <div className="text-3xl font-mono font-bold text-green-600 dark:text-green-400">
+                  <div className="text-3xl font-mono font-bold text-green-600 text-green-400">
                     {formatDuration(elapsedTime)}
                   </div>
                 </div>
@@ -549,18 +549,18 @@ export default function TimeTrackingPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">              {timeEntries.length === 0 ? (
-                <p className="text-center text-slate-500 dark:text-slate-400 py-8">
+                <p className="text-center text-slate-500 text-slate-400 py-8">
                   No time entries yet. Start your first timer!
                 </p>
               ) : (
                 timeEntries.map((entry) => (
                   <div
                     key={entry._id}
-                    className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800 rounded-lg"
+                    className="flex items-center justify-between p-4 bg-slate-800 rounded-lg"
                   >
                     <div className="flex-1">
                       <h4 className="font-medium">{entry.project} - {entry.task}</h4>
-                      <p className="text-sm text-slate-600 dark:text-slate-400">
+                      <p className="text-sm text-slate-400">
                         {entry.description}
                       </p>
                       <p className="text-xs text-slate-500">
@@ -573,7 +573,7 @@ export default function TimeTrackingPage() {
                       <div className="text-right">
                         <div className="font-mono font-semibold">
                           {entry.isActive ? (
-                            <span className="text-green-600 dark:text-green-400">Running</span>
+                            <span className="text-green-600 text-green-400">Running</span>
                           ) : entry.duration ? (
                             formatDuration(entry.duration)
                           ) : (

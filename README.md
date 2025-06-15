@@ -41,7 +41,7 @@ Ein hochprofessionelles und modernes Personal Dashboard mit umfassenden Produkti
 - **Upcoming Events** - Anstehende Termine im Überblick
 
 ### 🎨 Modernes Design
-- **Dark/Light/System Mode** - Vollständige Theme-Unterstützung
+- **Dark Mode Only** - Konsistentes dunkles Design
 - **Responsive Design** - Optimiert für alle Bildschirmgrößen
 - **Tailwind CSS** - Moderne und konsistente UI
 - **Radix UI Components** - Hochwertige, barrierefreie Komponenten

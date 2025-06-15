@@ -152,7 +152,7 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stats.todayHours}h</div>
-              <p className="text-xs text-slate-600 dark:text-slate-400">
+              <p className="text-xs text-slate-400">
                 {stats.activeTimer ? "Timer active" : "No active timer"}
               </p>
             </CardContent>
@@ -165,7 +165,7 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stats.totalContacts}</div>
-              <p className="text-xs text-slate-600 dark:text-slate-400">
+              <p className="text-xs text-slate-400">
                 CRM entries
               </p>
             </CardContent>
@@ -178,7 +178,7 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stats.totalNotes}</div>
-              <p className="text-xs text-slate-600 dark:text-slate-400">
+              <p className="text-xs text-slate-400">
                 Total notes
               </p>
             </CardContent>
@@ -191,7 +191,7 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{stats.recentTimeEntries.length}</div>
-              <p className="text-xs text-slate-600 dark:text-slate-400">
+              <p className="text-xs text-slate-400">
                 Time entries
               </p>
             </CardContent>
@@ -210,7 +210,7 @@ export default function DashboardPage() {
             <CardContent>
               <div className="space-y-4">
                 {stats.recentTimeEntries.length === 0 && stats.recentContacts.length === 0 && stats.recentNotes.length === 0 ? (
-                  <p className="text-center text-slate-500 dark:text-slate-400 py-4">
+                  <p className="text-center text-slate-500 text-slate-400 py-4">
                     No recent activity. Start tracking time or add content!
                   </p>
                 ) : (
@@ -218,7 +218,7 @@ export default function DashboardPage() {
                     {stats.recentTimeEntries.slice(0, 2).map((entry: any) => (
                       <div key={entry._id} className="flex items-center">
                         <div className="h-2 w-2 bg-blue-500 rounded-full"></div>
-                        <p className="ml-3 text-sm text-slate-600 dark:text-slate-400">
+                        <p className="ml-3 text-sm text-slate-400">
                           {entry.isActive ? "Started" : "Completed"} "{entry.project} - {entry.task}"
                         </p>
                         <span className="ml-auto text-xs text-slate-500">
@@ -229,7 +229,7 @@ export default function DashboardPage() {
                     {stats.recentContacts.slice(0, 1).map((contact: any) => (
                       <div key={contact._id} className="flex items-center">
                         <div className="h-2 w-2 bg-green-500 rounded-full"></div>
-                        <p className="ml-3 text-sm text-slate-600 dark:text-slate-400">
+                        <p className="ml-3 text-sm text-slate-400">
                           Added contact "{contact.name}"
                         </p>
                         <span className="ml-auto text-xs text-slate-500">
@@ -240,7 +240,7 @@ export default function DashboardPage() {
                     {stats.recentNotes.slice(0, 1).map((note: any) => (
                       <div key={note._id} className="flex items-center">
                         <div className="h-2 w-2 bg-purple-500 rounded-full"></div>
-                        <p className="ml-3 text-sm text-slate-600 dark:text-slate-400">
+                        <p className="ml-3 text-sm text-slate-400">
                           Created note "{note.title}"
                         </p>
                         <span className="ml-auto text-xs text-slate-500">
@@ -314,14 +314,14 @@ export default function DashboardPage() {
             <CardContent>
               <div className="space-y-3">
                 {stats.recentTimeEntries.slice(0, 3).length === 0 ? (
-                  <p className="text-sm text-slate-500 dark:text-slate-400 text-center py-4">
+                  <p className="text-sm text-slate-500 text-slate-400 text-center py-4">
                     No time entries yet
                   </p>
                 ) : (
                   stats.recentTimeEntries.slice(0, 3).map((entry: any) => (
-                    <div key={entry._id} className="p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
+                    <div key={entry._id} className="p-3 bg-slate-800 rounded-lg">
                       <p className="font-medium text-sm">{entry.project}</p>
-                      <p className="text-xs text-slate-600 dark:text-slate-400">{entry.task}</p>
+                      <p className="text-xs text-slate-400">{entry.task}</p>
                       <p className="text-xs text-slate-500">
                         {entry.duration ? formatDuration(entry.duration) : "Active"}
                       </p>
@@ -340,14 +340,14 @@ export default function DashboardPage() {
             <CardContent>
               <div className="space-y-3">
                 {stats.recentContacts.length === 0 ? (
-                  <p className="text-sm text-slate-500 dark:text-slate-400 text-center py-4">
+                  <p className="text-sm text-slate-500 text-slate-400 text-center py-4">
                     No contacts yet
                   </p>
                 ) : (
                   stats.recentContacts.map((contact: any) => (
-                    <div key={contact._id} className="p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
+                    <div key={contact._id} className="p-3 bg-slate-800 rounded-lg">
                       <p className="font-medium text-sm">{contact.name}</p>
-                      <p className="text-xs text-slate-600 dark:text-slate-400">{contact.email}</p>
+                      <p className="text-xs text-slate-400">{contact.email}</p>
                       {contact.company && (
                         <p className="text-xs text-slate-500">{contact.company}</p>
                       )}
@@ -366,17 +366,17 @@ export default function DashboardPage() {
             <CardContent>
               <div className="space-y-3">
                 {stats.recentNotes.length === 0 ? (
-                  <p className="text-sm text-slate-500 dark:text-slate-400 text-center py-4">
+                  <p className="text-sm text-slate-500 text-slate-400 text-center py-4">
                     No notes yet
                   </p>
                 ) : (
                   stats.recentNotes.map((note: any) => (
-                    <div key={note._id} className="p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
+                    <div key={note._id} className="p-3 bg-slate-800 rounded-lg">
                       <p className="font-medium text-sm">{note.title}</p>
-                      <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-2">
+                      <p className="text-xs text-slate-400 line-clamp-2">
                         {note.content}
                       </p>
-                      <span className="inline-block px-2 py-1 bg-purple-100 dark:bg-purple-900/20 text-purple-800 dark:text-purple-300 text-xs rounded-full mt-2">
+                      <span className="inline-block px-2 py-1 bg-purple-100 bg-purple-900/20 text-purple-800 text-purple-300 text-xs rounded-full mt-2">
                         {note.category}
                       </span>
                     </div>

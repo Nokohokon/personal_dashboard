@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers/session-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
+import Footer from "@/components/ui/footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,7 +32,12 @@ export default function RootLayout({
       >
         <ThemeProvider defaultTheme="dark" storageKey="dashboard-theme">
           <Providers>
-            {children}
+            <div className="min-h-screen flex flex-col">
+              <main className="flex-1">
+                {children}
+              </main>
+              <Footer />
+            </div>
           </Providers>
         </ThemeProvider>
       </body>
