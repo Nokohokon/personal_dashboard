@@ -19,43 +19,40 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Progress } from "@/components/ui/progress"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { 
-  ArrowLeft, 
-  Calendar, 
-  Clock, 
-  DollarSign, 
-  Users, 
-  BarChart3, 
-  Settings, 
-  Share2,
-  Edit,
-  Trash2,
-  AlertCircle,
-  CheckCircle,
-  Target,
-  Eye,
-  TrendingUp,
-  FileText,
-  MessageSquare,
   Activity,
-  Plus,
-  Star,
-  Download,
-  Upload,
-  LinkIcon,
+  AlertCircle,
+  ArrowLeft,
+  BarChart3,
   Bookmark,
-  Timer,
-  GitBranch,
-  Zap,
-  Shield,
-  Globe,
   Building,
+  Calendar,
   CalendarDays,
+  CheckCircle,
   ChevronRight,
-  ExternalLink,
+  Clock,
+  Crown,
+  DollarSign,
+  Download,
+  Edit,
+  Eye,
+  FileText,
+  GitBranch,
+  Globe,
   Lightbulb,
+  MessageSquare,
   PieChart,
-  Filter,
-  Crown
+  Plus,
+  Settings,
+  Share2,
+  Shield,
+  Star,
+  Target,
+  Timer,
+  Trash2,
+  TrendingUp,
+  Upload,
+  Users,
+  Zap
 } from "lucide-react"
 
 export default function ProjectDetailsPage() {
@@ -69,6 +66,11 @@ export default function ProjectDetailsPage() {
   const [activeTab, setActiveTab] = useState("overview")
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+  const [isShareDialogOpen, setIsShareDialogOpen] = useState(false)
+  const [isSaved, setIsSaved] = useState(false)
+  const [shareEmail, setShareEmail] = useState("")
+  const [sharePermission, setSharePermission] = useState("viewer")
+  const [isSharing, setIsSharing] = useState(false)
 
   // Form states for editing
   const [editForm, setEditForm] = useState({
@@ -101,6 +103,13 @@ export default function ProjectDetailsPage() {
       if (response.ok) {
         const data = await response.json()
         setProject(data)
+        
+        // Überprüfen, ob das Projekt gespeichert ist
+        const saveResponse = await fetch(`/api/projects/${projectId}/save`)
+        if (saveResponse.ok) {
+          const saveData = await saveResponse.json()
+          setIsSaved(saveData.saved)
+        }
       } else {
         console.error("Failed to fetch project")
         router.push("/dashboard/projects")
@@ -164,6 +173,58 @@ export default function ProjectDetailsPage() {
       }
     } catch (error) {
       console.error("Error deleting project:", error)
+    }
+  }
+
+  const handleSaveProject = async () => {
+    try {
+      setIsSaved(true)
+      // Sie können hier Logik hinzufügen, um das Projekt als Favorit zu markieren
+      // oder in einer Sammlung zu speichern
+      const response = await fetch(`/api/projects/${projectId}/save`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }
+      })
+
+      if (response.ok) {
+        // Erfolg-Feedback für Benutzer
+        setTimeout(() => setIsSaved(false), 2000)
+      } else {
+        setIsSaved(false)
+      }
+    } catch (error) {
+      console.error("Error saving project:", error)
+      setIsSaved(false)
+    }
+  }
+
+  const handleShareProject = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsSharing(true)
+
+    try {
+      const response = await fetch(`/api/projects/${projectId}/share`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: shareEmail,
+          permission: sharePermission
+        })
+      })
+
+      if (response.ok) {
+        setIsShareDialogOpen(false)
+        setShareEmail("")
+        setSharePermission("viewer")
+        // Projekt neu laden, um aktualisierte Mitgliederliste zu erhalten
+        fetchProject()
+      } else {
+        console.error("Failed to share project")
+      }
+    } catch (error) {
+      console.error("Error sharing project:", error)
+    } finally {
+      setIsSharing(false)
     }
   }
 
@@ -301,60 +362,60 @@ export default function ProjectDetailsPage() {
     <DashboardLayout>
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
         <div className="container mx-auto px-6 py-8 space-y-8">          {/* Enhanced Header Section with better professional layout */}
-          <div className="bg-gray-800/60 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-8 shadow-2xl">
+          <div className="bg-gray-800/60 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-4 md:p-8 shadow-2xl">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-6 lg:space-y-0">
-              <div className="flex items-start space-x-6">
+              <div className="flex items-start space-x-4 md:space-x-6 min-w-0 flex-1">
                 <Button
                   variant="ghost"
                   onClick={() => router.push("/dashboard/projects")}
-                  className="text-gray-400 hover:text-white hover:bg-gray-700/50 p-3 rounded-xl transition-all duration-200"
+                  className="text-gray-400 hover:text-white hover:bg-gray-700/50 p-2 md:p-3 rounded-xl transition-all duration-200 flex-shrink-0"
                 >
-                  <ArrowLeft className="w-5 h-5" />
+                  <ArrowLeft className="w-4 h-4 md:w-5 md:h-5" />
                 </Button>
                 
-                <div className="flex items-start space-x-6">
-                  <div className={`p-4 rounded-2xl ${getStatusColor(project.status)} shadow-lg ring-2 ring-white/10`}>
+                <div className="flex items-start space-x-4 md:space-x-6 min-w-0 flex-1">
+                  <div className={`p-3 md:p-4 rounded-2xl ${getStatusColor(project.status)} shadow-lg ring-2 ring-white/10 flex-shrink-0`}>
                     {getStatusIcon(project.status)}
                   </div>
                   
-                  <div className="space-y-3">
+                  <div className="space-y-3 min-w-0 flex-1">
                     <div className="flex items-center space-x-4 flex-wrap">
-                      <h1 className="text-3xl lg:text-4xl font-bold tracking-tight text-white">
+                      <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-white break-words">
                         {project.name}
                       </h1>
                       <div className="flex items-center space-x-2 flex-wrap">
                         {isOwner && (
-                          <Badge variant="outline" className="bg-gradient-to-r from-purple-500 to-pink-500 text-white border-none shadow-md">
+                          <Badge variant="outline" className="bg-gradient-to-r from-purple-500 to-pink-500 text-white border-none shadow-md text-xs">
                             <Crown className="w-3 h-3 mr-1" />
                             Owner
                           </Badge>
                         )}
-                        <Badge variant="secondary" className="flex items-center space-x-1 bg-gray-700/70 hover:bg-gray-600 transition-colors">
+                        <Badge variant="secondary" className="flex items-center space-x-1 bg-gray-700/70 hover:bg-gray-600 transition-colors text-xs">
                           {getStatusIcon(project.status)}
                           <span className="capitalize">{project.status}</span>
                         </Badge>
-                        <Badge className={`${getPriorityColor(project.priority)} text-white border-none shadow-md hover:shadow-lg transition-shadow`}>
+                        <Badge className={`${getPriorityColor(project.priority)} text-white border-none shadow-md hover:shadow-lg transition-shadow text-xs`}>
                           <Star className="w-3 h-3 mr-1" />
                           {project.priority.toUpperCase()}
                         </Badge>
                       </div>
                     </div>
                     
-                    <div className="flex items-center space-x-6 text-gray-400 flex-wrap gap-y-2">
+                    <div className="flex items-center space-x-4 md:space-x-6 text-gray-400 flex-wrap gap-y-2">
                       {project.client && (
                         <div className="flex items-center space-x-2 hover:text-gray-300 transition-colors">
-                          <Building className="w-4 h-4" />
-                          <span className="font-medium">{project.client}</span>
+                          <Building className="w-4 h-4 flex-shrink-0" />
+                          <span className="font-medium truncate">{project.client}</span>
                         </div>
                       )}
                       <div className="flex items-center space-x-2 hover:text-gray-300 transition-colors">
-                        <CalendarDays className="w-4 h-4" />
-                        <span>Started {formatDate(project.startDate)}</span>
+                        <CalendarDays className="w-4 h-4 flex-shrink-0" />
+                        <span className="truncate">Started {formatDate(project.startDate)}</span>
                       </div>
                       {project.endDate && (
                         <div className="flex items-center space-x-2 hover:text-gray-300 transition-colors">
-                          <Timer className="w-4 h-4" />
-                          <span>Due {formatDate(project.endDate)}</span>
+                          <Timer className="w-4 h-4 flex-shrink-0" />
+                          <span className="truncate">Due {formatDate(project.endDate)}</span>
                         </div>
                       )}
                     </div>
@@ -362,48 +423,50 @@ export default function ProjectDetailsPage() {
                 </div>
               </div>
 
-              {/* Enhanced Action Buttons with better spacing */}
-              <div className="flex items-center space-x-3 lg:flex-shrink-0">
+              {/* Enhanced Action Buttons with better responsive spacing */}
+              <div className="flex flex-wrap items-center gap-2 lg:flex-shrink-0">
                 <Button 
                   variant="outline" 
                   size="sm" 
-                  className="bg-gray-700/50 border-gray-600 hover:bg-gray-600 transition-all duration-200 hover:scale-105"
+                  onClick={() => setIsShareDialogOpen(true)}
+                  className="bg-gray-700/50 border-gray-600 hover:bg-gray-600 transition-all duration-200 hover:scale-105 flex-shrink-0"
                 >
-                  <Share2 className="w-4 h-4 mr-2" />
-                  Share
+                  <Share2 className="w-4 h-4 lg:mr-2" />
+                  <span className="hidden lg:inline">Share</span>
                 </Button>
                 
                 <Button 
                   variant="outline" 
                   size="sm" 
-                  className="bg-gray-700/50 border-gray-600 hover:bg-gray-600 transition-all duration-200 hover:scale-105"
+                  onClick={handleSaveProject}
+                  className={`${isSaved ? 'bg-green-600/20 border-green-500 text-green-400' : 'bg-gray-700/50 border-gray-600'} hover:bg-gray-600 transition-all duration-200 hover:scale-105 flex-shrink-0`}
                 >
-                  <Bookmark className="w-4 h-4 mr-2" />
-                  Save
+                  <Bookmark className={`w-4 h-4 lg:mr-2 ${isSaved ? 'fill-current' : ''}`} />
+                  <span className="hidden lg:inline">{isSaved ? 'Saved' : 'Save'}</span>
                 </Button>
                 
                 {isOwner && (
-                  <>
+                  <div className="flex gap-2">
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={handleEditProject}
-                      className="bg-blue-600/20 border-blue-500 text-blue-400 hover:bg-blue-600/30 transition-all duration-200 hover:scale-105"
+                      className="bg-blue-600/20 border-blue-500 text-blue-400 hover:bg-blue-600/30 transition-all duration-200 hover:scale-105 flex-shrink-0"
                     >
-                      <Edit className="w-4 h-4 mr-2" />
-                      Edit
+                      <Edit className="w-4 h-4 lg:mr-2" />
+                      <span className="hidden lg:inline">Edit</span>
                     </Button>
                     
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={() => setIsDeleteDialogOpen(true)}
-                      className="bg-red-600/20 border-red-500 text-red-400 hover:bg-red-600/30 transition-all duration-200 hover:scale-105"
+                      className="bg-red-600/20 border-red-500 text-red-400 hover:bg-red-600/30 transition-all duration-200 hover:scale-105 flex-shrink-0"
                     >
-                      <Trash2 className="w-4 h-4 mr-2" />
-                      Delete
+                      <Trash2 className="w-4 h-4 lg:mr-2" />
+                      <span className="hidden lg:inline">Delete</span>
                     </Button>
-                  </>
+                  </div>
                 )}
               </div>
             </div>            {/* Professional Progress and Quick Stats Section */}
@@ -499,52 +562,54 @@ export default function ProjectDetailsPage() {
               </div>
             </div></div>          {/* Enhanced Professional Tabs Section */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-            <TabsList className="bg-gray-800/60 backdrop-blur-xl border border-gray-700/50 rounded-xl p-1.5 shadow-lg">
-              <TabsTrigger 
-                value="overview" 
-                className="flex items-center space-x-2 rounded-lg px-4 py-2.5 data-[state=active]:bg-blue-600/20 data-[state=active]:text-blue-400 transition-all duration-200"
-              >
-                <Eye className="w-4 h-4" />
-                <span className="font-medium">Overview</span>
-              </TabsTrigger>
-              <TabsTrigger 
-                value="team" 
-                className="flex items-center space-x-2 rounded-lg px-4 py-2.5 data-[state=active]:bg-purple-600/20 data-[state=active]:text-purple-400 transition-all duration-200"
-              >
-                <Users className="w-4 h-4" />
-                <span className="font-medium">Team & Roles</span>
-              </TabsTrigger>
-              <TabsTrigger 
-                value="analytics" 
-                className="flex items-center space-x-2 rounded-lg px-4 py-2.5 data-[state=active]:bg-green-600/20 data-[state=active]:text-green-400 transition-all duration-200"
-              >
-                <BarChart3 className="w-4 h-4" />
-                <span className="font-medium">Analytics</span>
-              </TabsTrigger>
-              <TabsTrigger 
-                value="files" 
-                className="flex items-center space-x-2 rounded-lg px-4 py-2.5 data-[state=active]:bg-orange-600/20 data-[state=active]:text-orange-400 transition-all duration-200"
-              >
-                <FileText className="w-4 h-4" />
-                <span className="font-medium">Files</span>
-              </TabsTrigger>
-              <TabsTrigger 
-                value="activity" 
-                className="flex items-center space-x-2 rounded-lg px-4 py-2.5 data-[state=active]:bg-pink-600/20 data-[state=active]:text-pink-400 transition-all duration-200"
-              >
-                <MessageSquare className="w-4 h-4" />
-                <span className="font-medium">Activity</span>
-              </TabsTrigger>
-              {isOwner && (
+            <div className="w-full overflow-x-auto">
+              <TabsList className="bg-gray-800/60 backdrop-blur-xl border border-gray-700/50 rounded-xl p-2 shadow-lg flex w-full min-w-fit">
                 <TabsTrigger 
-                  value="settings" 
-                  className="flex items-center space-x-2 rounded-lg px-4 py-2.5 data-[state=active]:bg-gray-500/20 data-[state=active]:text-gray-400 transition-all duration-200"
+                  value="overview" 
+                  className="flex items-center space-x-2 rounded-lg px-4 py-3 data-[state=active]:bg-blue-600/20 data-[state=active]:text-blue-400 transition-all duration-200 text-sm whitespace-nowrap flex-1 min-w-fit"
                 >
-                  <Settings className="w-4 h-4" />
-                  <span className="font-medium">Settings</span>
+                  <Eye className="w-4 h-4 flex-shrink-0" />
+                  <span className="font-medium">Overview</span>
                 </TabsTrigger>
-              )}
-            </TabsList>            <TabsContent value="overview" className="space-y-8 animate-in fade-in-50 duration-200">
+                <TabsTrigger 
+                  value="team" 
+                  className="flex items-center space-x-2 rounded-lg px-4 py-3 data-[state=active]:bg-purple-600/20 data-[state=active]:text-purple-400 transition-all duration-200 text-sm whitespace-nowrap flex-1 min-w-fit"
+                >
+                  <Users className="w-4 h-4 flex-shrink-0" />
+                  <span className="font-medium">Team</span>
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="analytics" 
+                  className="flex items-center space-x-2 rounded-lg px-4 py-3 data-[state=active]:bg-green-600/20 data-[state=active]:text-green-400 transition-all duration-200 text-sm whitespace-nowrap flex-1 min-w-fit"
+                >
+                  <BarChart3 className="w-4 h-4 flex-shrink-0" />
+                  <span className="font-medium">Analytics</span>
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="files" 
+                  className="flex items-center space-x-2 rounded-lg px-4 py-3 data-[state=active]:bg-orange-600/20 data-[state=active]:text-orange-400 transition-all duration-200 text-sm whitespace-nowrap flex-1 min-w-fit"
+                >
+                  <FileText className="w-4 h-4 flex-shrink-0" />
+                  <span className="font-medium">Files</span>
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="activity" 
+                  className="flex items-center space-x-2 rounded-lg px-4 py-3 data-[state=active]:bg-pink-600/20 data-[state=active]:text-pink-400 transition-all duration-200 text-sm whitespace-nowrap flex-1 min-w-fit"
+                >
+                  <MessageSquare className="w-4 h-4 flex-shrink-0" />
+                  <span className="font-medium">Activity</span>
+                </TabsTrigger>
+                {isOwner && (
+                  <TabsTrigger 
+                    value="settings" 
+                    className="flex items-center space-x-2 rounded-lg px-4 py-3 data-[state=active]:bg-gray-500/20 data-[state=active]:text-gray-400 transition-all duration-200 text-sm whitespace-nowrap flex-1 min-w-fit"
+                  >
+                    <Settings className="w-4 h-4 flex-shrink-0" />
+                    <span className="font-medium">Settings</span>
+                  </TabsTrigger>
+                )}
+              </TabsList>
+            </div>            <TabsContent value="overview" className="space-y-8 animate-in fade-in-50 duration-200">
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Enhanced Main Project Info */}
                 <div className="lg:col-span-2 space-y-8">
@@ -1257,6 +1322,112 @@ export default function ProjectDetailsPage() {
                   Delete Project
                 </Button>
               </div>
+            </DialogContent>
+          </Dialog>
+
+          {/* Share Project Dialog */}
+          <Dialog open={isShareDialogOpen} onOpenChange={setIsShareDialogOpen}>
+            <DialogContent className="bg-gray-800/90 backdrop-blur-xl border border-gray-700/50 text-white shadow-2xl">
+              <DialogHeader>
+                <DialogTitle className="flex items-center space-x-3 text-blue-400">
+                  <div className="p-2 bg-blue-500/20 rounded-lg">
+                    <Share2 className="w-5 h-5" />
+                  </div>
+                  <span>Share Project</span>
+                </DialogTitle>
+                <DialogDescription className="text-gray-300">
+                  Invite team members to collaborate on <span className="font-semibold text-white">"{project?.name}"</span>
+                </DialogDescription>
+              </DialogHeader>
+              
+              <form onSubmit={handleShareProject} className="space-y-6">
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="share-email" className="text-sm font-medium text-gray-300">Email Address</Label>
+                    <Input
+                      id="share-email"
+                      type="email"
+                      value={shareEmail}
+                      onChange={(e) => setShareEmail(e.target.value)}
+                      className="bg-gray-700/50 border-gray-600 text-white focus:border-blue-500 focus:ring-blue-500/20"
+                      placeholder="colleague@company.com"
+                      required
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="share-permission" className="text-sm font-medium text-gray-300">Permission Level</Label>
+                    <Select value={sharePermission} onValueChange={setSharePermission}>
+                      <SelectTrigger className="bg-gray-700/50 border-gray-600 text-white focus:border-blue-500 focus:ring-blue-500/20">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-gray-800 border-gray-700">
+                        <SelectItem value="viewer" className="text-gray-300 hover:bg-gray-700">
+                          <div className="flex items-center space-x-2">
+                            <Eye className="w-4 h-4" />
+                            <div>
+                              <p className="font-medium">Viewer</p>
+                              <p className="text-xs text-gray-500">Can view all project content</p>
+                            </div>
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="editor" className="text-gray-300 hover:bg-gray-700">
+                          <div className="flex items-center space-x-2">
+                            <Edit className="w-4 h-4" />
+                            <div>
+                              <p className="font-medium">Editor</p>
+                              <p className="text-xs text-gray-500">Can edit project content</p>
+                            </div>
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="admin" className="text-gray-300 hover:bg-gray-700">
+                          <div className="flex items-center space-x-2">
+                            <Shield className="w-4 h-4" />
+                            <div>
+                              <p className="font-medium">Admin</p>
+                              <p className="text-xs text-gray-500">Full project management access</p>
+                            </div>
+                          </div>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-3">
+                    <p className="text-sm text-blue-200">
+                      The invited user will receive an email notification and can access the project once they accept the invitation.
+                    </p>
+                  </div>
+                </div>
+              
+                <div className="flex justify-end space-x-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setIsShareDialogOpen(false)}
+                    className="border-gray-600 text-gray-300 hover:bg-gray-700 transition-colors"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    disabled={isSharing}
+                    className="bg-blue-600 hover:bg-blue-700 transition-colors shadow-lg"
+                  >
+                    {isSharing ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        Sharing...
+                      </>
+                    ) : (
+                      <>
+                        <Share2 className="w-4 h-4 mr-2" />
+                        Send Invitation
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </form>
             </DialogContent>
           </Dialog>
         </div>

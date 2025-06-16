@@ -450,29 +450,40 @@ export default function ProjectsPage() {
         </div>
 
         {/* Projects Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {filteredProjects.map((project) => {
             const statusOption = statusOptions.find(s => s.value === project.status)
             const priorityOption = priorityOptions.find(p => p.value === project.priority)
             const StatusIcon = statusOption?.icon || FolderOpen
 
             return (
-              <Card key={project._id} className="bg-gray-800 border-gray-700">
+              <Card key={project._id} className="bg-gray-800 border-gray-700 min-w-0 flex flex-col">
                 <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-2 flex-1">
-                      <StatusIcon className="w-5 h-5 text-blue-400" />
-                      <CardTitle className="text-white text-lg truncate">
-                        {project.name}
-                      </CardTitle>                    </div>
-                    <div className="flex gap-1">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                      <StatusIcon className="w-5 h-5 text-blue-400 flex-shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <CardTitle className="text-white text-lg truncate">
+                          {project.name}
+                        </CardTitle>
+                        {/* Show role badge for non-owners directly under title */}
+                        {!project.userRole?.isOwner && (
+                          <div className="mt-1">
+                            <Badge variant="secondary" className="text-xs px-2 py-0.5">
+                              Mitarbeiter
+                            </Badge>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex gap-1 flex-shrink-0 min-w-fit">
                       {/* View Details button for all users */}
                       <Button
                         size="sm"
                         variant="ghost"
                         onClick={() => router.push(`/dashboard/projects/${project._id}`)}
-                        className="text-gray-400 hover:text-white hover:bg-gray-700"
-                        title="View Project Details"
+                        className="text-gray-400 hover:text-white hover:bg-gray-700 p-1.5 h-8 w-8"
+                        title="Projektdetails anzeigen"
                       >
                         <Eye className="w-4 h-4" />
                       </Button>
@@ -483,7 +494,8 @@ export default function ProjectsPage() {
                           size="sm"
                           variant="ghost"
                           onClick={() => handleEdit(project)}
-                          className="text-gray-400 hover:text-white hover:bg-gray-700"
+                          className="text-gray-400 hover:text-white hover:bg-gray-700 p-1.5 h-8 w-8"
+                          title="Projekt bearbeiten"
                         >
                           <Edit className="w-4 h-4" />
                         </Button>
@@ -495,38 +507,32 @@ export default function ProjectsPage() {
                           size="sm"
                           variant="ghost"
                           onClick={() => handleDelete(project._id)}
-                          className="text-gray-400 hover:text-red-400 hover:bg-gray-700"
+                          className="text-gray-400 hover:text-red-400 hover:bg-gray-700 p-1.5 h-8 w-8"
+                          title="Projekt löschen"
                         >
                           <Trash2 className="w-4 h-4" />
                         </Button>
                       )}
-                      
-                      {/* Show role badge for non-owners */}
-                      {!project.userRole?.isOwner && (
-                        <Badge variant="secondary" className="text-xs ml-2">
-                          Kollaborateur
-                        </Badge>
-                      )}
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex items-center gap-2">
-                    <Badge className={`${statusOption?.color} text-white`}>
+                <CardContent className="space-y-3 flex-1">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <Badge className={`${statusOption?.color} text-white text-xs px-2 py-1 flex-shrink-0`}>
                       {statusOption?.label}
                     </Badge>
-                    <Badge className={`${priorityOption?.color} text-white`}>
+                    <Badge className={`${priorityOption?.color} text-white text-xs px-2 py-1 flex-shrink-0`}>
                       {priorityOption?.label}
                     </Badge>
                   </div>
 
                   {project.client && (
-                    <div className="text-sm text-gray-400">
-                      Client: <span className="text-blue-400">{project.client}</span>
+                    <div className="text-sm text-gray-400 truncate">
+                      <span className="text-gray-500">Client:</span> <span className="text-blue-400">{project.client}</span>
                     </div>
                   )}
 
-                  <div className="text-sm text-gray-300 line-clamp-2">
+                  <div className="text-sm text-gray-300 line-clamp-2 break-words">
                     {project.description}
                   </div>
 
@@ -545,30 +551,31 @@ export default function ProjectsPage() {
                   </div>
 
                   {project.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-1">
-                      {project.tags.slice(0, 3).map((tag, index) => (
+                    <div className="flex flex-wrap gap-1 overflow-hidden">
+                      {project.tags.slice(0, 2).map((tag, index) => (
                         <span
                           key={index}
-                          className="px-2 py-1 text-xs bg-gray-700 text-gray-300 rounded"
+                          className="px-2 py-1 text-xs bg-gray-700 text-gray-300 rounded truncate max-w-16 flex-shrink-0"
+                          title={`#${tag}`}
                         >
-                          {tag}
+                          #{tag}
                         </span>
                       ))}
-                      {project.tags.length > 3 && (
-                        <span className="px-2 py-1 text-xs bg-gray-700 text-gray-300 rounded">
-                          +{project.tags.length - 3}
+                      {project.tags.length > 2 && (
+                        <span className="px-2 py-1 text-xs bg-gray-600 text-gray-400 rounded flex-shrink-0">
+                          +{project.tags.length - 2}
                         </span>
                       )}
                     </div>
                   )}
 
-                  <div className="flex items-center justify-between text-xs text-gray-500">
-                    <div className="flex items-center gap-1">
-                      <Calendar className="w-3 h-3" />
-                      <span>{format(new Date(project.startDate), "MMM dd, yyyy")}</span>
+                  <div className="flex items-center justify-between text-xs text-gray-500 mt-auto">
+                    <div className="flex items-center gap-1 truncate">
+                      <Calendar className="w-3 h-3 flex-shrink-0" />
+                      <span className="truncate">{format(new Date(project.startDate), "MMM dd, yyyy")}</span>
                     </div>
                     {project.teamMembers.length > 0 && (
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-1 flex-shrink-0">
                         <Users className="w-3 h-3" />
                         <span>{project.teamMembers.length}</span>
                       </div>

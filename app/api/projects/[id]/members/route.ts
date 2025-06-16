@@ -5,9 +5,9 @@ import clientPromise from "@/lib/mongodb"
 import { ObjectId } from "mongodb"
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 // Get all team members for a project (including owner)
@@ -18,6 +18,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
+    const resolvedParams = await params
     const client = await clientPromise
     const db = client.db()
     const projects = db.collection("projects")
@@ -25,7 +26,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
     // Check if user has access to the project
     const project = await projects.findOne({
-      _id: new ObjectId(params.id),
+      _id: new ObjectId(resolvedParams.id),
       $or: [
         { userId: (session.user as any).id },
         { collaborators: (session.user as any).id }
@@ -66,23 +67,37 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       for (const member of project.teamMembers) {
         // Skip if this is the owner (already added)
         if (member.email !== owner?.email) {
+          // Use the actual role stored in the database, fallback to 'collaborator' if not found
+          const memberRole = member.role || 'collaborator'
+          
+          // Get role permissions from project roles if available
+          let rolePermissions = {
+            canEditProject: false,
+            canEditContent: member.isRegistered,
+            canViewAnalytics: false,
+            canViewTimeTracking: false,
+            canManageTeam: false
+          }
+
+          // Try to find the role definition in project roles
+          if (project.roles && member.roleId) {
+            const roleDefinition = project.roles.find((r: any) => r._id === member.roleId || r.name.toLowerCase() === memberRole.toLowerCase())
+            if (roleDefinition && roleDefinition.permissions) {
+              rolePermissions = roleDefinition.permissions
+            }
+          }
+
           allTeamMembers.push({
             ...member,
-            role: 'collaborator',
-            permissions: {
-              canEditProject: false,
-              canEditContent: member.isRegistered,
-              canViewAnalytics: false,
-              canViewTimeTracking: false,
-              canManageTeam: false
-            }
+            role: memberRole,
+            permissions: rolePermissions
           })
         }
       }
     }
 
     return NextResponse.json({
-      projectId: params.id,
+      projectId: resolvedParams.id,
       projectName: project.name,
       totalMembers: allTeamMembers.length,
       owner: allTeamMembers.find(m => m.role === 'owner'),
@@ -97,6 +112,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
 // Add new member to project
 export async function POST(request: NextRequest, { params }: RouteParams) {
+  const { id } = await params
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user) {
@@ -116,7 +132,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 
     // Check if user is project owner or has team management permission
     const project = await projects.findOne({
-      _id: new ObjectId(params.id),
+      _id: new ObjectId(id),
       $or: [
         { userId: (session.user as any).id },
         { 
@@ -174,7 +190,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     const updatedCollaborators = user ? [...currentCollaborators, user._id.toString()] : currentCollaborators
 
     await projects.updateOne(
-      { _id: new ObjectId(params.id) },
+      { _id: new ObjectId(id) },
       { 
         $set: { 
           teamMembers: updatedTeamMembers,

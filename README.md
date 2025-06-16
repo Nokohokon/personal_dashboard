@@ -6,9 +6,10 @@ Ein hochprofessionelles und modernes Personal Dashboard mit umfassenden Produkti
 
 ### 🔐 Authentifizierung & Sicherheit
 - **NextAuth.js Integration** - Sichere Authentifizierung mit E-Mail/Passwort
+- **Magic Link Authentication** - Passwortlose Anmeldung per E-Mail-Link
 - **Passwort-Hashing** - Sichere Speicherung mit bcryptjs
 - **Session Management** - JWT-basierte Sessions
-- **E-Mail Authentifizierung** - Optional verfügbar
+- **Flexible Anmeldeoptionen** - Wahl zwischen Passwort oder Magic Link
 
 ### ⏱️ Time Tracking
 - **Projekt-basiertes Zeiterfassung** - Organisiert nach Projekten und Aufgaben

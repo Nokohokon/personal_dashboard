@@ -4,27 +4,25 @@ import { authOptions } from "@/lib/auth"
 import clientPromise from "@/lib/mongodb"
 import { ObjectId } from "mongodb"
 
-interface RouteParams {
-  params: {
-    id: string
-  }
-}
-
 // Leave project (remove current user from project)
-export async function POST(request: NextRequest, { params }: RouteParams) {
+export async function POST(
+  request: NextRequest, 
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
+    const { id } = await params
     const client = await clientPromise
     const db = client.db()
     const projects = db.collection("projects")
 
     // Get project and check if user is a member
     const project = await projects.findOne({
-      _id: new ObjectId(params.id),
+      _id: new ObjectId(id),
       $or: [
         { "teamMembers.userId": (session.user as any).id },
         { collaborators: (session.user as any).id }
@@ -53,7 +51,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     )
 
     await projects.updateOne(
-      { _id: new ObjectId(params.id) },
+      { _id: new ObjectId(id) },
       { 
         $set: { 
           teamMembers: updatedTeamMembers,

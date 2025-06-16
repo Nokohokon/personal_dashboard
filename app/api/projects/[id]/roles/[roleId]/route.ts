@@ -4,28 +4,25 @@ import { authOptions } from "@/lib/auth"
 import clientPromise from "@/lib/mongodb"
 import { ObjectId } from "mongodb"
 
-interface RouteParams {
-  params: {
-    id: string
-    roleId: string
-  }
-}
-
 // Delete specific role
-export async function DELETE(request: NextRequest, { params }: RouteParams) {
+export async function DELETE(
+  request: NextRequest, 
+  { params }: { params: Promise<{ id: string; roleId: string }> }
+) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
+    const { id, roleId } = await params
     const client = await clientPromise
     const db = client.db()
     const projects = db.collection("projects")
 
     // Check permissions
     const project = await projects.findOne({
-      _id: new ObjectId(params.id),
+      _id: new ObjectId(id),
       $or: [
         { userId: (session.user as any).id },
         { 
@@ -44,7 +41,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     }
 
     const roles = project.roles || []
-    const roleToDelete = roles.find((role: any) => role._id === params.roleId)
+    const roleToDelete = roles.find((role: any) => role._id === roleId)
 
     if (!roleToDelete) {
       return NextResponse.json({ error: "Role not found" }, { status: 404 })
@@ -56,17 +53,17 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     }
 
     // Check if role is in use
-    const membersWithRole = project.teamMembers?.filter((member: any) => member.roleId === params.roleId) || []
+    const membersWithRole = project.teamMembers?.filter((member: any) => member.roleId === roleId) || []
     if (membersWithRole.length > 0) {
       return NextResponse.json({ 
         error: "Cannot delete role that is assigned to team members" 
       }, { status: 400 })
     }
 
-    const updatedRoles = roles.filter((role: any) => role._id !== params.roleId)
+    const updatedRoles = roles.filter((role: any) => role._id !== roleId)
 
     await projects.updateOne(
-      { _id: new ObjectId(params.id) },
+      { _id: new ObjectId(id) },
       { $set: { roles: updatedRoles, updatedAt: new Date() } }
     )
 

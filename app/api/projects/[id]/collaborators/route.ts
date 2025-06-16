@@ -4,26 +4,24 @@ import { authOptions } from "@/lib/auth"
 import clientPromise from "@/lib/mongodb"
 import { ObjectId } from "mongodb"
 
-interface RouteParams {
-  params: {
-    id: string
-  }
-}
-
 // Get project collaborators
-export async function GET(request: NextRequest, { params }: RouteParams) {
+export async function GET(
+  request: NextRequest, 
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
+    const { id } = await params
     const client = await clientPromise
     const db = client.db()
     const projects = db.collection("projects")
 
     const project = await projects.findOne({
-      _id: new ObjectId(params.id),
+      _id: new ObjectId(id),
       $or: [
         { userId: (session.user as any).id },
         { collaborators: (session.user as any).id }
@@ -45,7 +43,10 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 }
 
 // Add collaborators to project
-export async function POST(request: NextRequest, { params }: RouteParams) {
+export async function POST(
+  request: NextRequest, 
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user) {
@@ -58,6 +59,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: "Emails array is required" }, { status: 400 })
     }
 
+    const { id } = await params
     const client = await clientPromise
     const db = client.db()
     const projects = db.collection("projects")
@@ -65,7 +67,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 
     // Check if user is project owner
     const project = await projects.findOne({
-      _id: new ObjectId(params.id),
+      _id: new ObjectId(id),
       userId: (session.user as any).id
     })
 
@@ -104,7 +106,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     ]
 
     await projects.updateOne(
-      { _id: new ObjectId(params.id) },
+      { _id: new ObjectId(id) },
       {
         $set: {
           teamMembers: updatedTeamMembers,
@@ -125,7 +127,10 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 }
 
 // Remove collaborator from project
-export async function DELETE(request: NextRequest, { params }: RouteParams) {
+export async function DELETE(
+  request: NextRequest, 
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user) {
@@ -138,13 +143,14 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: "Email is required" }, { status: 400 })
     }
 
+    const { id } = await params
     const client = await clientPromise
     const db = client.db()
     const projects = db.collection("projects")
 
     // Check if user is project owner
     const project = await projects.findOne({
-      _id: new ObjectId(params.id),
+      _id: new ObjectId(id),
       userId: (session.user as any).id
     })
 
@@ -162,7 +168,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     }
 
     await projects.updateOne(
-      { _id: new ObjectId(params.id) },
+      { _id: new ObjectId(id) },
       {
         $set: {
           teamMembers: updatedTeamMembers,

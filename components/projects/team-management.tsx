@@ -137,10 +137,6 @@ export function TeamManagement({ projectId, isOwner, allMembers, onTeamUpdate }:
           {isOwner && (
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
-                <Button variant="outline" size="sm" className="bg-purple-600/20 border-purple-500 text-purple-400 hover:bg-purple-600/30">
-                  <UserPlus className="w-4 h-4 mr-2" />
-                  Add Member
-                </Button>
               </DialogTrigger>
               <DialogContent className="bg-gray-800/90 backdrop-blur-xl border border-gray-700/50 text-white">
                 <DialogHeader>

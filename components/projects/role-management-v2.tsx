@@ -101,8 +101,9 @@ const defaultPermissions = {
 
 const defaultRoles: ProjectRole[] = [
   {
+    _id: "default-owner",
     name: "Owner",
-    description: "Vollzugriff auf alle Projektfunktionen",
+    description: "Vollzugriff auf alle Projektfunktionen - kann alles verwalten und konfigurieren",
     permissions: {
       canEditProject: true,
       canDeleteProject: true,
@@ -137,8 +138,9 @@ const defaultRoles: ProjectRole[] = [
     updatedAt: new Date()
   },
   {
+    _id: "default-editor",
     name: "Editor",
-    description: "Kann Projektinhalte bearbeiten, aber keine Projekteinstellungen ändern",
+    description: "Kann Projektinhalte erstellen und bearbeiten, aber keine Projekteinstellungen oder Teammitglieder verwalten",
     permissions: {
       canEditProject: false,
       canDeleteProject: false,
@@ -173,8 +175,9 @@ const defaultRoles: ProjectRole[] = [
     updatedAt: new Date()
   },
   {
+    _id: "default-viewer",
     name: "Viewer",
-    description: "Kann Projektinhalte nur anzeigen",
+    description: "Kann alle Projektinhalte nur ansehen und lesen, aber nichts bearbeiten oder erstellen",
     permissions: {
       canEditProject: false,
       canDeleteProject: false,
@@ -575,7 +578,12 @@ export default function RoleManagement({ projectId, canManageRoles, onRolesUpdat
                         </SelectTrigger>                        <SelectContent>
                           {getAllAvailableRoles().filter(role => role.name !== 'Owner').map((role, index) => (
                             <SelectItem key={role._id || role.name || index} value={role._id || role.name}>
-                              {role.name}
+                              <div className="flex flex-col">
+                                <span className="font-medium">{role.name}</span>
+                                {role.description && (
+                                  <span className="text-xs text-gray-500">{role.description}</span>
+                                )}
+                              </div>
                             </SelectItem>
                           ))}
                         </SelectContent>

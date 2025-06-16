@@ -17,10 +17,75 @@ const getEmailProvider = () => {
           pass: process.env.EMAIL_SERVER_PASSWORD
         }
       },
-      from: process.env.EMAIL_FROM
+      from: process.env.EMAIL_FROM,
+      maxAge: 24 * 60 * 60, // 24 hours
+      sendVerificationRequest: async ({ identifier: email, url, provider, theme }: {
+        identifier: string;
+        url: string;
+        provider: any;
+        theme: any;
+      }) => {
+        const { server, from } = provider
+        const { host } = new URL(url)
+        
+        const nodemailer = require("nodemailer")
+        const transport = nodemailer.createTransport(server)
+        
+        const result = await transport.sendMail({
+          to: email,
+          from: from,
+          subject: `Anmelden bei ${host}`,
+          text: text({ url, host }),
+          html: html({ url, host, email }),
+        })
+        
+        const failed = result.rejected.concat(result.pending).filter(Boolean)
+        if (failed.length) {
+          throw new Error(`Email(s) (${failed.join(", ")}) could not be sent`)
+        }
+      },
     })
   }
   return null
+}
+
+function html({ url, host, email }: { url: string; host: string; email: string }) {
+  const escapedEmail = `${email.replace(/\./g, "&#8203;.")}`
+  const escapedHost = `${host.replace(/\./g, "&#8203;.")}`
+
+  return `
+    <body style="background: #f9f9f9;">
+      <table width="100%" border="0" cellspacing="20" cellpadding="0" style="background: #f9f9f9; max-width: 600px; margin: auto; border-radius: 10px;">
+        <tr>
+          <td align="center" style="padding: 10px 0px; font-size: 22px; font-family: Helvetica, Arial, sans-serif; color: #333;">
+            <strong>${escapedHost}</strong>
+          </td>
+        </tr>
+        <tr>
+          <td align="center" style="padding: 20px 0;">
+            <table border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td align="center" style="border-radius: 5px;" bgcolor="#346df1">
+                  <a href="${url}" target="_blank" style="font-size: 18px; font-family: Helvetica, Arial, sans-serif; color: #fff; text-decoration: none; border-radius: 5px; padding: 10px 20px; border: 1px solid #346df1; display: inline-block; font-weight: bold;">
+                    Anmelden
+                  </a>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td align="center" style="padding: 0px 0px 10px 0px; font-size: 16px; line-height: 22px; font-family: Helvetica, Arial, sans-serif; color: #333;">
+            Wenn Sie sich nicht für ${escapedHost} angemeldet haben, können Sie diese E-Mail ignorieren.
+          </td>
+        </tr>
+      </table>
+    </body>
+  `
+}
+
+function text({ url, host }: { url: string; host: string }) {
+  return `Anmelden bei ${host}\n${url}\n\n`
 }
 
 const providers = [
@@ -74,20 +139,42 @@ export const authOptions: NextAuthOptions = {
   adapter: MongoDBAdapter(clientPromise),
   providers,
   session: {
-    strategy: "jwt"
-  },  pages: {
-    signIn: "/auth/signin"
+    strategy: "database"
+  },
+  pages: {
+    signIn: "/auth/signin",
+    verifyRequest: "/auth/verify-request",
+    newUser: "/auth/success",
   },
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id
+    async signIn({ user, account, profile, email, credentials }) {
+      // Für Magic Links (Email Provider)
+      if (account?.provider === "email") {
+        return true
       }
-      return token
+      
+      // Für Credentials Provider
+      if (account?.provider === "credentials") {
+        return true
+      }
+      
+      return true
     },
-    async session({ session, token }) {
-      if (token && session.user) {
-        (session.user as any).id = token.id as string
+    async redirect({ url, baseUrl }) {
+      // Nach erfolgreichem Magic Link Login immer zum Dashboard weiterleiten
+      if (url.startsWith("/") || url.startsWith(baseUrl)) {
+        // Wenn es ein relativer Pfad ist oder die gleiche Domain
+        if (url.includes("/auth/signin") || url.includes("/api/auth/callback") || url.includes("/auth/success")) {
+          return `${baseUrl}/dashboard`
+        }
+        return url
+      }
+      // Für externe URLs zum Dashboard weiterleiten
+      return `${baseUrl}/dashboard`
+    },
+    async session({ session, user }) {
+      if (user && session.user) {
+        (session.user as any).id = user.id
       }
       return session
     }
