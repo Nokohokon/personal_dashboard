@@ -27,18 +27,25 @@ export default function SignIn() {
   useEffect(() => {
     console.log("SignIn - Session Status:", { status, session, email: session?.user?.email })
     
-    if (status === "authenticated") {
+    if (status === "authenticated" && session) {
       console.log("SignIn - User is authenticated, redirecting to dashboard")
-      router.push("/dashboard")
+      // Verzögere die Weiterleitung leicht, um Race Conditions zu vermeiden
+      setTimeout(() => {
+        router.push("/dashboard")
+      }, 100)
     } else if (status === "unauthenticated") {
       console.log("SignIn - User is unauthenticated")
     } else if (status === "loading") {
       console.log("SignIn - Session is loading")
     }
-  }, [status, router, session])
+  }, [status, session, router])
 
   const handleCredentialsSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    // Verhindere mehrfache Submissions
+    if (isLoading) return
+    
     setIsLoading(true)
     setError("")
 
@@ -59,16 +66,18 @@ export default function SignIn() {
         } else {
           setError("Anmeldung fehlgeschlagen: " + result.error)
         }
-      } else {
-        // Refresh the session
-        await getSession()
-        router.push("/dashboard")
-        router.refresh()
+        setIsLoading(false) // Wichtig: Nur bei Fehler hier zurücksetzen
+      } else if (result?.ok) {
+        console.log("Login successful, redirecting...")
+        // Warte kurz und leite dann weiter
+        setTimeout(() => {
+          router.push("/dashboard")
+        }, 100)
+        // isLoading bleibt true bis zur Weiterleitung
       }
     } catch (error) {
       console.error("Login error:", error)
       setError("Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.")
-    } finally {
       setIsLoading(false)
     }
   }
@@ -146,73 +155,149 @@ export default function SignIn() {
           </p>
         </div>
 
-        {/* Temporär nur Credentials-Anmeldung */}
-        <form className="space-y-6" onSubmit={handleCredentialsSubmit}>
-          {error && (
-            <div className="bg-red-50 bg-red-900/20 border border-red-200 border-red-800 text-red-600 text-red-400 px-4 py-3 rounded-lg text-sm">
-              {error}
-            </div>
-          )}
+        {/* Tab-Auswahl für Anmeldemethode */}
+        <div className="flex space-x-1 bg-slate-800 p-1 rounded-lg mb-6">
+          <button
+            type="button"
+            onClick={() => setSignInMethod('credentials')}
+            className={`flex-1 py-2 px-4 text-sm font-medium rounded-md transition-colors ${
+              signInMethod === 'credentials'
+                ? 'bg-slate-700 text-white'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            Mit Passwort
+          </button>
+          <button
+            type="button"
+            onClick={() => setSignInMethod('magic-link')}
+            className={`flex-1 py-2 px-4 text-sm font-medium rounded-md transition-colors ${
+              signInMethod === 'magic-link'
+                ? 'bg-slate-700 text-white'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            Magic Link
+          </button>
+        </div>
 
-          <div className="space-y-4">
+        {signInMethod === 'credentials' ? (
+          <form className="space-y-6" onSubmit={handleCredentialsSubmit}>
+            {error && (
+              <div className="bg-red-900/20 border border-red-800 text-red-400 px-4 py-3 rounded-lg text-sm">
+                {error}
+              </div>
+            )}
+
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="email" className="text-slate-300">
+                  Email address
+                </Label>
+                <div className="mt-1 relative">
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" />
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    required
+                    className="pl-10"
+                    placeholder="Enter your email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="password" className="text-slate-300">
+                  Password
+                </Label>
+                <div className="mt-1 relative">
+                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" />
+                  <Input
+                    id="password"
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    required
+                    className="pl-10 pr-10"
+                    placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-5 w-5 text-slate-400" />
+                    ) : (
+                      <Eye className="h-5 w-5 text-slate-400" />
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <Button
+              type="submit"
+              className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+              disabled={isLoading}
+            >
+              {isLoading ? "Signing in..." : "Sign in"}
+            </Button>
+          </form>
+        ) : (
+          <form className="space-y-6" onSubmit={handleMagicLinkSubmit}>
+            {error && (
+              <div className="bg-red-900/20 border border-red-800 text-red-400 px-4 py-3 rounded-lg text-sm">
+                {error}
+              </div>
+            )}
+
             <div>
-              <Label htmlFor="email" className="text-slate-700 text-slate-300">
+              <Label htmlFor="magic-email" className="text-slate-300">
                 Email address
               </Label>
               <div className="mt-1 relative">
                 <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" />
                 <Input
-                  id="email"
+                  id="magic-email"
                   name="email"
                   type="email"
                   required
                   className="pl-10"
-                  placeholder="Enter your email"
+                  placeholder="Enter your email for Magic Link"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
             </div>
 
-            <div>
-              <Label htmlFor="password" className="text-slate-700 text-slate-300">
-                Password
-              </Label>
-              <div className="mt-1 relative">
-                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" />
-                <Input
-                  id="password"
-                  name="password"
-                  type={showPassword ? "text" : "password"}
-                  required
-                  className="pl-10 pr-10"
-                  placeholder="Enter your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                <button
-                  type="button"
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-5 w-5 text-slate-400" />
-                  ) : (
-                    <Eye className="h-5 w-5 text-slate-400" />
-                  )}
-                </button>
+            <div className="bg-slate-800 rounded-lg p-4">
+              <div className="flex items-start space-x-3">
+                <Mail className="h-5 w-5 text-blue-400 mt-0.5" />
+                <div>
+                  <p className="text-slate-300 text-sm font-medium">
+                    Magic Link Anmeldung
+                  </p>
+                  <p className="text-slate-400 text-xs mt-1">
+                    Wir senden Ihnen einen sicheren Link per E-Mail. Klicken Sie darauf, um sich anzumelden.
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
 
-          <Button
-            type="submit"
-            className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
-            disabled={isLoading}
-          >
-            {isLoading ? "Signing in..." : "Sign in"}
-          </Button>
-        </form>
+            <Button
+              type="submit"
+              className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700"
+              disabled={isMagicLinkLoading}
+            >
+              {isMagicLinkLoading ? "Sending Magic Link..." : "Send Magic Link"}
+            </Button>
+          </form>
+        )}
 
         <div className="text-center">
           <p className="text-sm text-slate-400">

@@ -83,13 +83,24 @@ export function TeamChat({ projectId, projectName, allMembers }: TeamChatProps) 
 
   const fetchMessages = async () => {
     try {
+      console.log('🔍 TeamChat - Fetching messages for projectId:', projectId)
       const response = await fetch(`/api/projects/${projectId}/chat`)
+      console.log('🔍 TeamChat - Response status:', response.status)
+      
       if (response.ok) {
         const data = await response.json()
+        console.log('🔍 TeamChat - Received data:', {
+          success: data.success,
+          messagesCount: data.messages?.length || 0,
+          messages: data.messages?.slice(0, 2) // Sample first 2 messages
+        })
         setMessages(data.messages || [])
+      } else {
+        const errorText = await response.text()
+        console.error('❌ TeamChat - API Error:', response.status, errorText)
       }
     } catch (error) {
-      console.error("Error fetching messages:", error)
+      console.error("❌ TeamChat - Error fetching messages:", error)
     } finally {
       setIsLoading(false)
     }
@@ -165,17 +176,17 @@ export function TeamChat({ projectId, projectName, allMembers }: TeamChatProps) 
   }
 
   return (
-    <Card className="bg-gray-800/60 backdrop-blur-xl border border-gray-700/50 shadow-xl h-full flex flex-col">
-      <CardHeader className="pb-4">
+    <Card className="bg-gray-800/60 backdrop-blur-xl border border-gray-700/50 shadow-xl h-full flex flex-col max-h-[calc(100vh-8rem)]">
+      <CardHeader className="pb-3 pt-3">
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle className="text-white flex items-center space-x-3">
-              <div className="p-2 bg-purple-500/20 rounded-lg">
-                <MessageSquare className="w-5 h-5 text-purple-400" />
+            <CardTitle className="text-white flex items-center space-x-2 text-lg">
+              <div className="p-1.5 bg-purple-500/20 rounded-lg">
+                <MessageSquare className="w-4 h-4 text-purple-400" />
               </div>
               <span>Team Chat</span>
             </CardTitle>
-            <CardDescription className="text-gray-400">
+            <CardDescription className="text-gray-400 text-sm">
               {projectName} • {allMembers.filter(m => m.isRegistered).length} aktive Mitglieder
             </CardDescription>
           </div>
@@ -186,11 +197,11 @@ export function TeamChat({ projectId, projectName, allMembers }: TeamChatProps) 
         </div>
         
         {/* Team Members Status */}
-        <div className="flex items-center space-x-2 pt-2">
-          <Users className="w-4 h-4 text-gray-400" />
-          <div className="flex -space-x-2">
+        <div className="flex items-center space-x-2 pt-1">
+          <Users className="w-3 h-3 text-gray-400" />
+          <div className="flex -space-x-1.5">
             {allMembers.filter(m => m.isRegistered).slice(0, 5).map((member, index) => (
-              <Avatar key={index} className="w-6 h-6 border-2 border-gray-800">
+              <Avatar key={index} className="w-5 h-5 border-2 border-gray-800">
                 <AvatarImage src={`https://api.dicebear.com/7.x/initials/svg?seed=${member.name || member.email}`} />
                 <AvatarFallback className="bg-gray-600 text-white text-xs">
                   {getInitials(member.name || "", member.email)}
@@ -198,7 +209,7 @@ export function TeamChat({ projectId, projectName, allMembers }: TeamChatProps) 
               </Avatar>
             ))}
             {allMembers.filter(m => m.isRegistered).length > 5 && (
-              <div className="w-6 h-6 bg-gray-600 rounded-full flex items-center justify-center text-xs text-white border-2 border-gray-800">
+              <div className="w-5 h-5 bg-gray-600 rounded-full flex items-center justify-center text-xs text-white border-2 border-gray-800">
                 +{allMembers.filter(m => m.isRegistered).length - 5}
               </div>
             )}
@@ -209,7 +220,7 @@ export function TeamChat({ projectId, projectName, allMembers }: TeamChatProps) 
       <Separator className="bg-gray-700/50" />
 
       {/* Messages Area */}
-      <CardContent className="flex-1 overflow-y-auto p-4 space-y-4">
+      <CardContent className="flex-1 overflow-y-auto p-3 space-y-3 min-h-0 max-h-[50vh]">
         {isLoading ? (
           <div className="flex items-center justify-center h-full">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
@@ -298,14 +309,14 @@ export function TeamChat({ projectId, projectName, allMembers }: TeamChatProps) 
       <Separator className="bg-gray-700/50" />
 
       {/* Message Input */}
-      <div className="p-4">
-        <form onSubmit={sendMessage} className="flex space-x-3">
+      <div className="p-3">
+        <form onSubmit={sendMessage} className="flex space-x-2">
           <div className="flex-1">
             <Input
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               placeholder="Nachricht eingeben..."
-              className="bg-gray-700/50 border-gray-600 text-white placeholder-gray-400 focus:border-purple-500"
+              className="bg-gray-700/50 border-gray-600 text-white placeholder-gray-400 focus:border-purple-500 h-9"
               disabled={isSending}
               maxLength={1000}
             />
@@ -313,24 +324,25 @@ export function TeamChat({ projectId, projectName, allMembers }: TeamChatProps) 
           <Button 
             type="submit" 
             disabled={!newMessage.trim() || isSending}
-            className="bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600"
+            className="bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 h-9 px-3"
+            size="sm"
           >
             {isSending ? (
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+              <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white mr-1"></div>
             ) : (
-              <Send className="w-4 h-4 mr-2" />
+              <Send className="w-3 h-3 mr-1" />
             )}
-            {isSending ? "Senden..." : "Senden"}
+            {isSending ? "..." : "Senden"}
           </Button>
         </form>
         
         {/* Character count */}
-        <div className="flex justify-between items-center mt-2">
+        <div className="flex justify-between items-center mt-1">
           <p className="text-xs text-gray-500">
-            {newMessage.length}/1000 Zeichen
+            {newMessage.length}/1000
           </p>
           <p className="text-xs text-gray-500">
-            Drücken Sie Enter zum Senden
+            Enter zum Senden
           </p>
         </div>
       </div>

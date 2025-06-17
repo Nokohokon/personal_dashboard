@@ -14,7 +14,7 @@ interface RouteParams {
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     const session = await getServerSession(authOptions)
-    if (!session?.user) {
+    if (!session?.user?.email) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
@@ -24,12 +24,22 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     const projects = db.collection("projects")
     const users = db.collection("users")
 
+    // Get the actual user from database using email to ensure we have the correct ID
+    const user = await users.findOne({ email: session.user.email.toLowerCase() })
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 })
+    }
+
+    const actualUserId = user._id.toString()
+
     // Check if user has access to the project
     const project = await projects.findOne({
       _id: new ObjectId(resolvedParams.id),
       $or: [
-        { userId: (session.user as any).id },
-        { collaborators: (session.user as any).id }
+        { userId: actualUserId },
+        { collaborators: actualUserId },
+        { 'teamMembers.userId': actualUserId },
+        { 'teamMembers.email': session.user.email.toLowerCase() }
       ]
     })
 
@@ -115,7 +125,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
   const { id } = await params
   try {
     const session = await getServerSession(authOptions)
-    if (!session?.user) {
+    if (!session?.user?.email) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
@@ -130,15 +140,23 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     const projects = db.collection("projects")
     const users = db.collection("users")
 
+    // Get the actual user from database using email to ensure we have the correct ID
+    const user = await users.findOne({ email: session.user.email.toLowerCase() })
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 })
+    }
+
+    const actualUserId = user._id.toString()
+
     // Check if user is project owner or has team management permission
     const project = await projects.findOne({
       _id: new ObjectId(id),
       $or: [
-        { userId: (session.user as any).id },
+        { userId: actualUserId },
         { 
           "teamMembers": {
             $elemMatch: {
-              userId: (session.user as any).id,
+              userId: actualUserId,
               "role.permissions.canManageTeam": true
             }
           }
@@ -159,22 +177,142 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     }
 
     // Check if user is registered
-    const user = await users.findOne({ email })
+    const targetUser = await users.findOne({ email })
     
-    // Validate role exists
-    const roles = project.roles || []
-    const roleData = roles.find((r: any) => r._id === role || r.name.toLowerCase() === role.toLowerCase())
+    // Default roles that are always available
+    const defaultRoles = [
+      {
+        _id: "default-owner",
+        name: "Owner",
+        description: "Vollzugriff auf alle Projektfunktionen",
+        permissions: {
+          canEditProject: true,
+          canDeleteProject: true,
+          canManageTeam: true,
+          canManageRoles: true,
+          canViewContent: true,
+          canCreateContent: true,
+          canEditContent: true,
+          canDeleteContent: true,
+          canViewAnalytics: true,
+          canViewTimeTracking: true,
+          canManageTimeEntries: true,
+          canViewDocuments: true,
+          canCreateDocuments: true,
+          canEditDocuments: true,
+          canDeleteDocuments: true,
+          canViewNotes: true,
+          canCreateNotes: true,
+          canEditNotes: true,
+          canDeleteNotes: true,
+          canViewContacts: true,
+          canCreateContacts: true,
+          canEditContacts: true,
+          canDeleteContacts: true,
+          canViewEvents: true,
+          canCreateEvents: true,
+          canEditEvents: true,
+          canDeleteEvents: true
+        },
+        isDefault: true
+      },
+      {
+        _id: "default-editor",
+        name: "Editor",
+        description: "Kann Projektinhalte bearbeiten, aber keine Projekteinstellungen ändern",
+        permissions: {
+          canEditProject: false,
+          canDeleteProject: false,
+          canManageTeam: false,
+          canManageRoles: false,
+          canViewContent: true,
+          canCreateContent: true,
+          canEditContent: true,
+          canDeleteContent: false,
+          canViewAnalytics: false,
+          canViewTimeTracking: false,
+          canManageTimeEntries: false,
+          canViewDocuments: true,
+          canCreateDocuments: true,
+          canEditDocuments: true,
+          canDeleteDocuments: false,
+          canViewNotes: true,
+          canCreateNotes: true,
+          canEditNotes: true,
+          canDeleteNotes: false,
+          canViewContacts: true,
+          canCreateContacts: true,
+          canEditContacts: true,
+          canDeleteContacts: false,
+          canViewEvents: true,
+          canCreateEvents: true,
+          canEditEvents: true,
+          canDeleteEvents: false
+        },
+        isDefault: true
+      },
+      {
+        _id: "default-viewer",
+        name: "Viewer",
+        description: "Kann Projektinhalte nur anzeigen",
+        permissions: {
+          canEditProject: false,
+          canDeleteProject: false,
+          canManageTeam: false,
+          canManageRoles: false,
+          canViewContent: true,
+          canCreateContent: false,
+          canEditContent: false,
+          canDeleteContent: false,
+          canViewAnalytics: false,
+          canViewTimeTracking: false,
+          canManageTimeEntries: false,
+          canViewDocuments: true,
+          canCreateDocuments: false,
+          canEditDocuments: false,
+          canDeleteDocuments: false,
+          canViewNotes: true,
+          canCreateNotes: false,
+          canEditNotes: false,
+          canDeleteNotes: false,
+          canViewContacts: true,
+          canCreateContacts: false,
+          canEditContacts: false,
+          canDeleteContacts: false,
+          canViewEvents: true,
+          canCreateEvents: false,
+          canEditEvents: false,
+          canDeleteEvents: false
+        },
+        isDefault: true
+      }
+    ]
+    
+    // Combine project-specific roles with default roles
+    const projectRoles = project.roles || []
+    const allRoles = [...defaultRoles, ...projectRoles]
+    
+    // Validate role exists (check both by ID and name, case-insensitive)
+    const roleData = allRoles.find((r: any) => 
+      r._id === role || 
+      r.name.toLowerCase() === role.toLowerCase() ||
+      (role === 'editor' && r.name.toLowerCase() === 'editor') ||
+      (role === 'viewer' && r.name.toLowerCase() === 'viewer') ||
+      (role === 'owner' && r.name.toLowerCase() === 'owner')
+    )
 
     if (!roleData) {
+      console.log('Available roles:', allRoles.map(r => r.name))
+      console.log('Requested role:', role)
       return NextResponse.json({ error: "Role not found" }, { status: 400 })
     }
 
     const newMember = {
       _id: new ObjectId().toString(),
       email,
-      name: user?.name || null,
-      userId: user?._id?.toString() || null,
-      isRegistered: !!user,
+      name: targetUser?.name || null,
+      userId: targetUser?._id?.toString() || null,
+      isRegistered: !!targetUser,
       roleId: roleData._id,
       role: roleData.name,
       addedAt: new Date(),
@@ -187,7 +325,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 
     // Add to collaborators if user is registered
     const currentCollaborators = project.collaborators || []
-    const updatedCollaborators = user ? [...currentCollaborators, user._id.toString()] : currentCollaborators
+    const updatedCollaborators = targetUser ? [...currentCollaborators, targetUser._id.toString()] : currentCollaborators
 
     await projects.updateOne(
       { _id: new ObjectId(id) },

@@ -143,18 +143,18 @@ const providers = [
   })
 ]
 
-// Temporär Email Provider deaktivieren für JWT-Sessions
-// const emailProvider = getEmailProvider()
-// if (emailProvider) {
-//   providers.push(emailProvider)
-// }
+// Re-enable Email Provider for Magic Links
+const emailProvider = getEmailProvider()
+if (emailProvider) {
+  providers.push(emailProvider)
+}
 
 export const authOptions: NextAuthOptions = {
-  // Temporär auf JWT umstellen, um das Session-Problem zu lösen
-  // adapter: MongoDBAdapter(clientPromise),
+  // Use database adapter for Magic Links, but configure JWT for better session handling
+  adapter: MongoDBAdapter(clientPromise),
   providers,
   session: {
-    strategy: "jwt",
+    strategy: "jwt", // Keep JWT for better session management
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   pages: {
@@ -179,6 +179,23 @@ export const authOptions: NextAuthOptions = {
         token.name = user.name
         console.log("🔑 JWT - Adding user data to token")
       }
+      
+      // If we don't have an ID but have an email, fetch user from database
+      if (!token.id && token.email) {
+        try {
+          const client = await clientPromise
+          const users = client.db().collection("users")
+          const dbUser = await users.findOne({ email: token.email.toLowerCase() })
+          if (dbUser) {
+            token.id = dbUser._id.toString()
+            token.name = dbUser.name
+            console.log("🔑 JWT - Fetched user ID from database:", token.id)
+          }
+        } catch (error) {
+          console.error("🔑 JWT - Error fetching user from database:", error)
+        }
+      }
+      
       return token
     },
     async signIn({ user, account, profile, email, credentials }) {
@@ -208,21 +225,16 @@ export const authOptions: NextAuthOptions = {
     async redirect({ url, baseUrl }) {
       console.log("🔄 Redirect callback:", { url, baseUrl });
       
-      // Nach erfolgreichem Login immer zum Dashboard weiterleiten
-      if (url.startsWith("/") || url.startsWith(baseUrl)) {
-        // Wenn es ein relativer Pfad ist oder die gleiche Domain
-        if (url.includes("/auth/signin") || url.includes("/api/auth/callback") || url.includes("/auth/success")) {
-          const dashboardUrl = `${baseUrl}/dashboard`
-          console.log("🎯 Redirecting to dashboard:", dashboardUrl)
-          return dashboardUrl
-        }
-        console.log("🎯 Redirecting to original URL:", url)
-        return url
+      // Vereinfache die Redirect-Logik
+      if (url === `${baseUrl}/auth/signin` || url.includes("/api/auth/callback")) {
+        const dashboardUrl = `${baseUrl}/dashboard`
+        console.log("🎯 Auth redirect to dashboard:", dashboardUrl)
+        return dashboardUrl
       }
-      // Für externe URLs zum Dashboard weiterleiten
-      const dashboardUrl = `${baseUrl}/dashboard`
-      console.log("🎯 External URL, redirecting to dashboard:", dashboardUrl)
-      return dashboardUrl
+      
+      // Für alle anderen URLs, lass sie unverändert
+      console.log("🎯 Keeping original URL:", url)
+      return url
     },
     async session({ session, token }) {
       console.log("📋 Session callback:", { 
@@ -237,7 +249,7 @@ export const authOptions: NextAuthOptions = {
         (session.user as any).id = token.id
         session.user.email = token.email as string
         session.user.name = token.name as string
-        console.log("📋 Session updated with token data")
+        console.log("📋 Session updated with token data - User ID:", token.id)
       }
       return session
     }

@@ -201,17 +201,14 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: "Project not found" }, { status: 404 })
     }
 
-    // If no roles exist, create default roles
-    let roles = project.roles || []
-    if (roles.length === 0) {
-      roles = createDefaultRoles()
-      await projects.updateOne(
-        { _id: new ObjectId(id) },
-        { $set: { roles, updatedAt: new Date() } }
-      )
-    }
+    // Always include default roles and any custom roles
+    const defaultRoles = createDefaultRoles()
+    const customRoles = project.roles || []
+    
+    // Combine both, ensuring default roles are always available
+    const allRoles = [...defaultRoles, ...customRoles]
 
-    return NextResponse.json({ roles })
+    return NextResponse.json({ roles: allRoles })
   } catch (error) {
     console.error("Error fetching project roles:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })

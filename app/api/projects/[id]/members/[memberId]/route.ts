@@ -58,11 +58,131 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: "Member not found" }, { status: 404 })
     }
 
-    // Validate role exists
-    const roles = project.roles || []
-    const roleExists = roles.find((r: any) => r._id === role || r.name.toLowerCase() === role.toLowerCase())
+    // Default roles that are always available
+    const defaultRoles = [
+      {
+        _id: "default-owner",
+        name: "Owner",
+        description: "Vollzugriff auf alle Projektfunktionen",
+        permissions: {
+          canEditProject: true,
+          canDeleteProject: true,
+          canManageTeam: true,
+          canManageRoles: true,
+          canViewContent: true,
+          canCreateContent: true,
+          canEditContent: true,
+          canDeleteContent: true,
+          canViewAnalytics: true,
+          canViewTimeTracking: true,
+          canManageTimeEntries: true,
+          canViewDocuments: true,
+          canCreateDocuments: true,
+          canEditDocuments: true,
+          canDeleteDocuments: true,
+          canViewNotes: true,
+          canCreateNotes: true,
+          canEditNotes: true,
+          canDeleteNotes: true,
+          canViewContacts: true,
+          canCreateContacts: true,
+          canEditContacts: true,
+          canDeleteContacts: true,
+          canViewEvents: true,
+          canCreateEvents: true,
+          canEditEvents: true,
+          canDeleteEvents: true
+        },
+        isDefault: true
+      },
+      {
+        _id: "default-editor",
+        name: "Editor",
+        description: "Kann Projektinhalte bearbeiten, aber keine Projekteinstellungen ändern",
+        permissions: {
+          canEditProject: false,
+          canDeleteProject: false,
+          canManageTeam: false,
+          canManageRoles: false,
+          canViewContent: true,
+          canCreateContent: true,
+          canEditContent: true,
+          canDeleteContent: false,
+          canViewAnalytics: false,
+          canViewTimeTracking: false,
+          canManageTimeEntries: false,
+          canViewDocuments: true,
+          canCreateDocuments: true,
+          canEditDocuments: true,
+          canDeleteDocuments: false,
+          canViewNotes: true,
+          canCreateNotes: true,
+          canEditNotes: true,
+          canDeleteNotes: false,
+          canViewContacts: true,
+          canCreateContacts: true,
+          canEditContacts: true,
+          canDeleteContacts: false,
+          canViewEvents: true,
+          canCreateEvents: true,
+          canEditEvents: true,
+          canDeleteEvents: false
+        },
+        isDefault: true
+      },
+      {
+        _id: "default-viewer",
+        name: "Viewer",
+        description: "Kann Projektinhalte nur anzeigen",
+        permissions: {
+          canEditProject: false,
+          canDeleteProject: false,
+          canManageTeam: false,
+          canManageRoles: false,
+          canViewContent: true,
+          canCreateContent: false,
+          canEditContent: false,
+          canDeleteContent: false,
+          canViewAnalytics: false,
+          canViewTimeTracking: false,
+          canManageTimeEntries: false,
+          canViewDocuments: true,
+          canCreateDocuments: false,
+          canEditDocuments: false,
+          canDeleteDocuments: false,
+          canViewNotes: true,
+          canCreateNotes: false,
+          canEditNotes: false,
+          canDeleteNotes: false,
+          canViewContacts: true,
+          canCreateContacts: false,
+          canEditContacts: false,
+          canDeleteContacts: false,
+          canViewEvents: true,
+          canCreateEvents: false,
+          canEditEvents: false,
+          canDeleteEvents: false
+        },
+        isDefault: true
+      }
+    ]
+    
+    // Combine project-specific roles with default roles
+    const projectRoles = project.roles || []
+    const allRoles = [...defaultRoles, ...projectRoles]
+    
+    // Validate role exists (check both by ID and name, case-insensitive)
+    const roleExists = allRoles.find((r: any) => 
+      r._id === role || 
+      r.name.toLowerCase() === role.toLowerCase() ||
+      (role === 'editor' && r.name.toLowerCase() === 'editor') ||
+      (role === 'viewer' && r.name.toLowerCase() === 'viewer') ||
+      (role === 'owner' && r.name.toLowerCase() === 'owner')
+    )
 
     if (!roleExists) {
+      console.log('Available roles:', allRoles.map(r => r.name))
+      console.log('Requested role:', role)
       return NextResponse.json({ error: "Role not found" }, { status: 400 })
     }
 

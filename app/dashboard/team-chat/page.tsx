@@ -84,7 +84,7 @@ function TeamChatContent() {
       const response = await fetch(`/api/projects/${projectId}/members`)
       if (response.ok) {
         const data = await response.json()
-        setTeamMembers(data.members || [])
+        setTeamMembers(data.allMembers || [])
       }
     } catch (error) {
       console.error("Error fetching team members:", error)
@@ -118,10 +118,10 @@ function TeamChatContent() {
   }
 
   return (
-    <div className="h-full bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
-        <div className="container mx-auto px-6 py-4 space-y-4 h-full flex flex-col">
-          {/* Header */}
-          <div className="flex items-center justify-between">
+    <div className="h-[80vh] bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 overflow-hidden">
+        <div className="container mx-auto px-6 py-4 h-full flex flex-col max-h-full">
+          {/* Header with Project Selection */}
+          <div className="flex items-center justify-between space-x-6 mb-4">
             <div className="flex items-center space-x-4">
               <Button
                 variant="outline"
@@ -133,64 +133,54 @@ function TeamChatContent() {
                 Back
               </Button>
               <div>
-                <h1 className="text-3xl font-bold text-white flex items-center">
-                  <MessageSquare className="w-8 h-8 mr-3 text-purple-400" />
+                <h1 className="text-2xl font-bold text-white flex items-center">
+                  <MessageSquare className="w-6 h-6 mr-3 text-purple-400" />
                   Team Chat
                 </h1>
-                <p className="text-gray-400 mt-1">
+                <p className="text-gray-400 text-sm">
                   Collaborate with your team in real-time
                 </p>
               </div>
             </div>
-          </div>
-
-          {/* Project Selection */}
-          <Card className="bg-gray-800/60 backdrop-blur-xl border border-gray-700/50">
-            <CardHeader>
-              <CardTitle className="flex items-center text-white">
-                <FolderOpen className="w-5 h-5 mr-2 text-blue-400" />
-                Select Project
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center space-x-4">
-                <div className="flex-1">
-                  <Select
-                    value={selectedProject?._id || ""}
-                    onValueChange={handleProjectChange}
-                  >
-                    <SelectTrigger className="bg-gray-700/50 border-gray-600 text-white">
-                      <SelectValue placeholder="Choose a project to chat about..." />
-                    </SelectTrigger>
-                    <SelectContent className="bg-gray-800 border-gray-700">
-                      {projects.map((project) => (
-                        <SelectItem
-                          key={project._id}
-                          value={project._id}
-                          className="text-white hover:bg-gray-700"
-                        >
-                          <div className="flex items-center space-x-2">
-                            <FolderOpen className="w-4 h-4 text-blue-400" />
-                            <span>{project.name}</span>
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                {selectedProject && (
-                  <div className="flex items-center space-x-2 text-sm text-gray-400">
-                    <Users className="w-4 h-4" />
-                    <span>{teamMembers.length} members</span>
-                  </div>
-                )}
+            
+            {/* Project Selection */}
+            <div className="flex items-center space-x-4 min-w-0 flex-1 max-w-md">
+              <div className="flex-1">
+                <Select
+                  value={selectedProject?._id || ""}
+                  onValueChange={handleProjectChange}
+                >
+                  <SelectTrigger className="bg-gray-700/50 border-gray-600 text-white h-10">
+                    <SelectValue placeholder="Choose a project..." />
+                  </SelectTrigger>
+                  <SelectContent className="bg-gray-800 border-gray-700">
+                    {projects.map((project) => (
+                      <SelectItem
+                        key={project._id}
+                        value={project._id}
+                        className="text-white hover:bg-gray-700"
+                      >
+                        <div className="flex items-center space-x-2">
+                          <FolderOpen className="w-4 h-4 text-blue-400" />
+                          <span>{project.name}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
-            </CardContent>
-          </Card>
+              {selectedProject && (
+                <div className="flex items-center space-x-2 text-sm text-gray-400 whitespace-nowrap">
+                  <Users className="w-4 h-4" />
+                  <span>{teamMembers.length} members</span>
+                </div>
+              )}
+            </div>
+          </div>
 
           {/* Team Chat */}
           {selectedProject ? (
-            <div className="flex-1 space-y-4 min-h-0">
+            <div className="h-[70vh] min-h-0">
               <TeamChat
                 projectId={selectedProject._id}
                 projectName={selectedProject.name}
