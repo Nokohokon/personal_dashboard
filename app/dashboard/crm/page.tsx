@@ -1,9 +1,8 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { useSession } from "next-auth/react"
-import { useRouter } from "next/navigation"
-import DashboardLayout from "@/components/dashboard/dashboard-layout"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -39,9 +38,10 @@ interface Note {
   updatedAt: string
 }
 
-export default function CRMPage() {
+function CRMContent() {
   const { data: session, status } = useSession()
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [contacts, setContacts] = useState<Contact[]>([])
   const [notes, setNotes] = useState<Note[]>([])
   const [projects, setProjects] = useState<any[]>([])
@@ -90,9 +90,40 @@ export default function CRMPage() {
     }
   }, [session])
 
+  // Handle URL parameters for auto-opening dialogs and project filtering
+  useEffect(() => {
+    const tab = searchParams.get('tab')
+    const action = searchParams.get('action')
+    const projectId = searchParams.get('projectId')
+    
+    if (tab) {
+      setActiveTab(tab)
+    }
+    
+    // Pre-fill project ID in forms if provided
+    if (projectId) {
+      setContactForm(prev => ({ ...prev, projectId }))
+      setNoteForm(prev => ({ ...prev, projectId }))
+    }
+    
+    if (action === 'add') {
+      if (tab === 'contacts') {
+        setIsContactDialogOpen(true)
+      } else if (tab === 'notes') {
+        setIsNoteDialogOpen(true)
+      }
+    }
+  }, [searchParams])
+
   const fetchContacts = async () => {
     try {
-      const response = await fetch("/api/contacts")
+      const projectId = searchParams.get('projectId')
+      let url = "/api/contacts"
+      if (projectId) {
+        url += `?projectId=${projectId}`
+      }
+      
+      const response = await fetch(url)
       if (response.ok) {
         const data = await response.json()
         setContacts(data)
@@ -101,9 +132,16 @@ export default function CRMPage() {
       console.error("Error fetching contacts:", error)
     }
   }
+  
   const fetchNotes = async () => {
     try {
-      const response = await fetch("/api/notes")
+      const projectId = searchParams.get('projectId')
+      let url = "/api/notes"
+      if (projectId) {
+        url += `?projectId=${projectId}`
+      }
+      
+      const response = await fetch(url)
       if (response.ok) {
         const data = await response.json()
         setNotes(data)
@@ -200,6 +238,11 @@ export default function CRMPage() {
       projectId: ""
     })
     setEditingContact(null)
+    
+    // Clear URL parameters when closing dialog
+    const currentUrl = new URL(window.location.href)
+    currentUrl.searchParams.delete('action')
+    router.replace(currentUrl.pathname + currentUrl.search, { scroll: false })
   }
   const resetNoteForm = () => {
     setNoteForm({
@@ -211,6 +254,11 @@ export default function CRMPage() {
       projectId: ""
     })
     setEditingNote(null)
+    
+    // Clear URL parameters when closing dialog
+    const currentUrl = new URL(window.location.href)
+    currentUrl.searchParams.delete('action')
+    router.replace(currentUrl.pathname + currentUrl.search, { scroll: false })
   }
   const editContact = (contact: Contact) => {
     setContactForm({
@@ -233,7 +281,8 @@ export default function CRMPage() {
       content: note.content,
       category: note.category,
       tags: note.tags.join(", "),
-      contactId: note.contactId || ""
+      contactId: note.contactId || "",
+      projectId: note.projectId || ""
     })
     setEditingNote(note)
     setIsNoteDialogOpen(true)
@@ -296,8 +345,7 @@ export default function CRMPage() {
   }
 
   return (
-    <DashboardLayout>
-      <div className="space-y-6">
+    <div className="space-y-6">
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
@@ -713,6 +761,26 @@ export default function CRMPage() {
           </TabsContent>
         </Tabs>
       </div>
-    </DashboardLayout>
-  )
-}
+    )
+  }
+
+  export default function CRMPage() {
+    return (
+      <Suspense fallback={
+        <div className="min-h-screen bg-gray-900 text-white">
+          <div className="container mx-auto px-6 py-8">
+            <div className="animate-pulse space-y-6">
+              <div className="h-8 w-64 bg-gray-700 rounded"></div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[...Array(6)].map((_, i) => (
+                  <div key={i} className="h-48 bg-gray-700 rounded-lg"></div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      }>
+        <CRMContent />
+      </Suspense>
+    )
+  }

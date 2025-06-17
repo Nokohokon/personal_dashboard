@@ -4,8 +4,11 @@ import { useState, useEffect } from "react"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { useParams } from "next/navigation"
-import DashboardLayout from "@/components/dashboard/dashboard-layout"
 import { ProjectDetails } from "@/components/projects/project-details"
+import { TeamChat } from "@/components/projects/team-chat"
+import { ProjectAnalyticsEnhanced } from "@/components/projects/project-analytics-enhanced"
+import { ProjectFilesEnhanced } from "@/components/projects/project-files-enhanced"
+import { ProjectActivityEnhanced } from "@/components/projects/project-activity-enhanced"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -62,6 +65,7 @@ export default function ProjectDetailsPage() {
   const projectId = params.id as string
   
   const [project, setProject] = useState<any>(null)
+  const [teamMembers, setTeamMembers] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [activeTab, setActiveTab] = useState("overview")
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
@@ -110,6 +114,9 @@ export default function ProjectDetailsPage() {
           const saveData = await saveResponse.json()
           setIsSaved(saveData.saved)
         }
+
+        // Team-Mitglieder laden
+        await fetchTeamMembers()
       } else {
         console.error("Failed to fetch project")
         router.push("/dashboard/projects")
@@ -119,6 +126,19 @@ export default function ProjectDetailsPage() {
       router.push("/dashboard/projects")
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const fetchTeamMembers = async () => {
+    try {
+      const response = await fetch(`/api/projects/${projectId}/members`)
+      if (response.ok) {
+        const data = await response.json()
+        setTeamMembers(data.members || [])
+      }
+    } catch (error) {
+      console.error("Error fetching team members:", error)
+      setTeamMembers([])
     }
   }
   const handleProjectUpdate = () => {
@@ -228,6 +248,43 @@ export default function ProjectDetailsPage() {
     }
   }
 
+  const handleExportProject = () => {
+    try {
+      const exportData = {
+        project: {
+          id: project._id,
+          name: project.name,
+          description: project.description,
+          status: project.status,
+          priority: project.priority,
+          client: project.client,
+          budget: project.budget,
+          startDate: project.startDate,
+          endDate: project.endDate,
+          tags: project.tags,
+          progress: project.progress,
+          teamMembers: project.teamMembers,
+          createdAt: project.createdAt,
+          updatedAt: project.updatedAt
+        },
+        exportedAt: new Date().toISOString(),
+        exportedBy: session?.user?.email
+      }
+
+      const dataStr = JSON.stringify(exportData, null, 2)
+      const dataUri = "data:application/json;charset=utf-8," + encodeURIComponent(dataStr)
+      
+      const exportFileDefaultName = `${project.name.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_export.json`
+      
+      const linkElement = document.createElement("a")
+      linkElement.setAttribute("href", dataUri)
+      linkElement.setAttribute("download", exportFileDefaultName)
+      linkElement.click()
+    } catch (error) {
+      console.error("Error exporting project:", error)
+    }
+  }
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -287,7 +344,7 @@ export default function ProjectDetailsPage() {
   // Loading state with professional skeleton
   if (status === "loading" || isLoading) {
     return (
-      <DashboardLayout>
+
         <div className="min-h-screen bg-gray-900 text-white">
           <div className="container mx-auto px-6 py-8">
             <div className="animate-pulse space-y-6">
@@ -327,14 +384,14 @@ export default function ProjectDetailsPage() {
             </div>
           </div>
         </div>
-      </DashboardLayout>
+
     )
   }
 
   // Error state - project not found
   if (!project) {
     return (
-      <DashboardLayout>
+
         <div className="min-h-screen bg-gray-900 text-white">
           <div className="container mx-auto px-6 py-8">
             <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
@@ -353,13 +410,13 @@ export default function ProjectDetailsPage() {
             </div>
           </div>
         </div>
-      </DashboardLayout>
+
     )
   }
 
   const isOwner = project.userId === (session?.user as any)?.id
   return (
-    <DashboardLayout>
+
       <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
         <div className="container mx-auto px-6 py-8 space-y-8">          {/* Enhanced Header Section with better professional layout */}
           <div className="bg-gray-800/60 backdrop-blur-xl border border-gray-700/50 rounded-2xl p-4 md:p-8 shadow-2xl">
@@ -474,10 +531,10 @@ export default function ProjectDetailsPage() {
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-gray-300 flex items-center space-x-2">
                 <BarChart3 className="w-5 h-5" />
-                <span>Project Metrics</span>
+                <span>Project Metrics & Overview</span>
               </h3>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
                 <div className="bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-xl p-5 border border-blue-500/30 hover:border-blue-400/50 transition-all duration-300 group">
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-blue-400 font-semibold text-sm uppercase tracking-wide">Progress</span>
@@ -517,22 +574,41 @@ export default function ProjectDetailsPage() {
                   </div>
                 </div>
 
-                {project.budget && (
-                  <div className="bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-xl p-5 border border-green-500/30 hover:border-green-400/50 transition-all duration-300 group">
-                    <div className="flex items-center justify-between mb-4">
-                      <span className="text-green-400 font-semibold text-sm uppercase tracking-wide">Budget</span>
-                      <div className="p-2 bg-green-500/20 rounded-lg group-hover:bg-green-500/30 transition-colors">
-                        <DollarSign className="w-5 h-5 text-green-400" />
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <span className="text-2xl font-bold text-white block">
-                        {formatCurrency(project.budget)}
-                      </span>
-                      <p className="text-xs text-green-300/80">Total allocated</p>
+                <div className="bg-gradient-to-br from-indigo-500/20 to-blue-500/20 rounded-xl p-5 border border-indigo-500/30 hover:border-indigo-400/50 transition-all duration-300 group">
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-indigo-400 font-semibold text-sm uppercase tracking-wide">Status</span>
+                    <div className="p-2 bg-indigo-500/20 rounded-lg group-hover:bg-indigo-500/30 transition-colors">
+                      {getStatusIcon(project.status)}
                     </div>
                   </div>
-                )}
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-2">
+                      <div className={`w-3 h-3 rounded-full ${getStatusColor(project.status)}`}></div>
+                      <span className="text-lg font-bold text-white capitalize">{project.status}</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Star className="w-3 h-3 text-yellow-400" />
+                      <span className="text-sm text-gray-300 capitalize">{project.priority} Priority</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-xl p-5 border border-green-500/30 hover:border-green-400/50 transition-all duration-300 group">
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-green-400 font-semibold text-sm uppercase tracking-wide">Budget</span>
+                    <div className="p-2 bg-green-500/20 rounded-lg group-hover:bg-green-500/30 transition-colors">
+                      <DollarSign className="w-5 h-5 text-green-400" />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <span className="text-2xl font-bold text-white block">
+                      {project.budget ? formatCurrency(project.budget) : 'No budget'}
+                    </span>
+                    <p className="text-xs text-green-300/80">
+                      {project.budget ? 'Total allocated' : 'Not specified'}
+                    </p>
+                  </div>
+                </div>
 
                 <div className="bg-gradient-to-br from-orange-500/20 to-red-500/20 rounded-xl p-5 border border-orange-500/30 hover:border-orange-400/50 transition-all duration-300 group">
                   <div className="flex items-center justify-between mb-4">
@@ -559,50 +635,59 @@ export default function ProjectDetailsPage() {
                     </p>
                   </div>
                 </div>
+
+
               </div>
             </div></div>          {/* Enhanced Professional Tabs Section */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-            <div className="w-full overflow-x-auto">
-              <TabsList className="bg-gray-800/60 backdrop-blur-xl border border-gray-700/50 rounded-xl p-2 shadow-lg flex w-full min-w-fit">
+            <div className="w-full overflow-x-auto scrollbar-hide">
+              <TabsList className="bg-gray-800/60 backdrop-blur-xl border border-gray-700/50 rounded-xl p-1.5 shadow-lg flex w-max min-w-full">
                 <TabsTrigger 
                   value="overview" 
-                  className="flex items-center space-x-2 rounded-lg px-4 py-3 data-[state=active]:bg-blue-600/20 data-[state=active]:text-blue-400 transition-all duration-200 text-sm whitespace-nowrap flex-1 min-w-fit"
+                  className="flex items-center space-x-2 rounded-lg px-3 py-2.5 data-[state=active]:bg-blue-600/20 data-[state=active]:text-blue-400 transition-all duration-200 text-sm whitespace-nowrap min-w-fit"
                 >
                   <Eye className="w-4 h-4 flex-shrink-0" />
                   <span className="font-medium">Overview</span>
                 </TabsTrigger>
                 <TabsTrigger 
                   value="team" 
-                  className="flex items-center space-x-2 rounded-lg px-4 py-3 data-[state=active]:bg-purple-600/20 data-[state=active]:text-purple-400 transition-all duration-200 text-sm whitespace-nowrap flex-1 min-w-fit"
+                  className="flex items-center space-x-2 rounded-lg px-3 py-2.5 data-[state=active]:bg-purple-600/20 data-[state=active]:text-purple-400 transition-all duration-200 text-sm whitespace-nowrap min-w-fit"
                 >
                   <Users className="w-4 h-4 flex-shrink-0" />
                   <span className="font-medium">Team</span>
                 </TabsTrigger>
                 <TabsTrigger 
                   value="analytics" 
-                  className="flex items-center space-x-2 rounded-lg px-4 py-3 data-[state=active]:bg-green-600/20 data-[state=active]:text-green-400 transition-all duration-200 text-sm whitespace-nowrap flex-1 min-w-fit"
+                  className="flex items-center space-x-2 rounded-lg px-3 py-2.5 data-[state=active]:bg-green-600/20 data-[state=active]:text-green-400 transition-all duration-200 text-sm whitespace-nowrap min-w-fit"
                 >
                   <BarChart3 className="w-4 h-4 flex-shrink-0" />
                   <span className="font-medium">Analytics</span>
                 </TabsTrigger>
                 <TabsTrigger 
                   value="files" 
-                  className="flex items-center space-x-2 rounded-lg px-4 py-3 data-[state=active]:bg-orange-600/20 data-[state=active]:text-orange-400 transition-all duration-200 text-sm whitespace-nowrap flex-1 min-w-fit"
+                  className="flex items-center space-x-2 rounded-lg px-3 py-2.5 data-[state=active]:bg-orange-600/20 data-[state=active]:text-orange-400 transition-all duration-200 text-sm whitespace-nowrap min-w-fit"
                 >
                   <FileText className="w-4 h-4 flex-shrink-0" />
                   <span className="font-medium">Files</span>
                 </TabsTrigger>
                 <TabsTrigger 
-                  value="activity" 
-                  className="flex items-center space-x-2 rounded-lg px-4 py-3 data-[state=active]:bg-pink-600/20 data-[state=active]:text-pink-400 transition-all duration-200 text-sm whitespace-nowrap flex-1 min-w-fit"
+                  value="teamchat" 
+                  className="flex items-center space-x-2 rounded-lg px-3 py-2.5 data-[state=active]:bg-purple-600/20 data-[state=active]:text-purple-400 transition-all duration-200 text-sm whitespace-nowrap min-w-fit"
                 >
                   <MessageSquare className="w-4 h-4 flex-shrink-0" />
+                  <span className="font-medium">Team Chat</span>
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="activity" 
+                  className="flex items-center space-x-2 rounded-lg px-3 py-2.5 data-[state=active]:bg-pink-600/20 data-[state=active]:text-pink-400 transition-all duration-200 text-sm whitespace-nowrap min-w-fit"
+                >
+                  <Activity className="w-4 h-4 flex-shrink-0" />
                   <span className="font-medium">Activity</span>
                 </TabsTrigger>
                 {isOwner && (
                   <TabsTrigger 
                     value="settings" 
-                    className="flex items-center space-x-2 rounded-lg px-4 py-3 data-[state=active]:bg-gray-500/20 data-[state=active]:text-gray-400 transition-all duration-200 text-sm whitespace-nowrap flex-1 min-w-fit"
+                    className="flex items-center space-x-2 rounded-lg px-3 py-2.5 data-[state=active]:bg-gray-500/20 data-[state=active]:text-gray-400 transition-all duration-200 text-sm whitespace-nowrap min-w-fit"
                   >
                     <Settings className="w-4 h-4 flex-shrink-0" />
                     <span className="font-medium">Settings</span>
@@ -803,6 +888,7 @@ export default function ProjectDetailsPage() {
                       <Button 
                         variant="outline" 
                         className="w-full justify-start bg-gray-700/30 border-gray-600 hover:bg-gray-600/50 transition-all duration-200 hover:scale-[1.02]"
+                        onClick={() => router.push(`/dashboard/documents?projectId=${projectId}`)}
                       >
                         <FileText className="w-4 h-4 mr-3 text-blue-400" />
                         <span>View Documents</span>
@@ -811,6 +897,7 @@ export default function ProjectDetailsPage() {
                       <Button 
                         variant="outline" 
                         className="w-full justify-start bg-gray-700/30 border-gray-600 hover:bg-gray-600/50 transition-all duration-200 hover:scale-[1.02]"
+                        onClick={() => setActiveTab("analytics")}
                       >
                         <BarChart3 className="w-4 h-4 mr-3 text-green-400" />
                         <span>Analytics Dashboard</span>
@@ -819,6 +906,7 @@ export default function ProjectDetailsPage() {
                       <Button 
                         variant="outline" 
                         className="w-full justify-start bg-gray-700/30 border-gray-600 hover:bg-gray-600/50 transition-all duration-200 hover:scale-[1.02]"
+                        onClick={() => setActiveTab("teamchat")}
                       >
                         <MessageSquare className="w-4 h-4 mr-3 text-purple-400" />
                         <span>Team Chat</span>
@@ -827,6 +915,7 @@ export default function ProjectDetailsPage() {
                       <Button 
                         variant="outline" 
                         className="w-full justify-start bg-gray-700/30 border-gray-600 hover:bg-gray-600/50 transition-all duration-200 hover:scale-[1.02]"
+                        onClick={() => handleExportProject()}
                       >
                         <Download className="w-4 h-4 mr-3 text-orange-400" />
                         <span>Export Data</span>
@@ -835,51 +924,7 @@ export default function ProjectDetailsPage() {
                     </CardContent>
                   </Card>
 
-                  {/* Project Stats Summary */}
-                  <Card className="bg-gradient-to-br from-gray-800/60 to-gray-700/30 backdrop-blur-xl border border-gray-700/50 shadow-xl">
-                    <CardHeader>
-                      <CardTitle className="flex items-center space-x-3">
-                        <div className="p-2 bg-indigo-500/20 rounded-lg">
-                          <PieChart className="w-5 h-5 text-indigo-400" />
-                        </div>
-                        <span>At a Glance</span>
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-2">
-                            <div className={`w-3 h-3 rounded-full ${getStatusColor(project.status)}`}></div>
-                            <span className="text-sm text-gray-400">Status</span>
-                          </div>
-                          <span className="text-sm font-medium text-white capitalize">{project.status}</span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-2">
-                            <Star className="w-3 h-3 text-yellow-400" />
-                            <span className="text-sm text-gray-400">Priority</span>
-                          </div>
-                          <span className="text-sm font-medium text-white capitalize">{project.priority}</span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-2">
-                            <Users className="w-3 h-3 text-blue-400" />
-                            <span className="text-sm text-gray-400">Team Size</span>
-                          </div>
-                          <span className="text-sm font-medium text-white">{(project.teamMembers?.length || 0) + 1}</span>
-                        </div>
-                        {project.budget && (
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-2">
-                              <DollarSign className="w-3 h-3 text-green-400" />
-                              <span className="text-sm text-gray-400">Budget</span>
-                            </div>
-                            <span className="text-sm font-medium text-white">{formatCurrency(project.budget)}</span>
-                          </div>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
+
                 </div>
               </div></TabsContent>            <TabsContent value="team" className="animate-in fade-in-50 duration-200">
               <ProjectDetails
@@ -890,166 +935,27 @@ export default function ProjectDetailsPage() {
             </TabsContent>
 
             <TabsContent value="analytics" className="animate-in fade-in-50 duration-200">
-              <Card className="bg-gray-800/60 backdrop-blur-xl border border-gray-700/50 shadow-xl">
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-3">
-                    <div className="p-2.5 bg-blue-500/20 rounded-xl ring-1 ring-blue-500/30">
-                      <BarChart3 className="w-5 h-5 text-blue-400" />
-                    </div>
-                    <span>Project Analytics</span>
-                  </CardTitle>
-                  <CardDescription>
-                    Comprehensive insights and performance metrics for your project
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center py-20">
-                    <div className="bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-2xl p-10 max-w-lg mx-auto border border-blue-500/30">
-                      <div className="mb-6">
-                        <div className="w-20 h-20 bg-blue-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4 ring-2 ring-blue-500/30">
-                          <BarChart3 className="w-10 h-10 text-blue-400" />
-                        </div>
-                        <h3 className="text-2xl font-bold text-white mb-3">Analytics Dashboard</h3>
-                        <p className="text-gray-400 mb-8 max-w-sm mx-auto">
-                          Advanced analytics and insights are being developed to provide you with detailed project performance metrics
-                        </p>
-                      </div>
-                      
-                      <div className="grid grid-cols-2 gap-4 mb-6">
-                        <div className="bg-gray-700/50 rounded-xl p-4 hover:bg-gray-600/50 transition-colors">
-                          <PieChart className="w-6 h-6 text-green-400 mx-auto mb-2" />
-                          <p className="text-sm font-medium text-gray-300">Performance</p>
-                          <p className="text-xs text-gray-500">Metrics & KPIs</p>
-                        </div>
-                        <div className="bg-gray-700/50 rounded-xl p-4 hover:bg-gray-600/50 transition-colors">
-                          <TrendingUp className="w-6 h-6 text-blue-400 mx-auto mb-2" />
-                          <p className="text-sm font-medium text-gray-300">Trends</p>
-                          <p className="text-xs text-gray-500">Growth Analysis</p>
-                        </div>
-                      </div>
-                      
-                      <Button variant="outline" className="bg-blue-600/20 border-blue-500 text-blue-400 hover:bg-blue-600/30">
-                        <Lightbulb className="w-4 h-4 mr-2" />
-                        Request Analytics
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              <ProjectAnalyticsEnhanced projectId={projectId} project={project} />
             </TabsContent>
 
             <TabsContent value="files" className="animate-in fade-in-50 duration-200">
-              <Card className="bg-gray-800/60 backdrop-blur-xl border border-gray-700/50 shadow-xl">
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-3">
-                    <div className="p-2.5 bg-green-500/20 rounded-xl ring-1 ring-green-500/30">
-                      <FileText className="w-5 h-5 text-green-400" />
-                    </div>
-                    <span>Project Files</span>
-                  </CardTitle>
-                  <CardDescription>
-                    Manage documents, images, and other project assets
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center py-20">
-                    <div className="bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-2xl p-10 max-w-lg mx-auto border border-green-500/30">
-                      <div className="mb-6">
-                        <div className="w-20 h-20 bg-green-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4 ring-2 ring-green-500/30">
-                          <FileText className="w-10 h-10 text-green-400" />
-                        </div>
-                        <h3 className="text-2xl font-bold text-white mb-3">File Management</h3>
-                        <p className="text-gray-400 mb-8 max-w-sm mx-auto">
-                          Advanced file management system with version control and collaboration features coming soon
-                        </p>
-                      </div>
-                      
-                      <div className="grid grid-cols-3 gap-3 mb-6">
-                        <div className="bg-gray-700/50 rounded-xl p-4 hover:bg-gray-600/50 transition-colors">
-                          <Upload className="w-5 h-5 text-blue-400 mx-auto mb-2" />
-                          <p className="text-sm font-medium text-gray-300">Upload</p>
-                          <p className="text-xs text-gray-500">Add Files</p>
-                        </div>
-                        <div className="bg-gray-700/50 rounded-xl p-4 hover:bg-gray-600/50 transition-colors">
-                          <Download className="w-5 h-5 text-green-400 mx-auto mb-2" />
-                          <p className="text-sm font-medium text-gray-300">Download</p>
-                          <p className="text-xs text-gray-500">Export</p>
-                        </div>
-                        <div className="bg-gray-700/50 rounded-xl p-4 hover:bg-gray-600/50 transition-colors">
-                          <Share2 className="w-5 h-5 text-purple-400 mx-auto mb-2" />
-                          <p className="text-sm font-medium text-gray-300">Share</p>
-                          <p className="text-xs text-gray-500">Collaborate</p>
-                        </div>
-                      </div>
-                      
-                      <Button variant="outline" className="bg-green-600/20 border-green-500 text-green-400 hover:bg-green-600/30">
-                        <Plus className="w-4 h-4 mr-2" />
-                        Add Files
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              <ProjectFilesEnhanced projectId={projectId} project={project} />
+            </TabsContent>
+
+            <TabsContent value="teamchat" className="animate-in fade-in-50 duration-200">
+              <div className="space-y-6">
+                {project && teamMembers && (
+                  <TeamChat
+                    projectId={projectId}
+                    projectName={project.name}
+                    allMembers={teamMembers}
+                  />
+                )}
+              </div>
             </TabsContent>
 
             <TabsContent value="activity" className="animate-in fade-in-50 duration-200">
-              <Card className="bg-gray-800/60 backdrop-blur-xl border border-gray-700/50 shadow-xl">
-                <CardHeader>
-                  <CardTitle className="flex items-center space-x-3">
-                    <div className="p-2.5 bg-purple-500/20 rounded-xl ring-1 ring-purple-500/30">
-                      <Activity className="w-5 h-5 text-purple-400" />
-                    </div>
-                    <span>Project Activity</span>
-                  </CardTitle>
-                  <CardDescription>
-                    Track recent changes and team activity across your project
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center py-20">
-                    <div className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-2xl p-10 max-w-lg mx-auto border border-purple-500/30">
-                      <div className="mb-6">
-                        <div className="w-20 h-20 bg-purple-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4 ring-2 ring-purple-500/30">
-                          <Activity className="w-10 h-10 text-purple-400" />
-                        </div>
-                        <h3 className="text-2xl font-bold text-white mb-3">Activity Feed</h3>
-                        <p className="text-gray-400 mb-8 max-w-sm mx-auto">
-                          Real-time activity tracking with notifications and team collaboration features
-                        </p>
-                      </div>
-                      
-                      <div className="space-y-3 mb-6">
-                        <div className="bg-gray-700/50 rounded-xl p-4 flex items-center space-x-3 hover:bg-gray-600/50 transition-colors">
-                          <MessageSquare className="w-5 h-5 text-blue-400" />
-                          <div className="text-left">
-                            <p className="text-sm font-medium text-gray-300">Team Communications</p>
-                            <p className="text-xs text-gray-500">Chat & Comments</p>
-                          </div>
-                        </div>
-                        <div className="bg-gray-700/50 rounded-xl p-4 flex items-center space-x-3 hover:bg-gray-600/50 transition-colors">
-                          <GitBranch className="w-5 h-5 text-green-400" />
-                          <div className="text-left">
-                            <p className="text-sm font-medium text-gray-300">Project Updates</p>
-                            <p className="text-xs text-gray-500">Changes & Milestones</p>
-                          </div>
-                        </div>
-                        <div className="bg-gray-700/50 rounded-xl p-4 flex items-center space-x-3 hover:bg-gray-600/50 transition-colors">
-                          <Clock className="w-5 h-5 text-orange-400" />
-                          <div className="text-left">
-                            <p className="text-sm font-medium text-gray-300">Timeline Events</p>
-                            <p className="text-xs text-gray-500">Deadlines & Tasks</p>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <Button variant="outline" className="bg-purple-600/20 border-purple-500 text-purple-400 hover:bg-purple-600/30">
-                        <Eye className="w-4 h-4 mr-2" />
-                        View Activity
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              <ProjectActivityEnhanced projectId={projectId} project={project} />
             </TabsContent>            {isOwner && (
               <TabsContent value="settings" className="animate-in fade-in-50 duration-200">
                 <Card className="bg-gray-800/60 backdrop-blur-xl border border-gray-700/50 shadow-xl">
@@ -1432,6 +1338,6 @@ export default function ProjectDetailsPage() {
           </Dialog>
         </div>
       </div>
-    </DashboardLayout>
+
   )
 }

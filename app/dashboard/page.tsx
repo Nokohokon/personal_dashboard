@@ -4,10 +4,9 @@ import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import DashboardLayout from "@/components/dashboard/dashboard-layout"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Clock, Users, FileText, TrendingUp, Activity, Plus, ArrowRight } from "lucide-react"
+import { Clock, Users, FileText, TrendingUp, Activity, Plus, ArrowRight, MessageSquare } from "lucide-react"
 import { format } from "date-fns"
 
 interface DashboardStats {
@@ -117,8 +116,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <DashboardLayout>
-      <div className="space-y-6">
+    <div className="space-y-6">
         {/* Welcome Section */}
         <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl p-6 text-white">
           <h1 className="text-2xl font-bold mb-2">
@@ -210,7 +208,7 @@ export default function DashboardPage() {
             <CardContent>
               <div className="space-y-4">
                 {stats.recentTimeEntries.length === 0 && stats.recentContacts.length === 0 && stats.recentNotes.length === 0 ? (
-                  <p className="text-center text-slate-500 text-slate-400 py-4">
+                  <p className="text-center text-slate-400 py-4">
                     No recent activity. Start tracking time or add content!
                   </p>
                 ) : (
@@ -260,45 +258,75 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                <Link href="/dashboard/time-tracking">
-                  <Button className="w-full justify-between" variant="outline">
+                <Button 
+                  asChild 
+                  className="w-full justify-between" 
+                  variant="outline"
+                >
+                  <Link href="/dashboard/time-tracking">
                     <span className="flex items-center">
                       <Clock className="mr-2 h-4 w-4" />
                       {stats.activeTimer ? "View Active Timer" : "Start Time Tracking"}
                     </span>
                     <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
                 
-                <Link href="/dashboard/crm">
-                  <Button className="w-full justify-between" variant="outline">
+                <Button 
+                  asChild 
+                  className="w-full justify-between" 
+                  variant="outline"
+                >
+                  <Link href="/dashboard/crm?tab=contacts&action=add">
                     <span className="flex items-center">
                       <Users className="mr-2 h-4 w-4" />
                       Add New Contact
                     </span>
                     <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
                 
-                <Link href="/dashboard/crm">
-                  <Button className="w-full justify-between" variant="outline">
+                <Button 
+                  asChild 
+                  className="w-full justify-between" 
+                  variant="outline"
+                >
+                  <Link href="/dashboard/crm?tab=notes&action=add">
                     <span className="flex items-center">
                       <FileText className="mr-2 h-4 w-4" />
                       Create New Note
                     </span>
                     <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
 
-                <Link href="/dashboard/analytics">
-                  <Button className="w-full justify-between" variant="outline">
+                <Button 
+                  asChild 
+                  className="w-full justify-between" 
+                  variant="outline"
+                >
+                  <Link href="/dashboard/team-chat">
+                    <span className="flex items-center">
+                      <MessageSquare className="mr-2 h-4 w-4" />
+                      Team Chat
+                    </span>
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </Button>
+
+                <Button 
+                  asChild 
+                  className="w-full justify-between" 
+                  variant="outline"
+                >
+                  <Link href="/dashboard/analytics">
                     <span className="flex items-center">
                       <TrendingUp className="mr-2 h-4 w-4" />
                       View Analytics
                     </span>
                     <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -314,7 +342,7 @@ export default function DashboardPage() {
             <CardContent>
               <div className="space-y-3">
                 {stats.recentTimeEntries.slice(0, 3).length === 0 ? (
-                  <p className="text-sm text-slate-500 text-slate-400 text-center py-4">
+                  <p className="text-sm text-slate-400 text-center py-4">
                     No time entries yet
                   </p>
                 ) : (
@@ -340,7 +368,7 @@ export default function DashboardPage() {
             <CardContent>
               <div className="space-y-3">
                 {stats.recentContacts.length === 0 ? (
-                  <p className="text-sm text-slate-500 text-slate-400 text-center py-4">
+                  <p className="text-sm text-slate-400 text-center py-4">
                     No contacts yet
                   </p>
                 ) : (
@@ -366,7 +394,7 @@ export default function DashboardPage() {
             <CardContent>
               <div className="space-y-3">
                 {stats.recentNotes.length === 0 ? (
-                  <p className="text-sm text-slate-500 text-slate-400 text-center py-4">
+                  <p className="text-sm text-slate-400 text-center py-4">
                     No notes yet
                   </p>
                 ) : (
@@ -376,7 +404,7 @@ export default function DashboardPage() {
                       <p className="text-xs text-slate-400 line-clamp-2">
                         {note.content}
                       </p>
-                      <span className="inline-block px-2 py-1 bg-purple-100 bg-purple-900/20 text-purple-800 text-purple-300 text-xs rounded-full mt-2">
+                      <span className="inline-block px-2 py-1 bg-purple-900/20 text-purple-300 text-xs rounded-full mt-2">
                         {note.category}
                       </span>
                     </div>
@@ -387,6 +415,5 @@ export default function DashboardPage() {
           </Card>
         </div>
       </div>
-    </DashboardLayout>
   )
 }

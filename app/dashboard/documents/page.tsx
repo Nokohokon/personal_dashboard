@@ -1,9 +1,8 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { useSession } from "next-auth/react"
-import { useRouter } from "next/navigation"
-import DashboardLayout from "@/components/dashboard/dashboard-layout"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -26,14 +25,16 @@ interface Document {
   updatedAt: string
 }
 
-export default function DocumentsPage() {
+function DocumentsContent() {
   const { data: session, status } = useSession()
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [documents, setDocuments] = useState<Document[]>([])
   const [projects, setProjects] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("all")
+  const [selectedProjectId, setSelectedProjectId] = useState("all")
   
   // Dialog states
   const [isDocumentDialogOpen, setIsDocumentDialogOpen] = useState(false)
@@ -58,6 +59,7 @@ export default function DocumentsPage() {
       router.push("/auth/signin")
     }
   }, [status, router])
+
   useEffect(() => {
     if (session) {
       fetchDocuments()
@@ -65,9 +67,32 @@ export default function DocumentsPage() {
     }
   }, [session])
 
+  // Handle URL parameters for project filtering
+  useEffect(() => {
+    const projectIdFromUrl = searchParams.get("projectId")
+    if (projectIdFromUrl) {
+      setSelectedProjectId(projectIdFromUrl)
+    }
+  }, [searchParams])
+
+  // Refetch documents when project filter changes
+  useEffect(() => {
+    if (session) {
+      fetchDocuments()
+    }
+  }, [selectedProjectId, session])
+
   const fetchDocuments = async () => {
     try {
-      const response = await fetch("/api/documents")
+      const projectIdFromUrl = searchParams.get("projectId")
+      const projectId = projectIdFromUrl || (selectedProjectId !== "all" ? selectedProjectId : null)
+      
+      let url = "/api/documents"
+      if (projectId) {
+        url += `?projectId=${projectId}`
+      }
+      
+      const response = await fetch(url)
       if (response.ok) {
         const data = await response.json()
         setDocuments(data)
@@ -201,11 +226,9 @@ export default function DocumentsPage() {
 
   if (status === "loading" || isLoading) {
     return (
-      <DashboardLayout>
-        <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
-        </div>
-      </DashboardLayout>
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+      </div>
     )
   }
 
@@ -214,8 +237,7 @@ export default function DocumentsPage() {
   }
 
   return (
-    <DashboardLayout>
-      <div className="space-y-6">
+    <div className="space-y-6">
         {/* Header */}
         <div className="flex justify-between items-center">
           <div>
@@ -602,6 +624,26 @@ export default function DocumentsPage() {
           </DialogContent>
         </Dialog>
       </div>
-    </DashboardLayout>
-  )
-}
+    )
+  }
+
+  export default function DocumentsPage() {
+    return (
+      <Suspense fallback={
+        <div className="min-h-screen bg-gray-900 text-white">
+          <div className="container mx-auto px-6 py-8">
+            <div className="animate-pulse space-y-6">
+              <div className="h-8 w-64 bg-gray-700 rounded"></div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[...Array(6)].map((_, i) => (
+                  <div key={i} className="h-48 bg-gray-700 rounded-lg"></div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      }>
+        <DocumentsContent />
+      </Suspense>
+    )
+  }
