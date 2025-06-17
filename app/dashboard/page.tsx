@@ -33,9 +33,18 @@ export default function DashboardPage() {
   })
   const [isLoading, setIsLoading] = useState(true)
 
+  console.log("🏠 Dashboard - Session Status:", { status, session, email: session?.user?.email })
+
   useEffect(() => {
+    console.log("🏠 Dashboard - useEffect triggered with status:", status)
+    
     if (status === "unauthenticated") {
+      console.log("🚫 Dashboard - Not authenticated, redirecting to signin")
       router.push("/auth/signin")
+    } else if (status === "authenticated") {
+      console.log("✅ Dashboard - Authenticated, user:", session?.user?.email)
+    } else if (status === "loading") {
+      console.log("⏳ Dashboard - Session loading...")
     }
   }, [status, router])
 

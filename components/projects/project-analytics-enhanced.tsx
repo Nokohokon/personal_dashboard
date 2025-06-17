@@ -323,132 +323,233 @@ export function ProjectAnalyticsEnhanced({ projectId, project }: ProjectAnalytic
 
   if (isLoading) {
     return (
-      <div className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[...Array(6)].map((_: any, i: number) => (
-            <div key={i} className="h-32 bg-gray-700/50 rounded-lg animate-pulse"></div>
-          ))}
-        </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {[...Array(6)].map((_: any, i: number) => (
-            <div key={i} className="h-80 bg-gray-700/50 rounded-lg animate-pulse"></div>
-          ))}
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-slate-900 p-6">
+        <div className="max-w-7xl mx-auto space-y-8">
+          {/* Loading Header */}
+          <div className="relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-emerald-600/20 blur-xl"></div>
+            <Card className="relative bg-white/5 backdrop-blur-2xl border border-white/10 shadow-2xl">
+              <CardHeader className="pb-8">
+                <div className="flex items-center space-x-4">
+                  <div className="relative">
+                    <div className="w-12 h-12 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-2xl animate-pulse"></div>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="h-8 w-64 bg-white/10 rounded-lg animate-pulse"></div>
+                    <div className="h-4 w-48 bg-white/10 rounded-lg animate-pulse"></div>
+                  </div>
+                </div>
+              </CardHeader>
+            </Card>
+          </div>
+          
+          {/* Loading Health Cards */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {[...Array(3)].map((_, i) => (
+              <Card key={i} className="relative overflow-hidden bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-white/10 shadow-xl">
+                <CardHeader className="space-y-4">
+                  <div className="h-6 w-32 bg-white/10 rounded-lg animate-pulse"></div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="h-16 w-16 mx-auto bg-white/10 rounded-full animate-pulse"></div>
+                  <div className="h-4 w-24 mx-auto bg-white/10 rounded-lg animate-pulse"></div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+          
+          {/* Loading Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[...Array(4)].map((_, i) => (
+              <Card key={i} className="relative overflow-hidden bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-white/10 shadow-lg">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <div className="h-4 w-16 bg-white/10 rounded animate-pulse"></div>
+                  <div className="w-8 h-8 bg-white/10 rounded-lg animate-pulse"></div>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-8 w-16 bg-white/10 rounded animate-pulse mb-2"></div>
+                  <div className="h-3 w-24 bg-white/10 rounded animate-pulse"></div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Loading Charts */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {[...Array(4)].map((_, i) => (
+              <Card key={i} className="relative overflow-hidden bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-white/10 shadow-2xl">
+                <CardHeader className="border-b border-white/10 space-y-4">
+                  <div className="h-6 w-48 bg-white/10 rounded-lg animate-pulse"></div>
+                  <div className="h-4 w-32 bg-white/10 rounded-lg animate-pulse"></div>
+                </CardHeader>
+                <CardContent className="p-6">
+                  <div className="h-72 bg-white/5 rounded-lg animate-pulse"></div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-6">
-      {/* Enhanced Header */}
-      <Card className="bg-gray-800/60 backdrop-blur-xl border border-gray-700/50 shadow-xl">
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="p-2.5 bg-blue-500/20 rounded-xl ring-1 ring-blue-500/30">
-                <BarChart3 className="w-5 h-5 text-blue-400" />
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-slate-900 p-6">
+      <div className="max-w-7xl mx-auto space-y-8">
+        {/* Enhanced Header */}
+        <div className="relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-emerald-600/20 blur-xl"></div>
+          <Card className="relative bg-white/5 backdrop-blur-2xl border border-white/10 shadow-2xl">
+            <CardHeader className="pb-8">
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
+                <div className="flex items-center space-x-4">
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl blur opacity-75"></div>
+                    <div className="relative p-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl">
+                      <BarChart3 className="w-6 h-6 text-white" />
+                    </div>
+                  </div>
+                  <div>
+                    <CardTitle className="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                      Project Analytics Dashboard
+                    </CardTitle>
+                    <p className="text-gray-400 text-sm mt-1">
+                      Umfassende Analyse für <span className="font-semibold text-white">{project.name}</span>
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center space-x-3">
+                  <Button
+                    onClick={refreshData}
+                    disabled={refreshing}
+                    className="bg-white/10 hover:bg-white/20 border border-white/20 text-white transition-all duration-200 hover:scale-105"
+                    size="sm"
+                  >
+                    <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+                    Aktualisieren
+                  </Button>
+                  
+                  <Button
+                    onClick={exportAnalytics}
+                    className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white transition-all duration-200 hover:scale-105 shadow-lg"
+                    size="sm"
+                  >
+                    <Download className="w-4 h-4 mr-2" />
+                    Exportieren
+                  </Button>
+                  
+                  <Select value={timeRange} onValueChange={setTimeRange}>
+                    <SelectTrigger className="w-40 bg-white/10 border-white/20 text-white backdrop-blur-sm">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-gray-900/95 border-white/20 backdrop-blur-sm">
+                      <SelectItem value="7days">Letzte 7 Tage</SelectItem>
+                      <SelectItem value="week">Diese Woche</SelectItem>
+                      <SelectItem value="month">Dieser Monat</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-              <div>
-                <CardTitle className="text-white">Enhanced Project Analytics</CardTitle>
-                <p className="text-gray-400 text-sm">Erweiterte Insights für {project.name}</p>
-              </div>
-            </div>
-            
-            <div className="flex items-center space-x-3">
-              <Button
-                onClick={refreshData}
-                disabled={refreshing}
-                variant="outline"
-                size="sm"
-                className="border-gray-600 text-gray-300 hover:bg-gray-700"
-              >
-                <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
-                Refresh
-              </Button>
-              
-              <Button
-                onClick={exportAnalytics}
-                variant="outline"
-                size="sm"
-                className="border-gray-600 text-gray-300 hover:bg-gray-700"
-              >
-                <Download className="w-4 h-4 mr-2" />
-                Export
-              </Button>
-              
-              <Select value={timeRange} onValueChange={setTimeRange}>
-                <SelectTrigger className="w-32 bg-gray-700/50 border-gray-600">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="bg-gray-700 border-gray-600">
-                  <SelectItem value="7days">Last 7 Days</SelectItem>
-                  <SelectItem value="week">This Week</SelectItem>
-                  <SelectItem value="month">This Month</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </CardHeader>
-      </Card>
+            </CardHeader>
+          </Card>
+        </div>
 
       {/* Project Health Dashboard */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-500/30">
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2 text-green-400">
-              <Target className="w-5 h-5" />
-              <span>Project Health</span>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-in slide-in-from-bottom-4 duration-700">
+        <Card className="relative overflow-hidden bg-gradient-to-br from-green-500/10 via-emerald-500/10 to-teal-500/10 border border-green-500/30 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+          <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent"></div>
+          <CardHeader className="relative">
+            <CardTitle className="flex items-center space-x-3 text-green-300">
+              <div className="p-2 bg-green-500/20 rounded-lg hover:bg-green-500/30 transition-colors duration-200">
+                <Target className="w-5 h-5" />
+              </div>
+              <span className="font-semibold">Project Health</span>
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="text-center space-y-4">
-              <div className="text-4xl font-bold text-white">{healthScore}%</div>
-              <Progress value={healthScore} className="h-3" />
+          <CardContent className="relative">
+            <div className="text-center space-y-6">
+              <div className="relative">
+                <div className="text-5xl font-bold text-white mb-2 transition-all duration-300 hover:scale-110">{healthScore}%</div>
+                <div className="w-24 h-1 bg-gray-700/50 rounded-full mx-auto overflow-hidden">
+                  <div 
+                    className="h-full bg-gradient-to-r from-green-400 to-emerald-400 rounded-full transition-all duration-1000 ease-out"
+                    style={{ width: `${healthScore}%` }}
+                  ></div>
+                </div>
+              </div>
+              <Progress value={healthScore} className="h-3 bg-gray-700/50" />
               <div className="flex items-center justify-center space-x-2">
                 {healthScore >= 80 ? (
-                  <><CheckCircle className="w-4 h-4 text-green-400" /><span className="text-green-400">Excellent</span></>
+                  <>
+                    <div className="p-1.5 bg-green-500/20 rounded-full hover:bg-green-500/30 transition-all duration-200 hover:scale-110">
+                      <CheckCircle className="w-4 h-4 text-green-400" />
+                    </div>
+                    <span className="text-green-300 font-medium">Ausgezeichnet</span>
+                  </>
                 ) : healthScore >= 60 ? (
-                  <><Zap className="w-4 h-4 text-yellow-400" /><span className="text-yellow-400">Good</span></>
+                  <>
+                    <div className="p-1.5 bg-yellow-500/20 rounded-full hover:bg-yellow-500/30 transition-all duration-200 hover:scale-110">
+                      <Zap className="w-4 h-4 text-yellow-400" />
+                    </div>
+                    <span className="text-yellow-300 font-medium">Gut</span>
+                  </>
                 ) : (
-                  <><AlertTriangle className="w-4 h-4 text-red-400" /><span className="text-red-400">Needs Attention</span></>
+                  <>
+                    <div className="p-1.5 bg-red-500/20 rounded-full hover:bg-red-500/30 transition-all duration-200 hover:scale-110">
+                      <AlertTriangle className="w-4 h-4 text-red-400" />
+                    </div>
+                    <span className="text-red-300 font-medium">Verbesserung nötig</span>
+                  </>
                 )}
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/30">
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2 text-blue-400">
-              <TrendingUp className="w-5 h-5" />
-              <span>Productivity Trend</span>
+        <Card className="relative overflow-hidden bg-gradient-to-br from-blue-500/10 via-cyan-500/10 to-sky-500/10 border border-blue-500/30 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent"></div>
+          <CardHeader className="relative">
+            <CardTitle className="flex items-center space-x-3 text-blue-300">
+              <div className="p-2 bg-blue-500/20 rounded-lg hover:bg-blue-500/30 transition-colors duration-200">
+                <TrendingUp className="w-5 h-5" />
+              </div>
+              <span className="font-semibold">Produktivitätstrend</span>
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="text-center space-y-4">
-              <div className="text-3xl font-bold text-white">{productivityTrends.current}</div>
-              <div className="text-sm text-gray-400">vs {productivityTrends.previous} last period</div>
-              <div className={`flex items-center justify-center space-x-2 ${productivityTrends.isIncreasing ? 'text-green-400' : 'text-red-400'}`}>
-                <TrendingUp className={`w-4 h-4 ${productivityTrends.isIncreasing ? '' : 'rotate-180'}`} />
-                <span>{Math.abs(productivityTrends.trend).toFixed(1)}%</span>
+          <CardContent className="relative">
+            <div className="text-center space-y-6">
+              <div className="text-4xl font-bold text-white transition-all duration-300 hover:scale-110">{productivityTrends.current}</div>
+              <div className="text-sm text-gray-400">vs {productivityTrends.previous} vorherige Periode</div>
+              <div className={`flex items-center justify-center space-x-2 px-3 py-1.5 rounded-full transition-all duration-300 hover:scale-105 ${
+                productivityTrends.isIncreasing ? 'bg-green-500/20 text-green-300 hover:bg-green-500/30' : 'bg-red-500/20 text-red-300 hover:bg-red-500/30'
+              }`}>
+                <TrendingUp className={`w-4 h-4 transition-transform duration-200 ${productivityTrends.isIncreasing ? '' : 'rotate-180'}`} />
+                <span className="font-medium">{Math.abs(productivityTrends.trend).toFixed(1)}%</span>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/30">
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2 text-purple-400">
-              <Activity className="w-5 h-5" />
-              <span>Activity Score</span>
+        <Card className="relative overflow-hidden bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-rose-500/10 border border-purple-500/30 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent"></div>
+          <CardHeader className="relative">
+            <CardTitle className="flex items-center space-x-3 text-purple-300">
+              <div className="p-2 bg-purple-500/20 rounded-lg hover:bg-purple-500/30 transition-colors duration-200">
+                <Activity className="w-5 h-5" />
+              </div>
+              <span className="font-semibold">Aktivitätswert</span>
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="text-center space-y-4">
-              <div className="text-3xl font-bold text-white">{contentAnalytics.totalNotes + contentAnalytics.totalDocuments + contentAnalytics.totalContacts}</div>
-              <div className="text-sm text-gray-400">Total Items</div>
-              <div className="text-sm text-purple-400">
-                +{contentAnalytics.recentNotes + contentAnalytics.recentDocuments + contentAnalytics.recentContacts} this period
+          <CardContent className="relative">
+            <div className="text-center space-y-6">
+              <div className="text-4xl font-bold text-white transition-all duration-300 hover:scale-110">{contentAnalytics.totalNotes + contentAnalytics.totalDocuments + contentAnalytics.totalContacts}</div>
+              <div className="text-sm text-gray-400">Gesamt Items</div>
+              <div className="inline-flex items-center space-x-1 px-3 py-1.5 bg-purple-500/20 rounded-full hover:bg-purple-500/30 transition-all duration-300 hover:scale-105">
+                <span className="text-purple-300 font-medium">
+                  +{contentAnalytics.recentNotes + contentAnalytics.recentDocuments + contentAnalytics.recentContacts}
+                </span>
+                <span className="text-purple-400 text-sm">diese Periode</span>
               </div>
             </div>
           </CardContent>
@@ -457,58 +558,82 @@ export function ProjectAnalyticsEnhanced({ projectId, project }: ProjectAnalytic
 
       {/* Enhanced Overview Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card className="bg-gray-800/60 backdrop-blur-xl border border-gray-700/50">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-gray-300">Notes</CardTitle>
-            <FileText className="h-4 w-4 text-blue-400" />
+        <Card className="relative overflow-hidden bg-gradient-to-br from-blue-500/10 to-cyan-500/10 border border-blue-500/20 shadow-lg backdrop-blur-sm hover:scale-105 transition-all duration-300">
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent"></div>
+          <CardHeader className="relative flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-blue-300">Notizen</CardTitle>
+            <div className="p-2 bg-blue-500/20 rounded-lg">
+              <FileText className="h-4 w-4 text-blue-400" />
+            </div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-white">{contentAnalytics.totalNotes}</div>
-            <p className="text-xs text-gray-400">
-              +{contentAnalytics.recentNotes} this period
-            </p>
+          <CardContent className="relative">
+            <div className="text-3xl font-bold text-white mb-1">{contentAnalytics.totalNotes}</div>
+            <div className="flex items-center space-x-1">
+              <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full"></div>
+              <p className="text-xs text-emerald-400">
+                +{contentAnalytics.recentNotes} diese Periode
+              </p>
+            </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gray-800/60 backdrop-blur-xl border border-gray-700/50">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-gray-300">Contacts</CardTitle>
-            <Users className="h-4 w-4 text-green-400" />
+        <Card className="relative overflow-hidden bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-500/20 shadow-lg backdrop-blur-sm hover:scale-105 transition-all duration-300">
+          <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent"></div>
+          <CardHeader className="relative flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-green-300">Kontakte</CardTitle>
+            <div className="p-2 bg-green-500/20 rounded-lg">
+              <Users className="h-4 w-4 text-green-400" />
+            </div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-white">{contentAnalytics.totalContacts}</div>
-            <p className="text-xs text-gray-400">
-              +{contentAnalytics.recentContacts} this period
-            </p>
+          <CardContent className="relative">
+            <div className="text-3xl font-bold text-white mb-1">{contentAnalytics.totalContacts}</div>
+            <div className="flex items-center space-x-1">
+              <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full"></div>
+              <p className="text-xs text-emerald-400">
+                +{contentAnalytics.recentContacts} diese Periode
+              </p>
+            </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gray-800/60 backdrop-blur-xl border border-gray-700/50">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-gray-300">Documents</CardTitle>
-            <FileText className="h-4 w-4 text-purple-400" />
+        <Card className="relative overflow-hidden bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/20 shadow-lg backdrop-blur-sm hover:scale-105 transition-all duration-300">
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent"></div>
+          <CardHeader className="relative flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-purple-300">Dokumente</CardTitle>
+            <div className="p-2 bg-purple-500/20 rounded-lg">
+              <FileText className="h-4 w-4 text-purple-400" />
+            </div>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-white">{contentAnalytics.totalDocuments}</div>
-            <p className="text-xs text-gray-400">
-              {formatFileSize(contentAnalytics.totalSize)} total
-            </p>
+          <CardContent className="relative">
+            <div className="text-3xl font-bold text-white mb-1">{contentAnalytics.totalDocuments}</div>
+            <div className="flex items-center space-x-1">
+              <div className="w-1.5 h-1.5 bg-purple-400 rounded-full"></div>
+              <p className="text-xs text-purple-400">
+                {formatFileSize(contentAnalytics.totalSize)} gesamt
+              </p>
+            </div>
           </CardContent>
         </Card>
 
         {project?.userRole?.canViewTimeTracking && (
-          <Card className="bg-gray-800/60 backdrop-blur-xl border border-gray-700/50">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-300">Time Tracked</CardTitle>
-              <Timer className="h-4 w-4 text-orange-400" />
+          <Card className="relative overflow-hidden bg-gradient-to-br from-orange-500/10 to-amber-500/10 border border-orange-500/20 shadow-lg backdrop-blur-sm hover:scale-105 transition-all duration-300">
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent"></div>
+            <CardHeader className="relative flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium text-orange-300">Zeit erfasst</CardTitle>
+              <div className="p-2 bg-orange-500/20 rounded-lg">
+                <Timer className="h-4 w-4 text-orange-400" />
+              </div>
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-white">
+            <CardContent className="relative">
+              <div className="text-3xl font-bold text-white mb-1">
                 {timeAnalytics.totalHours.toFixed(1)}h
               </div>
-              <p className="text-xs text-gray-400">
-                {timeAnalytics.totalSessions} sessions
-              </p>
+              <div className="flex items-center space-x-1">
+                <div className="w-1.5 h-1.5 bg-orange-400 rounded-full"></div>
+                <p className="text-xs text-orange-400">
+                  {timeAnalytics.totalSessions} Sitzungen
+                </p>
+              </div>
             </CardContent>
           </Card>
         )}
@@ -517,44 +642,78 @@ export function ProjectAnalyticsEnhanced({ projectId, project }: ProjectAnalytic
       {/* Enhanced Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Activity Timeline */}
-        <Card className="bg-gray-800/60 backdrop-blur-xl border border-gray-700/50">
-          <CardHeader>
-            <CardTitle className="text-white">Activity Timeline</CardTitle>
-            <CardDescription>Project activity over time</CardDescription>
+        <Card className="relative overflow-hidden bg-gradient-to-br from-gray-800/90 via-gray-900/90 to-slate-900/90 backdrop-blur-xl border border-white/10 shadow-2xl">
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-purple-500/5 to-transparent"></div>
+          <CardHeader className="relative border-b border-white/10">
+            <CardTitle className="flex items-center space-x-3 text-white">
+              <div className="p-2 bg-blue-500/20 rounded-lg">
+                <Calendar className="w-5 h-5 text-blue-400" />
+              </div>
+              <span className="font-semibold">Aktivitäts-Zeitverlauf</span>
+            </CardTitle>
+            <CardDescription className="text-gray-400">Projekt-Aktivität über die Zeit</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="relative p-6">
             <ResponsiveContainer width="100%" height={300}>
               <AreaChart data={timeAnalytics.dailyData}>
+                <defs>
+                  <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0.1}/>
+                  </linearGradient>
+                </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                <XAxis dataKey="date" stroke="#9CA3AF" />
-                <YAxis stroke="#9CA3AF" />
+                <XAxis 
+                  dataKey="date" 
+                  stroke="#9CA3AF" 
+                  fontSize={12}
+                  tickLine={{ stroke: '#374151' }}
+                />
+                <YAxis 
+                  stroke="#9CA3AF" 
+                  fontSize={12}
+                  tickLine={{ stroke: '#374151' }}
+                />
                 <Tooltip 
                   contentStyle={{ 
                     backgroundColor: '#1F2937', 
                     border: '1px solid #374151',
-                    borderRadius: '8px'
+                    borderRadius: '12px',
+                    boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)'
                   }}
                 />
-                <Area type="monotone" dataKey="hours" stroke="#8B5CF6" fill="#8B5CF6" fillOpacity={0.3} />
+                <Area 
+                  type="monotone" 
+                  dataKey="hours" 
+                  stroke="#8B5CF6" 
+                  strokeWidth={3}
+                  fill="url(#colorGradient)"
+                />
               </AreaChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
         {/* Content Distribution */}
-        <Card className="bg-gray-800/60 backdrop-blur-xl border border-gray-700/50">
-          <CardHeader>
-            <CardTitle className="text-white">Content Distribution</CardTitle>
-            <CardDescription>Breakdown of project content types</CardDescription>
+        <Card className="relative overflow-hidden bg-gradient-to-br from-gray-800/90 via-gray-900/90 to-slate-900/90 backdrop-blur-xl border border-white/10 shadow-2xl">
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-teal-500/5 to-transparent"></div>
+          <CardHeader className="relative border-b border-white/10">
+            <CardTitle className="flex items-center space-x-3 text-white">
+              <div className="p-2 bg-emerald-500/20 rounded-lg">
+                <Activity className="w-5 h-5 text-emerald-400" />
+              </div>
+              <span className="font-semibold">Content-Verteilung</span>
+            </CardTitle>
+            <CardDescription className="text-gray-400">Aufschlüsselung der Projekt-Inhaltstypen</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="relative p-6">
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
                   data={[
-                    { name: 'Notes', value: contentAnalytics.totalNotes, fill: '#3B82F6' },
-                    { name: 'Documents', value: contentAnalytics.totalDocuments, fill: '#8B5CF6' },
-                    { name: 'Contacts', value: contentAnalytics.totalContacts, fill: '#10B981' }
+                    { name: 'Notizen', value: contentAnalytics.totalNotes, fill: '#3B82F6' },
+                    { name: 'Dokumente', value: contentAnalytics.totalDocuments, fill: '#8B5CF6' },
+                    { name: 'Kontakte', value: contentAnalytics.totalContacts, fill: '#10B981' }
                   ]}
                   cx="50%"
                   cy="50%"
@@ -563,8 +722,9 @@ export function ProjectAnalyticsEnhanced({ projectId, project }: ProjectAnalytic
                   outerRadius={80}
                   fill="#8884d8"
                   dataKey="value"
+                  stroke="none"
                 >
-                  {[{ name: 'Notes' }, { name: 'Documents' }, { name: 'Contacts' }].map((entry, index) => (
+                  {[{ name: 'Notizen' }, { name: 'Dokumente' }, { name: 'Kontakte' }].map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={['#3B82F6', '#8B5CF6', '#10B981'][index]} />
                   ))}
                 </Pie>
@@ -572,7 +732,8 @@ export function ProjectAnalyticsEnhanced({ projectId, project }: ProjectAnalytic
                   contentStyle={{ 
                     backgroundColor: '#1F2937', 
                     border: '1px solid #374151',
-                    borderRadius: '8px'
+                    borderRadius: '12px',
+                    boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)'
                   }}
                 />
               </PieChart>
@@ -581,48 +742,88 @@ export function ProjectAnalyticsEnhanced({ projectId, project }: ProjectAnalytic
         </Card>
 
         {/* Note Categories */}
-        <Card className="bg-gray-800/60 backdrop-blur-xl border border-gray-700/50">
-          <CardHeader>
-            <CardTitle className="text-white">Note Categories</CardTitle>
+        <Card className="relative overflow-hidden bg-gradient-to-br from-gray-800/90 via-gray-900/90 to-slate-900/90 backdrop-blur-xl border border-white/10 shadow-2xl">
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-indigo-500/5 to-transparent"></div>
+          <CardHeader className="relative border-b border-white/10">
+            <CardTitle className="flex items-center space-x-3 text-white">
+              <div className="p-2 bg-blue-500/20 rounded-lg">
+                <FileText className="w-5 h-5 text-blue-400" />
+              </div>
+              <span className="font-semibold">Notiz-Kategorien</span>
+            </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="relative p-6">
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={contentAnalytics.noteCategories}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                <XAxis dataKey="category" stroke="#9CA3AF" />
-                <YAxis stroke="#9CA3AF" />
+                <XAxis 
+                  dataKey="category" 
+                  stroke="#9CA3AF" 
+                  fontSize={12}
+                  tickLine={{ stroke: '#374151' }}
+                />
+                <YAxis 
+                  stroke="#9CA3AF" 
+                  fontSize={12}
+                  tickLine={{ stroke: '#374151' }}
+                />
                 <Tooltip 
                   contentStyle={{ 
                     backgroundColor: '#1F2937', 
                     border: '1px solid #374151',
-                    borderRadius: '8px'
+                    borderRadius: '12px',
+                    boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)'
                   }}
                 />
-                <Bar dataKey="count" fill="#3B82F6" />
+                <Bar 
+                  dataKey="count" 
+                  fill="#3B82F6" 
+                  radius={[4, 4, 0, 0]}
+                />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
         {/* Contact Tags */}
-        <Card className="bg-gray-800/60 backdrop-blur-xl border border-gray-700/50">
-          <CardHeader>
-            <CardTitle className="text-white">Top Contact Tags</CardTitle>
+        <Card className="relative overflow-hidden bg-gradient-to-br from-gray-800/90 via-gray-900/90 to-slate-900/90 backdrop-blur-xl border border-white/10 shadow-2xl">
+          <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 via-emerald-500/5 to-transparent"></div>
+          <CardHeader className="relative border-b border-white/10">
+            <CardTitle className="flex items-center space-x-3 text-white">
+              <div className="p-2 bg-green-500/20 rounded-lg">
+                <Users className="w-5 h-5 text-green-400" />
+              </div>
+              <span className="font-semibold">Top Kontakt-Tags</span>
+            </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="relative p-6">
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={contentAnalytics.contactTags}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                <XAxis dataKey="tag" stroke="#9CA3AF" />
-                <YAxis stroke="#9CA3AF" />
+                <XAxis 
+                  dataKey="tag" 
+                  stroke="#9CA3AF" 
+                  fontSize={12}
+                  tickLine={{ stroke: '#374151' }}
+                />
+                <YAxis 
+                  stroke="#9CA3AF" 
+                  fontSize={12}
+                  tickLine={{ stroke: '#374151' }}
+                />
                 <Tooltip 
                   contentStyle={{ 
                     backgroundColor: '#1F2937', 
                     border: '1px solid #374151',
-                    borderRadius: '8px'
+                    borderRadius: '12px',
+                    boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)'
                   }}
                 />
-                <Bar dataKey="count" fill="#10B981" />
+                <Bar 
+                  dataKey="count" 
+                  fill="#10B981" 
+                  radius={[4, 4, 0, 0]}
+                />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -631,35 +832,65 @@ export function ProjectAnalyticsEnhanced({ projectId, project }: ProjectAnalytic
 
       {/* Time Tracking (only for owners) */}
       {project?.userRole?.canViewTimeTracking && timeAnalytics.taskChartData.length > 0 && (
-        <Card className="bg-gray-800/60 backdrop-blur-xl border border-gray-700/50">
-          <CardHeader>
-            <CardTitle className="text-white flex items-center space-x-2">
-              <Timer className="w-5 h-5 text-orange-400" />
-              <span>Time Distribution by Task</span>
+        <Card className="relative overflow-hidden bg-gradient-to-br from-gray-800/90 via-gray-900/90 to-slate-900/90 backdrop-blur-xl border border-white/10 shadow-2xl">
+          <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-amber-500/5 to-transparent"></div>
+          <CardHeader className="relative border-b border-white/10">
+            <CardTitle className="flex items-center space-x-3 text-white">
+              <div className="p-2 bg-orange-500/20 rounded-lg">
+                <Timer className="w-5 h-5 text-orange-400" />
+              </div>
+              <span className="font-semibold">Zeit-Verteilung nach Aufgaben</span>
             </CardTitle>
-            <CardDescription>Detailed breakdown of time spent on different tasks</CardDescription>
+            <CardDescription className="text-gray-400">Detaillierte Aufschlüsselung der Zeit nach Aufgaben</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="relative p-6">
             <ResponsiveContainer width="100%" height={400}>
               <ComposedChart data={timeAnalytics.taskChartData}>
+                <defs>
+                  <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#F59E0B" stopOpacity={0.9}/>
+                    <stop offset="95%" stopColor="#F59E0B" stopOpacity={0.6}/>
+                  </linearGradient>
+                </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                <XAxis dataKey="task" stroke="#9CA3AF" />
-                <YAxis stroke="#9CA3AF" />
+                <XAxis 
+                  dataKey="task" 
+                  stroke="#9CA3AF" 
+                  fontSize={12}
+                  tickLine={{ stroke: '#374151' }}
+                />
+                <YAxis 
+                  stroke="#9CA3AF" 
+                  fontSize={12}
+                  tickLine={{ stroke: '#374151' }}
+                />
                 <Tooltip 
                   contentStyle={{ 
                     backgroundColor: '#1F2937', 
                     border: '1px solid #374151',
-                    borderRadius: '8px'
+                    borderRadius: '12px',
+                    boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)'
                   }}
-                  formatter={(value) => [`${value}h`, 'Hours']}
+                  formatter={(value) => [`${value}h`, 'Stunden']}
                 />
-                <Bar dataKey="hours" fill="#F59E0B" />
-                <Line type="monotone" dataKey="hours" stroke="#EF4444" strokeWidth={2} />
+                <Bar 
+                  dataKey="hours" 
+                  fill="url(#barGradient)" 
+                  radius={[4, 4, 0, 0]}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="hours" 
+                  stroke="#EF4444" 
+                  strokeWidth={3}
+                  dot={{ fill: '#EF4444', strokeWidth: 2, r: 4 }}
+                />
               </ComposedChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
       )}
+      </div>
     </div>
   )
 }

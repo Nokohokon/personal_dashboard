@@ -25,10 +25,17 @@ export default function SignIn() {
 
   // Bereits angemeldete Benutzer zum Dashboard weiterleiten
   useEffect(() => {
+    console.log("SignIn - Session Status:", { status, session, email: session?.user?.email })
+    
     if (status === "authenticated") {
+      console.log("SignIn - User is authenticated, redirecting to dashboard")
       router.push("/dashboard")
+    } else if (status === "unauthenticated") {
+      console.log("SignIn - User is unauthenticated")
+    } else if (status === "loading") {
+      console.log("SignIn - Session is loading")
     }
-  }, [status, router])
+  }, [status, router, session])
 
   const handleCredentialsSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -36,14 +43,22 @@ export default function SignIn() {
     setError("")
 
     try {
+      console.log("Attempting credentials login for:", email)
+      
       const result = await signIn("credentials", {
         email,
         password,
         redirect: false,
       })
 
+      console.log("Login result:", result)
+
       if (result?.error) {
-        setError("Invalid credentials")
+        if (result.error === "CredentialsSignin") {
+          setError("Ungültige E-Mail-Adresse oder Passwort. Möglicherweise wurde Ihr Konto über Magic Link erstellt und hat kein Passwort.")
+        } else {
+          setError("Anmeldung fehlgeschlagen: " + result.error)
+        }
       } else {
         // Refresh the session
         await getSession()
@@ -51,7 +66,8 @@ export default function SignIn() {
         router.refresh()
       }
     } catch (error) {
-      setError("An error occurred. Please try again.")
+      console.error("Login error:", error)
+      setError("Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.")
     } finally {
       setIsLoading(false)
     }
@@ -130,125 +146,24 @@ export default function SignIn() {
           </p>
         </div>
 
-        {/* Sign-in method toggle */}
-        <div className="flex bg-slate-800 rounded-lg p-1">
-          <button
-            type="button"
-            onClick={() => setSignInMethod('credentials')}
-            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${
-              signInMethod === 'credentials'
-                ? 'bg-purple-600 text-white shadow-sm'
-                : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            Passwort
-          </button>
-          <button
-            type="button"
-            onClick={() => setSignInMethod('magic-link')}
-            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${
-              signInMethod === 'magic-link'
-                ? 'bg-purple-600 text-white shadow-sm'
-                : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            Magic Link
-          </button>
-        </div>
-
-        {signInMethod === 'credentials' ? (
-          <form className="space-y-6" onSubmit={handleCredentialsSubmit}>
-            {error && (
-              <div className="bg-red-50 bg-red-900/20 border border-red-200 border-red-800 text-red-600 text-red-400 px-4 py-3 rounded-lg text-sm">
-                {error}
-              </div>
-            )}
-
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="email" className="text-slate-700 text-slate-300">
-                  Email address
-                </Label>
-                <div className="mt-1 relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" />
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    required
-                    className="pl-10"
-                    placeholder="Enter your email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              <div>
-                <Label htmlFor="password" className="text-slate-700 text-slate-300">
-                  Password
-                </Label>
-                <div className="mt-1 relative">
-                  <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" />
-                  <Input
-                    id="password"
-                    name="password"
-                    type={showPassword ? "text" : "password"}
-                    required
-                    className="pl-10 pr-10"
-                    placeholder="Enter your password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                  <button
-                    type="button"
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? (
-                      <EyeOff className="h-5 w-5 text-slate-400" />
-                    ) : (
-                      <Eye className="h-5 w-5 text-slate-400" />
-                    )}
-                  </button>
-                </div>
-              </div>
+        {/* Temporär nur Credentials-Anmeldung */}
+        <form className="space-y-6" onSubmit={handleCredentialsSubmit}>
+          {error && (
+            <div className="bg-red-50 bg-red-900/20 border border-red-200 border-red-800 text-red-600 text-red-400 px-4 py-3 rounded-lg text-sm">
+              {error}
             </div>
+          )}
 
-            <Button
-              type="submit"
-              className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
-              disabled={isLoading}
-            >
-              {isLoading ? "Signing in..." : "Sign in"}
-            </Button>
-          </form>
-        ) : (
-          <form className="space-y-6" onSubmit={handleMagicLinkSubmit}>
-            {error && (
-              <div className="bg-red-50 bg-red-900/20 border border-red-200 border-red-800 text-red-600 text-red-400 px-4 py-3 rounded-lg text-sm">
-                {error}
-              </div>
-            )}
-
-            <div className="text-center">
-              <div className="mx-auto h-12 w-12 bg-gradient-to-r from-green-600 to-blue-600 rounded-xl flex items-center justify-center mb-4">
-                <Send className="h-6 w-6 text-white" />
-              </div>
-              <p className="text-sm text-slate-400 mb-6">
-                Wir senden Ihnen einen sicheren Link zum Anmelden per E-Mail zu.
-              </p>
-            </div>
-
+          <div className="space-y-4">
             <div>
-              <Label htmlFor="magic-email" className="text-slate-700 text-slate-300">
+              <Label htmlFor="email" className="text-slate-700 text-slate-300">
                 Email address
               </Label>
               <div className="mt-1 relative">
                 <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" />
                 <Input
-                  id="magic-email"
-                  name="magic-email"
+                  id="email"
+                  name="email"
                   type="email"
                   required
                   className="pl-10"
@@ -259,25 +174,45 @@ export default function SignIn() {
               </div>
             </div>
 
-            <Button
-              type="submit"
-              className="w-full bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700"
-              disabled={isMagicLinkLoading}
-            >
-              {isMagicLinkLoading ? (
-                <div className="flex items-center justify-center">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  Sende Magic Link...
-                </div>
-              ) : (
-                <div className="flex items-center justify-center">
-                  <Send className="h-4 w-4 mr-2" />
-                  Send Magic Link
-                </div>
-              )}
-            </Button>
-          </form>
-        )}
+            <div>
+              <Label htmlFor="password" className="text-slate-700 text-slate-300">
+                Password
+              </Label>
+              <div className="mt-1 relative">
+                <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" />
+                <Input
+                  id="password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  required
+                  className="pl-10 pr-10"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <button
+                  type="button"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5 text-slate-400" />
+                  ) : (
+                    <Eye className="h-5 w-5 text-slate-400" />
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <Button
+            type="submit"
+            className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+            disabled={isLoading}
+          >
+            {isLoading ? "Signing in..." : "Sign in"}
+          </Button>
+        </form>
 
         <div className="text-center">
           <p className="text-sm text-slate-400">
@@ -287,7 +222,17 @@ export default function SignIn() {
               className="font-medium text-purple-600 hover:text-purple-500 text-purple-400"
             >
               Sign up
-            </Link>            </p>
+            </Link>
+          </p>
+          <p className="text-sm text-slate-400 mt-2">
+            Nur Magic Link aber möchten ein Passwort?{" "}
+            <Link
+              href="/auth/add-password"
+              className="font-medium text-green-600 hover:text-green-500 text-green-400"
+            >
+              Passwort hinzufügen
+            </Link>
+          </p>
         </div>
       </div>
       </div>

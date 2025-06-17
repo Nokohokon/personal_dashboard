@@ -97,49 +97,65 @@ const providers = [
     },
     async authorize(credentials) {
       if (!credentials?.email || !credentials?.password) {
+        console.log("Missing credentials")
         return null
       }
 
-      const client = await clientPromise
-      const users = client.db().collection("users")
-      
-      const user = await users.findOne({
-        email: credentials.email
-      })
+      try {
+        const client = await clientPromise
+        const users = client.db().collection("users")
+        
+        const user = await users.findOne({
+          email: credentials.email.toLowerCase()
+        })
 
-      if (!user) {
+        if (!user) {
+          console.log("User not found:", credentials.email)
+          return null
+        }
+
+        if (!user.password) {
+          console.log("User has no password (likely created via magic link)")
+          return null
+        }
+
+        const isPasswordValid = await bcrypt.compare(
+          credentials.password,
+          user.password
+        )
+
+        if (!isPasswordValid) {
+          console.log("Invalid password for user:", credentials.email)
+          return null
+        }
+
+        console.log("Login successful for user:", credentials.email)
+        return {
+          id: user._id.toString(),
+          email: user.email,
+          name: user.name,
+        }
+      } catch (error) {
+        console.error("Error in authorize function:", error)
         return null
-      }
-
-      const isPasswordValid = await bcrypt.compare(
-        credentials.password,
-        user.password
-      )
-
-      if (!isPasswordValid) {
-        return null
-      }
-
-      return {
-        id: user._id.toString(),
-        email: user.email,
-        name: user.name,
       }
     }
   })
 ]
 
-// Add email provider if configured
-const emailProvider = getEmailProvider()
-if (emailProvider) {
-  providers.push(emailProvider)
-}
+// Temporär Email Provider deaktivieren für JWT-Sessions
+// const emailProvider = getEmailProvider()
+// if (emailProvider) {
+//   providers.push(emailProvider)
+// }
 
 export const authOptions: NextAuthOptions = {
-  adapter: MongoDBAdapter(clientPromise),
+  // Temporär auf JWT umstellen, um das Session-Problem zu lösen
+  // adapter: MongoDBAdapter(clientPromise),
   providers,
   session: {
-    strategy: "database"
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   pages: {
     signIn: "/auth/signin",
@@ -147,36 +163,84 @@ export const authOptions: NextAuthOptions = {
     newUser: "/auth/success",
   },
   callbacks: {
+    async jwt({ token, user, account }) {
+      console.log("🔑 JWT callback:", { 
+        hasToken: !!token, 
+        hasUser: !!user, 
+        hasAccount: !!account,
+        tokenEmail: token.email,
+        userEmail: user?.email 
+      })
+      
+      // Persist the OAuth account details to the token right after signin
+      if (account && user) {
+        token.id = user.id
+        token.email = user.email
+        token.name = user.name
+        console.log("🔑 JWT - Adding user data to token")
+      }
+      return token
+    },
     async signIn({ user, account, profile, email, credentials }) {
+      console.log("🔐 SignIn callback:", { 
+        provider: account?.provider, 
+        userEmail: user?.email || email,
+        hasUser: !!user,
+        accountType: account?.type,
+        userId: user?.id
+      });
+      
       // Für Magic Links (Email Provider)
       if (account?.provider === "email") {
+        console.log("✅ Magic Link signin approved")
         return true
       }
       
       // Für Credentials Provider
       if (account?.provider === "credentials") {
+        console.log("✅ Credentials signin approved")
         return true
       }
       
+      console.log("✅ Default signin approved")
       return true
     },
     async redirect({ url, baseUrl }) {
-      // Nach erfolgreichem Magic Link Login immer zum Dashboard weiterleiten
+      console.log("🔄 Redirect callback:", { url, baseUrl });
+      
+      // Nach erfolgreichem Login immer zum Dashboard weiterleiten
       if (url.startsWith("/") || url.startsWith(baseUrl)) {
         // Wenn es ein relativer Pfad ist oder die gleiche Domain
         if (url.includes("/auth/signin") || url.includes("/api/auth/callback") || url.includes("/auth/success")) {
-          return `${baseUrl}/dashboard`
+          const dashboardUrl = `${baseUrl}/dashboard`
+          console.log("🎯 Redirecting to dashboard:", dashboardUrl)
+          return dashboardUrl
         }
+        console.log("🎯 Redirecting to original URL:", url)
         return url
       }
       // Für externe URLs zum Dashboard weiterleiten
-      return `${baseUrl}/dashboard`
+      const dashboardUrl = `${baseUrl}/dashboard`
+      console.log("🎯 External URL, redirecting to dashboard:", dashboardUrl)
+      return dashboardUrl
     },
-    async session({ session, user }) {
-      if (user && session.user) {
-        (session.user as any).id = user.id
+    async session({ session, token }) {
+      console.log("📋 Session callback:", { 
+        hasSession: !!session, 
+        hasToken: !!token, 
+        sessionUserEmail: session?.user?.email,
+        tokenId: token?.id,
+        tokenEmail: token?.email
+      })
+      
+      if (token && session?.user) {
+        (session.user as any).id = token.id
+        session.user.email = token.email as string
+        session.user.name = token.name as string
+        console.log("📋 Session updated with token data")
       }
       return session
     }
-  }
+  },
+  debug: process.env.NODE_ENV === "development",
 }

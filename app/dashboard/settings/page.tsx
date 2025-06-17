@@ -27,6 +27,9 @@ export default function SettingsPage() {
     newPassword: "",
     confirmPassword: ""
   })
+  const [hasPassword, setHasPassword] = useState(false)
+  const [passwordError, setPasswordError] = useState("")
+  const [passwordSuccess, setPasswordSuccess] = useState("")
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -59,36 +62,72 @@ export default function SettingsPage() {
     }
   }
 
-  const handlePasswordChange = async () => {
+  const handlePasswordUpdate = async () => {
+    setIsLoading(true)
+    setPasswordError("")
+    setPasswordSuccess("")
+    
     if (profileForm.newPassword !== profileForm.confirmPassword) {
-      alert("New passwords don't match")
+      setPasswordError("Passwörter stimmen nicht überein")
+      setIsLoading(false)
       return
     }
 
     if (profileForm.newPassword.length < 6) {
-      alert("New password must be at least 6 characters")
+      setPasswordError("Passwort muss mindestens 6 Zeichen lang sein")
+      setIsLoading(false)
       return
     }
 
-    setIsLoading(true)
-    
     try {
-      // Here you would typically make an API call to change the password
-      console.log("Password change requested")
-      alert("Password changed successfully!")
-      setProfileForm(prev => ({
-        ...prev,
-        currentPassword: "",
-        newPassword: "",
-        confirmPassword: ""
-      }))
+      const response = await fetch(hasPassword ? "/api/auth/change-password" : "/api/auth/add-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          currentPassword: profileForm.currentPassword,
+          password: profileForm.newPassword
+        })
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        setPasswordSuccess(hasPassword ? "Passwort erfolgreich geändert" : "Passwort erfolgreich hinzugefügt")
+        setProfileForm(prev => ({
+          ...prev,
+          currentPassword: "",
+          newPassword: "",
+          confirmPassword: ""
+        }))
+        setHasPassword(true)
+      } else {
+        setPasswordError(data.error || "Fehler beim Ändern des Passworts")
+      }
     } catch (error) {
-      console.error("Error changing password:", error)
-      alert("Error changing password")
+      setPasswordError("Ein Fehler ist aufgetreten")
     } finally {
       setIsLoading(false)
     }
   }
+
+  // Check if user has password
+  useEffect(() => {
+    const checkPassword = async () => {
+      try {
+        const response = await fetch("/api/auth/check-password")
+        const data = await response.json()
+        setHasPassword(data.hasPassword)
+      } catch (error) {
+        console.error("Error checking password:", error)
+      }
+    }
+    
+    if (session?.user) {
+      checkPassword()
+    }
+  }, [session])
 
   const exportData = async () => {
     setIsLoading(true)
@@ -224,45 +263,67 @@ export default function SettingsPage() {
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <Lock className="mr-2 h-5 w-5" />
-                  Change Password
+                  {hasPassword ? "Passwort ändern" : "Passwort hinzufügen"}
                 </CardTitle>
+                <p className="text-sm text-slate-400">
+                  {hasPassword 
+                    ? "Ändern Sie Ihr aktuelles Passwort" 
+                    : "Fügen Sie ein Passwort hinzu, um sich auch ohne Magic Link anmelden zu können"
+                  }
+                </p>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div>
-                  <Label htmlFor="currentPassword">Current Password</Label>
-                  <Input
-                    id="currentPassword"
-                    type="password"
-                    value={profileForm.currentPassword}
-                    onChange={(e) => setProfileForm(prev => ({ ...prev, currentPassword: e.target.value }))}
-                  />
-                </div>
+                {hasPassword && (
+                  <div>
+                    <Label htmlFor="currentPassword">Aktuelles Passwort</Label>
+                    <Input
+                      id="currentPassword"
+                      type="password"
+                      value={profileForm.currentPassword}
+                      onChange={(e) => setProfileForm(prev => ({ ...prev, currentPassword: e.target.value }))}
+                      placeholder="Geben Sie Ihr aktuelles Passwort ein"
+                    />
+                  </div>
+                )}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="newPassword">New Password</Label>
+                    <Label htmlFor="newPassword">{hasPassword ? "Neues Passwort" : "Passwort"}</Label>
                     <Input
                       id="newPassword"
                       type="password"
                       value={profileForm.newPassword}
                       onChange={(e) => setProfileForm(prev => ({ ...prev, newPassword: e.target.value }))}
+                      placeholder="Mindestens 6 Zeichen"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="confirmPassword">Confirm New Password</Label>
+                    <Label htmlFor="confirmPassword">Passwort bestätigen</Label>
                     <Input
                       id="confirmPassword"
                       type="password"
                       value={profileForm.confirmPassword}
                       onChange={(e) => setProfileForm(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                      placeholder="Passwort wiederholen"
                     />
                   </div>
                 </div>
                 <Button 
-                  onClick={handlePasswordChange} 
-                  disabled={isLoading || !profileForm.currentPassword || !profileForm.newPassword}
+                  onClick={handlePasswordUpdate} 
+                  disabled={isLoading || (!hasPassword && !profileForm.newPassword) || (hasPassword && (!profileForm.currentPassword || !profileForm.newPassword))}
+                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
                 >
-                  {isLoading ? "Changing..." : "Change Password"}
+                  {isLoading ? (hasPassword ? "Ändern..." : "Hinzufügen...") : (hasPassword ? "Passwort ändern" : "Passwort hinzufügen")}
                 </Button>
+                {passwordError && (
+                  <div className="bg-red-900/20 border border-red-800 text-red-400 px-4 py-3 rounded-lg text-sm">
+                    {passwordError}
+                  </div>
+                )}
+                {passwordSuccess && (
+                  <div className="bg-green-900/20 border border-green-800 text-green-400 px-4 py-3 rounded-lg text-sm">
+                    {passwordSuccess}
+                  </div>
+                )}
               </CardContent>
             </Card>          </TabsContent>
 

@@ -49,34 +49,35 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   }
 
   return (
-    <div className="h-screen flex bg-slate-900 overflow-hidden">
+    <div className="h-screen flex bg-gradient-to-br from-slate-950 via-indigo-950/20 to-slate-950 overflow-hidden">
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-20 bg-black bg-opacity-50 lg:hidden"
+          className="fixed inset-0 z-20 bg-black/60 backdrop-blur-sm lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       {/* Sidebar */}
       <div
-        className={`fixed inset-y-0 left-0 z-30 w-64 transform bg-slate-800 shadow-xl transition-transform duration-300 ease-in-out lg:translate-x-0 lg:relative lg:h-full ${
+        className={`fixed inset-y-0 left-0 z-30 w-64 transform glass border-r border-slate-800/50 shadow-2xl transition-transform duration-300 ease-in-out lg:translate-x-0 lg:relative lg:h-full ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         <div className="flex h-full flex-col">
           {/* Logo and close button */}
-          <div className="flex h-16 items-center justify-between px-6 border-b border-slate-700">
-            <div className="flex items-center">
-              <div className="h-8 w-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
+          <div className="flex h-16 items-center justify-between px-6 border-b border-slate-800/50">
+            <div className="flex items-center group">
+              <div className="h-9 w-9 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-glow transition-all duration-300">
                 <BarChart3 className="h-5 w-5 text-white" />
               </div>
-              <span className="ml-2 text-xl font-bold text-white">
+              <span className="ml-3 text-xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
                 Dashboard
               </span>
-            </div>            <button
+            </div>
+            <button
               onClick={() => setSidebarOpen(false)}
-              className="lg:hidden text-slate-400 hover:text-slate-200"
+              className="lg:hidden text-slate-400 hover:text-slate-200 transition-colors p-1 rounded-lg hover:bg-slate-800/50"
             >
               <X className="h-6 w-6" />
             </button>

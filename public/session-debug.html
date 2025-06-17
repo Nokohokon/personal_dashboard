@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Session Debug</title>
+</head>
+<body>
+    <h1>Session Debug</h1>
+    <div id="output"></div>
+    
+    <script>
+        async function checkSession() {
+            try {
+                const response = await fetch('/api/auth/session');
+                const session = await response.json();
+                
+                document.getElementById('output').innerHTML = `
+                    <h2>Session Response:</h2>
+                    <pre>${JSON.stringify(session, null, 2)}</pre>
+                    <h2>Response Status:</h2>
+                    <p>${response.status} ${response.statusText}</p>
+                `;
+            } catch (error) {
+                document.getElementById('output').innerHTML = `
+                    <h2>Error:</h2>
+                    <pre>${error.message}</pre>
+                `;
+            }
+        }
+        
+        checkSession();
+        
+        // Check again every 2 seconds
+        setInterval(checkSession, 2000);
+    </script>
+</body>
+</html>
