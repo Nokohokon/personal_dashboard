@@ -348,6 +348,8 @@ export default function ProjectDetailsPage() {
     }
   }
 
+  // Function to get initials from name or email
+
   const getInitials = (name: string, email: string) => {
     if (name) {
       return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
@@ -367,7 +369,7 @@ export default function ProjectDetailsPage() {
                 <div className="space-y-2">
                   <div className="h-8 w-64 bg-gray-700 rounded"></div>
                   <div className="h-4 w-48 bg-gray-700 rounded"></div>
-                </div>
+                </div>s
               </div>
               <div className="flex flex-wrap gap-2">
                 <div className="h-10 w-24 bg-gray-700 rounded"></div>
