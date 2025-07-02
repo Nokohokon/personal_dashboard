@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./dashboard/projects/mobile-responsive.css";
 
 :root {
   /* Dark theme enhanced colors */
@@ -36,6 +37,9 @@ body {
   min-height: 100vh;
   line-height: 1.6;
   font-feature-settings: "rlig" 1, "calt" 1;
+  /* Enhanced mobile touch targets */
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 /* Enhanced scrollbar styling */
@@ -143,4 +147,98 @@ body {
 
 .shadow-card {
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+}
+
+/* Mobile-first responsive utilities */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Better text rendering on all devices */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Improved focus states for accessibility */
+.focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+}
+
+/* Mobile-optimized scrolling */
+.scroll-smooth {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Responsive text sizing */
+.text-responsive {
+  font-size: clamp(0.875rem, 2.5vw, 1.125rem);
+}
+
+/* Enhanced button press feedback */
+.button-press {
+  transform: scale(0.98);
+  transition: transform 0.1s ease-in-out;
+}
+
+/* Mobile-safe hover states */
+@media (hover: hover) and (pointer: fine) {
+  .hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  }
+}
+
+/* Improved mobile card spacing */
+@media (max-width: 640px) {
+  .card-mobile {
+    margin: 0.75rem;
+    padding: 1rem;
+  }
+  
+  .grid-mobile {
+    gap: 0.75rem;
+  }
+  
+  .text-mobile {
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+}
+
+/* Better mobile navigation */
+@media (max-width: 1024px) {
+  .nav-mobile {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1rem;
+    z-index: 50;
+  }
+}
+
+/* Responsive grid utilities */
+.grid-responsive {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .grid-responsive {
+    gap: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid-responsive {
+    gap: 2rem;
+  }
 }

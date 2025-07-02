@@ -394,53 +394,53 @@ export function ProjectAnalyticsEnhanced({ projectId, project }: ProjectAnalytic
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-slate-900 p-6">
-      <div className="max-w-7xl mx-auto space-y-8">
+    <div className="w-full bg-gradient-to-br from-slate-900 via-gray-900 to-slate-900 p-3 xs:p-4 sm:p-6">
+      <div className="w-full max-w-none mx-auto space-y-4 xs:space-y-6 sm:space-y-8">
         {/* Enhanced Header */}
         <div className="relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-emerald-600/20 blur-xl"></div>
           <Card className="relative bg-white/5 backdrop-blur-2xl border border-white/10 shadow-2xl">
-            <CardHeader className="pb-8">
-              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
-                <div className="flex items-center space-x-4">
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl blur opacity-75"></div>
-                    <div className="relative p-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl">
-                      <BarChart3 className="w-6 h-6 text-white" />
+            <CardHeader className="pb-4 xs:pb-6 sm:pb-8">
+              <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0">
+                <div className="flex flex-col xs:flex-row xs:items-center space-y-3 xs:space-y-0 xs:space-x-3 sm:space-x-4">
+                  <div className="relative flex-shrink-0">
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl xs:rounded-2xl blur opacity-75"></div>
+                    <div className="relative p-2 xs:p-2.5 sm:p-3 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl xs:rounded-2xl">
+                      <BarChart3 className="w-5 h-5 xs:w-6 xs:h-6 text-white" />
                     </div>
                   </div>
-                  <div>
-                    <CardTitle className="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                  <div className="min-w-0 flex-1">
+                    <CardTitle className="text-lg xs:text-xl sm:text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent leading-tight">
                       Project Analytics Dashboard
                     </CardTitle>
-                    <p className="text-gray-400 text-sm mt-1">
+                    <p className="text-gray-400 text-xs xs:text-sm mt-1 truncate">
                       Umfassende Analyse für <span className="font-semibold text-white">{project.name}</span>
                     </p>
                   </div>
                 </div>
                 
-                <div className="flex items-center space-x-3">
+                <div className="flex flex-col xs:flex-row items-stretch xs:items-center space-y-2 xs:space-y-0 xs:space-x-2 sm:space-x-3">
                   <Button
                     onClick={refreshData}
                     disabled={refreshing}
-                    className="bg-white/10 hover:bg-white/20 border border-white/20 text-white transition-all duration-200 hover:scale-105"
+                    className="bg-white/10 hover:bg-white/20 border border-white/20 text-white transition-all duration-200 hover:scale-105 text-xs xs:text-sm"
                     size="sm"
                   >
-                    <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+                    <RefreshCw className={`w-3 h-3 xs:w-4 xs:h-4 mr-1 xs:mr-2 ${refreshing ? 'animate-spin' : ''}`} />
                     Aktualisieren
                   </Button>
                   
                   <Button
                     onClick={exportAnalytics}
-                    className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white transition-all duration-200 hover:scale-105 shadow-lg"
+                    className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white transition-all duration-200 hover:scale-105 shadow-lg text-xs xs:text-sm"
                     size="sm"
                   >
-                    <Download className="w-4 h-4 mr-2" />
+                    <Download className="w-3 h-3 xs:w-4 xs:h-4 mr-1 xs:mr-2" />
                     Exportieren
                   </Button>
                   
                   <Select value={timeRange} onValueChange={setTimeRange}>
-                    <SelectTrigger className="w-40 bg-white/10 border-white/20 text-white backdrop-blur-sm">
+                    <SelectTrigger className="w-full xs:w-32 sm:w-40 bg-white/10 border-white/20 text-white backdrop-blur-sm text-xs xs:text-sm">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-gray-900/95 border-white/20 backdrop-blur-sm">
@@ -456,7 +456,7 @@ export function ProjectAnalyticsEnhanced({ projectId, project }: ProjectAnalytic
         </div>
 
       {/* Project Health Dashboard */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-in slide-in-from-bottom-4 duration-700">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 xs:gap-4 sm:gap-6 animate-in slide-in-from-bottom-4 duration-700">
         <Card className="relative overflow-hidden bg-gradient-to-br from-green-500/10 via-emerald-500/10 to-teal-500/10 border border-green-500/30 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1">
           <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent"></div>
           <CardHeader className="relative">

@@ -1,0 +1,23 @@
+Failed to compile.
+
+./app/dashboard/projects/[id]/page.tsx
+Error:   [31mx[0m Unexpected token `div`. Expected jsx identifier
+     ,-[[36;1;4m/Users/konjarehm/Documents/Programmieren/VSC /REACT/learning/personal_dashboard/app/dashboard/projects/[id]/page.tsx[0m:423:1]
+ [2m420[0m |   const isOwner = project.userId === (session?.user as any)?.id
+ [2m421[0m | 
+ [2m422[0m |   return (
+ [2m423[0m |     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+     : [35;1m     ^^^[0m
+ [2m424[0m |       <div className="w-full max-w-7xl mx-auto px-2 xs:px-3 sm:px-4 md:px-6 py-2 xs:py-4 sm:py-6 md:py-8 space-y-3 xs:space-y-4 sm:space-y-6 md:space-y-8 overflow-x-hidden">
+ [2m425[0m |         {/* Enhanced Header Section with better professional layout */}
+ [2m426[0m |         <div className="bg-gray-800/60 backdrop-blur-xl border border-gray-700/50 rounded-xl xs:rounded-2xl p-3 xs:p-4 sm:p-6 md:p-8 shadow-2xl">
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./app/dashboard/projects/[id]/page.tsx
+
+
+> Build failed because of webpack errors

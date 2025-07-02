@@ -219,65 +219,65 @@ export default function ProjectsPage() {
   }
 
   return (
-    <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-white">Projects</h1>
-            <p className="text-gray-400">Manage your projects and track progress</p>
+    <div className="w-full max-w-full overflow-x-hidden mobile-safe-container space-y-4 xs:space-y-5 sm:space-y-6 px-2 xs:px-3 sm:px-4 md:px-6">
+        <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-3 xs:gap-4 w-full min-w-0">
+          <div className="min-w-0 flex-1">
+            <h1 className="text-2xl xs:text-3xl sm:text-4xl font-bold text-white responsive-title break-words">Projects</h1>
+            <p className="text-slate-400 text-sm xs:text-base sm:text-lg responsive-subtitle break-words">Manage your projects and track progress</p>
           </div>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-              <Button onClick={resetForm} className="bg-blue-600 hover:bg-blue-700">
+              <Button onClick={resetForm} className="bg-blue-600 hover:bg-blue-700 w-full xs:w-auto text-sm xs:text-base flex-shrink-0">
                 <Plus className="w-4 h-4 mr-2" />
-                New Project
+                <span className="min-w-0">New Project</span>
               </Button>
             </DialogTrigger>
-            <DialogContent className="bg-gray-800 border-gray-700 text-white max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogContent className="bg-gray-800 border-gray-700 text-white modal-content-safe max-w-sm xs:max-w-md sm:max-w-lg lg:max-w-2xl mx-2 xs:mx-4 max-h-[90vh] overflow-y-auto">
               <DialogHeader>
-                <DialogTitle>
+                <DialogTitle className="text-base xs:text-lg sm:text-xl">
                   {editingProject ? "Edit Project" : "Create New Project"}
                 </DialogTitle>
               </DialogHeader>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <form onSubmit={handleSubmit} className="space-y-3 xs:space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 xs:gap-4">
                   <div>
-                    <Label htmlFor="name">Project Name</Label>
+                    <Label htmlFor="name" className="text-sm xs:text-base">Project Name</Label>
                     <Input
                       id="name"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       required
-                      className="bg-gray-700 border-gray-600 text-white"
+                      className="bg-gray-700 border-gray-600 text-white text-sm xs:text-base"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="client">Client (Optional)</Label>
+                    <Label htmlFor="client" className="text-sm xs:text-base">Client (Optional)</Label>
                     <Input
                       id="client"
                       value={client}
                       onChange={(e) => setClient(e.target.value)}
-                      className="bg-gray-700 border-gray-600 text-white"
+                      className="bg-gray-700 border-gray-600 text-white text-sm xs:text-base"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <Label htmlFor="description">Description</Label>
+                  <Label htmlFor="description" className="text-sm xs:text-base">Description</Label>
                   <Textarea
                     id="description"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     rows={3}
                     required
-                    className="bg-gray-700 border-gray-600 text-white"
+                    className="bg-gray-700 border-gray-600 text-white text-sm xs:text-base"
                   />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 xs:gap-4">
                   <div>
-                    <Label htmlFor="status">Status</Label>
+                    <Label htmlFor="status" className="text-sm xs:text-base">Status</Label>
                     <Select value={status_} onValueChange={(value: any) => setStatus_(value)}>
-                      <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                      <SelectTrigger className="bg-gray-700 border-gray-600 text-white text-sm xs:text-base">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="bg-gray-700 border-gray-600">
@@ -290,9 +290,9 @@ export default function ProjectsPage() {
                     </Select>
                   </div>
                   <div>
-                    <Label htmlFor="priority">Priority</Label>
+                    <Label htmlFor="priority" className="text-sm xs:text-base">Priority</Label>
                     <Select value={priority} onValueChange={(value: any) => setPriority(value)}>
-                      <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                      <SelectTrigger className="bg-gray-700 border-gray-600 text-white text-sm xs:text-base">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="bg-gray-700 border-gray-600">
@@ -306,33 +306,33 @@ export default function ProjectsPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 xs:gap-4">
                   <div>
-                    <Label htmlFor="startDate">Start Date</Label>
+                    <Label htmlFor="startDate" className="text-sm xs:text-base">Start Date</Label>
                     <Input
                       id="startDate"
                       type="date"
                       value={startDate}
                       onChange={(e) => setStartDate(e.target.value)}
                       required
-                      className="bg-gray-700 border-gray-600 text-white"
+                      className="bg-gray-700 border-gray-600 text-white text-sm xs:text-base"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="endDate">End Date (Optional)</Label>
+                    <Label htmlFor="endDate" className="text-sm xs:text-base">End Date (Optional)</Label>
                     <Input
                       id="endDate"
                       type="date"
                       value={endDate}
                       onChange={(e) => setEndDate(e.target.value)}
-                      className="bg-gray-700 border-gray-600 text-white"
+                      className="bg-gray-700 border-gray-600 text-white text-sm xs:text-base"
                     />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 xs:gap-4">
                   <div>
-                    <Label htmlFor="budget">Budget (Optional)</Label>
+                    <Label htmlFor="budget" className="text-sm xs:text-base">Budget (Optional)</Label>
                     <Input
                       id="budget"
                       type="number"
@@ -340,11 +340,11 @@ export default function ProjectsPage() {
                       value={budget}
                       onChange={(e) => setBudget(e.target.value)}
                       placeholder="0.00"
-                      className="bg-gray-700 border-gray-600 text-white"
+                      className="bg-gray-700 border-gray-600 text-white text-sm xs:text-base"
                     />
                   </div>
                   <div>
-                    <Label htmlFor="progress">Progress (%)</Label>
+                    <Label htmlFor="progress" className="text-sm xs:text-base">Progress (%)</Label>
                     <Input
                       id="progress"
                       type="number"
@@ -352,42 +352,42 @@ export default function ProjectsPage() {
                       max="100"
                       value={progress}
                       onChange={(e) => setProgress(parseInt(e.target.value) || 0)}
-                      className="bg-gray-700 border-gray-600 text-white"
+                      className="bg-gray-700 border-gray-600 text-white text-sm xs:text-base"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <Label htmlFor="tags">Tags (comma-separated)</Label>
+                  <Label htmlFor="tags" className="text-sm xs:text-base">Tags (comma-separated)</Label>
                   <Input
                     id="tags"
                     value={tags}
                     onChange={(e) => setTags(e.target.value)}
                     placeholder="web, mobile, urgent"
-                    className="bg-gray-700 border-gray-600 text-white"
+                    className="bg-gray-700 border-gray-600 text-white text-sm xs:text-base"
                   />
                 </div>
 
                 <div>
-                  <Label htmlFor="teamMembers">Team Members (comma-separated)</Label>
+                  <Label htmlFor="teamMembers" className="text-sm xs:text-base">Team Members (comma-separated)</Label>
                   <Input
                     id="teamMembers"
                     value={teamMembers}
                     onChange={(e) => setTeamMembers(e.target.value)}
                     placeholder="John Doe, Jane Smith"
-                    className="bg-gray-700 border-gray-600 text-white"
+                    className="bg-gray-700 border-gray-600 text-white text-sm xs:text-base"
                   />
                 </div>
 
-                <div className="flex gap-2">
-                  <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
+                <div className="flex flex-col xs:flex-row gap-2 xs:gap-3">
+                  <Button type="submit" className="bg-blue-600 hover:bg-blue-700 flex-1 xs:flex-none text-sm xs:text-base">
                     {editingProject ? "Update" : "Create"}
                   </Button>
                   <Button
                     type="button"
                     variant="outline"
                     onClick={() => setIsDialogOpen(false)}
-                    className="border-gray-600 text-white hover:bg-gray-700"
+                    className="border-gray-600 text-white hover:bg-gray-700 text-sm xs:text-base"
                   >
                     Cancel
                   </Button>
@@ -398,45 +398,47 @@ export default function ProjectsPage() {
         </div>
 
         {/* Search and Filter */}
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="flex-1">
+        <div className="flex flex-col sm:flex-row gap-3 xs:gap-4 w-full max-w-full">
+          <div className="flex-1 min-w-0 w-full">
             <Input
               placeholder="Search projects..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-400"
+              className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-400 text-sm xs:text-base input-responsive"
             />
           </div>
-          <Select value={selectedStatus} onValueChange={setSelectedStatus}>
-            <SelectTrigger className="bg-gray-800 border-gray-700 text-white sm:w-48">
-              <SelectValue placeholder="All Status" />
-            </SelectTrigger>
-            <SelectContent className="bg-gray-800 border-gray-700">
-              <SelectItem value="all" className="text-white hover:bg-gray-700">All Status</SelectItem>
-              {statusOptions.map(option => (
-                <SelectItem key={option.value} value={option.value} className="text-white hover:bg-gray-700">
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="w-full sm:w-48 flex-shrink-0">
+            <Select value={selectedStatus} onValueChange={setSelectedStatus}>
+              <SelectTrigger className="bg-gray-800 border-gray-700 text-white w-full text-sm xs:text-base">
+                <SelectValue placeholder="All Status" />
+              </SelectTrigger>
+              <SelectContent className="bg-gray-800 border-gray-700">
+                <SelectItem value="all" className="text-white hover:bg-gray-700">All Status</SelectItem>
+                {statusOptions.map(option => (
+                  <SelectItem key={option.value} value={option.value} className="text-white hover:bg-gray-700">
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
         {/* Project Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 xs:gap-4 w-full max-w-full mobile-safe-grid">
           {statusOptions.map(status => {
             const count = projects.filter(p => p.status === status.value).length
             const StatusIcon = status.icon
             return (
-              <Card key={status.value} className="bg-gray-800 border-gray-700">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-400">{status.label}</p>
-                      <p className="text-2xl font-bold text-white">{count}</p>
+              <Card key={status.value} className="bg-gray-800 border-gray-700 min-w-0 w-full">
+                <CardContent className="responsive-card-padding">
+                  <div className="flex items-center justify-between min-w-0">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs xs:text-sm text-gray-400 truncate">{status.label}</p>
+                      <p className="text-lg xs:text-xl sm:text-2xl font-bold text-white">{count}</p>
                     </div>
-                    <div className={`p-2 rounded-full ${status.color}`}>
-                      <StatusIcon className="w-4 h-4 text-white" />
+                    <div className={`p-1.5 xs:p-2 rounded-full ${status.color} flex-shrink-0`}>
+                      <StatusIcon className="w-3 h-3 xs:w-4 xs:h-4 text-white" />
                     </div>
                   </div>
                 </CardContent>
@@ -446,42 +448,42 @@ export default function ProjectsPage() {
         </div>
 
         {/* Projects Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-3 3xl:grid-cols-4 gap-3 xs:gap-4 sm:gap-5 lg:gap-6 w-full max-w-full mobile-safe-grid">
           {filteredProjects.map((project) => {
             const statusOption = statusOptions.find(s => s.value === project.status)
             const priorityOption = priorityOptions.find(p => p.value === project.priority)
             const StatusIcon = statusOption?.icon || FolderOpen
 
             return (
-              <Card key={project._id} className="bg-gray-800 border-gray-700 min-w-0 flex flex-col">
-                <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-center gap-2 flex-1 min-w-0">
-                      <StatusIcon className="w-5 h-5 text-blue-400 flex-shrink-0" />
-                      <div className="flex-1 min-w-0">
-                        <CardTitle className="text-white text-lg truncate">
+              <Card key={project._id} className="bg-gray-800 border-gray-700 min-w-0 w-full max-w-full flex flex-col overflow-hidden">
+                <CardHeader className="pb-2 xs:pb-3 responsive-card-padding">
+                  <div className="flex items-start justify-between gap-2 xs:gap-3 w-full min-w-0">
+                    <div className="flex items-center gap-2 flex-1 min-w-0 flex-item-safe">
+                      <StatusIcon className="w-4 h-4 xs:w-5 xs:h-5 text-blue-400 flex-shrink-0 icon-container-safe" />
+                      <div className="flex-1 min-w-0 w-full">
+                        <CardTitle className="text-white text-sm xs:text-base sm:text-lg safe-text-wrap leading-tight">
                           {project.name}
                         </CardTitle>
                         {/* Show role badge for non-owners directly under title */}
                         {!project.userRole?.isOwner && (
                           <div className="mt-1">
-                            <Badge variant="secondary" className="text-xs px-2 py-0.5">
+                            <Badge variant="secondary" className="text-xs px-1.5 xs:px-2 py-0.5 badge-responsive">
                               Mitarbeiter
                             </Badge>
                           </div>
                         )}
                       </div>
                     </div>
-                    <div className="flex gap-1 flex-shrink-0 min-w-fit">
+                    <div className="flex gap-0.5 xs:gap-1 flex-shrink-0 min-w-fit">
                       {/* View Details button for all users */}
                       <Button
                         size="sm"
                         variant="ghost"
                         onClick={() => router.push(`/dashboard/projects/${project._id}`)}
-                        className="text-gray-400 hover:text-white hover:bg-gray-700 p-1.5 h-8 w-8"
+                        className="text-gray-400 hover:text-white hover:bg-gray-700 p-1 xs:p-1.5 h-6 w-6 xs:h-8 xs:w-8 flex-shrink-0"
                         title="Projektdetails anzeigen"
                       >
-                        <Eye className="w-4 h-4" />
+                        <Eye className="w-3 h-3 xs:w-4 xs:h-4" />
                       </Button>
                       
                       {/* Edit button only for project owners */}
@@ -490,10 +492,10 @@ export default function ProjectsPage() {
                           size="sm"
                           variant="ghost"
                           onClick={() => handleEdit(project)}
-                          className="text-gray-400 hover:text-white hover:bg-gray-700 p-1.5 h-8 w-8"
+                          className="text-gray-400 hover:text-white hover:bg-gray-700 p-1 xs:p-1.5 h-6 w-6 xs:h-8 xs:w-8 flex-shrink-0"
                           title="Projekt bearbeiten"
                         >
-                          <Edit className="w-4 h-4" />
+                          <Edit className="w-3 h-3 xs:w-4 xs:h-4" />
                         </Button>
                       )}
                       
@@ -503,76 +505,76 @@ export default function ProjectsPage() {
                           size="sm"
                           variant="ghost"
                           onClick={() => handleDelete(project._id)}
-                          className="text-gray-400 hover:text-red-400 hover:bg-gray-700 p-1.5 h-8 w-8"
+                          className="text-gray-400 hover:text-red-400 hover:bg-gray-700 p-1 xs:p-1.5 h-6 w-6 xs:h-8 xs:w-8 flex-shrink-0"
                           title="Projekt löschen"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 className="w-3 h-3 xs:w-4 xs:h-4" />
                         </Button>
                       )}
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-3 flex-1">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <Badge className={`${statusOption?.color} text-white text-xs px-2 py-1 flex-shrink-0`}>
+                <CardContent className="space-y-2 xs:space-y-3 flex-1 responsive-card-padding w-full min-w-0 overflow-hidden">
+                  <div className="flex items-center gap-1 xs:gap-2 flex-wrap w-full">
+                    <Badge className={`${statusOption?.color} text-white text-xs px-1.5 xs:px-2 py-0.5 xs:py-1 flex-shrink-0 badge-responsive`}>
                       {statusOption?.label}
                     </Badge>
-                    <Badge className={`${priorityOption?.color} text-white text-xs px-2 py-1 flex-shrink-0`}>
+                    <Badge className={`${priorityOption?.color} text-white text-xs px-1.5 xs:px-2 py-0.5 xs:py-1 flex-shrink-0 badge-responsive`}>
                       {priorityOption?.label}
                     </Badge>
                   </div>
 
                   {project.client && (
-                    <div className="text-sm text-gray-400 truncate">
-                      <span className="text-gray-500">Client:</span> <span className="text-blue-400">{project.client}</span>
+                    <div className="text-xs xs:text-sm text-gray-400 w-full overflow-hidden">
+                      <span className="text-gray-500">Client:</span> <span className="text-blue-400 safe-text-wrap">{project.client}</span>
                     </div>
                   )}
 
-                  <div className="text-sm text-gray-300 line-clamp-2 break-words">
+                  <div className="text-xs xs:text-sm text-gray-300 line-clamp-2 safe-text-wrap leading-relaxed w-full">
                     {project.description}
                   </div>
 
                   {/* Progress Bar */}
-                  <div className="space-y-1">
-                    <div className="flex justify-between text-xs text-gray-400">
+                  <div className="space-y-1 w-full progress-safe">
+                    <div className="flex justify-between text-xs text-gray-400 w-full">
                       <span>Progress</span>
                       <span>{project.progress}%</span>
                     </div>
-                    <div className="w-full bg-gray-700 rounded-full h-2">
+                    <div className="w-full bg-gray-700 rounded-full h-1.5 xs:h-2">
                       <div 
-                        className="bg-blue-500 h-2 rounded-full transition-all duration-300" 
+                        className="bg-blue-500 h-1.5 xs:h-2 rounded-full transition-all duration-300" 
                         style={{ width: `${project.progress}%` }}
                       />
                     </div>
                   </div>
 
                   {project.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-1 overflow-hidden">
+                    <div className="flex flex-wrap gap-1 overflow-hidden w-full">
                       {project.tags.slice(0, 2).map((tag, index) => (
                         <span
                           key={index}
-                          className="px-2 py-1 text-xs bg-gray-700 text-gray-300 rounded truncate max-w-16 flex-shrink-0"
+                          className="px-1.5 xs:px-2 py-0.5 xs:py-1 text-xs bg-gray-700 text-gray-300 rounded max-w-16 flex-shrink-0 safe-text-wrap"
                           title={`#${tag}`}
                         >
                           #{tag}
                         </span>
                       ))}
                       {project.tags.length > 2 && (
-                        <span className="px-2 py-1 text-xs bg-gray-600 text-gray-400 rounded flex-shrink-0">
+                        <span className="px-1.5 xs:px-2 py-0.5 xs:py-1 text-xs bg-gray-600 text-gray-400 rounded flex-shrink-0">
                           +{project.tags.length - 2}
                         </span>
                       )}
                     </div>
                   )}
 
-                  <div className="flex items-center justify-between text-xs text-gray-500 mt-auto">
-                    <div className="flex items-center gap-1 truncate">
-                      <Calendar className="w-3 h-3 flex-shrink-0" />
-                      <span className="truncate">{format(new Date(project.startDate), "MMM dd, yyyy")}</span>
+                  <div className="flex items-center justify-between text-xs text-gray-500 mt-auto w-full min-w-0">
+                    <div className="flex items-center gap-1 min-w-0 flex-1">
+                      <Calendar className="w-3 h-3 flex-shrink-0 icon-container-safe" />
+                      <span className="safe-text-wrap min-w-0">{format(new Date(project.startDate), "MMM dd, yyyy")}</span>
                     </div>
                     {project.teamMembers.length > 0 && (
                       <div className="flex items-center gap-1 flex-shrink-0">
-                        <Users className="w-3 h-3" />
+                        <Users className="w-3 h-3 icon-container-safe" />
                         <span>{project.teamMembers.length}</span>
                       </div>
                     )}
@@ -584,19 +586,19 @@ export default function ProjectsPage() {
         </div>
 
         {filteredProjects.length === 0 && (
-          <div className="text-center py-12">
-            <FolderOpen className="w-12 h-12 text-gray-600 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-white mb-2">
+          <div className="text-center py-8 xs:py-10 sm:py-12">
+            <FolderOpen className="w-10 h-10 xs:w-12 xs:h-12 text-gray-600 mx-auto mb-3 xs:mb-4" />
+            <h3 className="text-base xs:text-lg font-medium text-white mb-2">
               {searchTerm || selectedStatus !== "all" ? "No projects found" : "No projects yet"}
             </h3>
-            <p className="text-gray-400 mb-4">
+            <p className="text-gray-400 mb-3 xs:mb-4 text-sm xs:text-base px-4">
               {searchTerm || selectedStatus !== "all" 
                 ? "Try adjusting your search or filter criteria"
                 : "Create your first project to get started"
               }
             </p>
             {!searchTerm && selectedStatus === "all" && (
-              <Button onClick={() => setIsDialogOpen(true)} className="bg-blue-600 hover:bg-blue-700">
+              <Button onClick={() => setIsDialogOpen(true)} className="bg-blue-600 hover:bg-blue-700 text-sm xs:text-base">
                 <Plus className="w-4 h-4 mr-2" />
                 Create Project
               </Button>

@@ -261,20 +261,20 @@ export default function AnalyticsPage() {
   const noteAnalytics = getNoteAnalytics()
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 xs:space-y-5 sm:space-y-6">
         {/* Header */}
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col xs:flex-row xs:justify-between xs:items-center gap-3 xs:gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-white">
+            <h1 className="text-2xl xs:text-3xl sm:text-4xl font-bold text-white">
               Analytics
             </h1>
-            <p className="text-slate-400">
+            <p className="text-slate-400 text-sm xs:text-base sm:text-lg">
               Insights into your productivity and activity
             </p>
           </div>
           
           <Select value={timeRange} onValueChange={setTimeRange}>
-            <SelectTrigger className="w-32">
+            <SelectTrigger className="w-full xs:w-auto xs:min-w-[160px] text-sm xs:text-base">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -286,61 +286,61 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Overview Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 xs:gap-4 sm:gap-5">
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Hours</CardTitle>
-              <Clock className="h-4 w-4 text-slate-600" />
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 xs:pb-3">
+              <CardTitle className="text-xs xs:text-sm font-medium truncate">Total Hours</CardTitle>
+              <Clock className="h-3 w-3 xs:h-4 xs:w-4 text-slate-600 flex-shrink-0" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">
+              <div className="text-lg xs:text-xl sm:text-2xl font-bold">
                 {timeAnalytics.totalHours.toFixed(1)}h
               </div>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs xs:text-sm text-slate-400 truncate">
                 {timeAnalytics.totalSessions} sessions
               </p>
             </CardContent>
           </Card>
 
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Contacts</CardTitle>
-              <Users className="h-4 w-4 text-slate-600" />
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 xs:pb-3">
+              <CardTitle className="text-xs xs:text-sm font-medium truncate">Contacts</CardTitle>
+              <Users className="h-3 w-3 xs:h-4 xs:w-4 text-slate-600 flex-shrink-0" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{contactAnalytics.totalContacts}</div>
-              <p className="text-xs text-slate-400">
+              <div className="text-lg xs:text-xl sm:text-2xl font-bold">{contactAnalytics.totalContacts}</div>
+              <p className="text-xs xs:text-sm text-slate-400 truncate">
                 +{contactAnalytics.recentContacts} this month
               </p>
             </CardContent>
           </Card>
 
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Notes</CardTitle>
-              <FileText className="h-4 w-4 text-slate-600" />
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 xs:pb-3">
+              <CardTitle className="text-xs xs:text-sm font-medium truncate">Notes</CardTitle>
+              <FileText className="h-3 w-3 xs:h-4 xs:w-4 text-slate-600 flex-shrink-0" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{noteAnalytics.totalNotes}</div>
-              <p className="text-xs text-slate-400">
+              <div className="text-lg xs:text-xl sm:text-2xl font-bold">{noteAnalytics.totalNotes}</div>
+              <p className="text-xs xs:text-sm text-slate-400 truncate">
                 +{noteAnalytics.recentNotes} this month
               </p>
             </CardContent>
           </Card>
 
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Productivity</CardTitle>
-              <TrendingUp className="h-4 w-4 text-slate-600" />
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 xs:pb-3">
+              <CardTitle className="text-xs xs:text-sm font-medium truncate">Productivity</CardTitle>
+              <TrendingUp className="h-3 w-3 xs:h-4 xs:w-4 text-slate-600 flex-shrink-0" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">
+              <div className="text-lg xs:text-xl sm:text-2xl font-bold">
                 {timeAnalytics.dailyData.length > 0 
                   ? (timeAnalytics.totalHours / timeAnalytics.dailyData.length).toFixed(1)
                   : "0"
                 }h
               </div>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs xs:text-sm text-slate-400 truncate">
                 per day average
               </p>
             </CardContent>
@@ -348,25 +348,36 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Charts */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 xs:gap-5 sm:gap-6">
           {/* Daily Time Tracking */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Daily Time Tracking</CardTitle>
+          <Card className="col-span-1 lg:col-span-2 xl:col-span-1">
+            <CardHeader className="pb-3 xs:pb-4">
+              <CardTitle className="text-base xs:text-lg">Daily Time Tracking</CardTitle>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
+              <ResponsiveContainer width="100%" height={250}>
                 <LineChart data={timeAnalytics.dailyData}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="date" />
-                  <YAxis />
-                  <Tooltip />
+                  <XAxis 
+                    dataKey="date" 
+                    tick={{ fontSize: 12 }}
+                  />
+                  <YAxis tick={{ fontSize: 12 }} />
+                  <Tooltip 
+                    contentStyle={{ 
+                      fontSize: '12px',
+                      padding: '8px',
+                      backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                      border: '1px solid #334155',
+                      borderRadius: '6px'
+                    }}
+                  />
                   <Line 
                     type="monotone" 
                     dataKey="hours" 
                     stroke="#8884d8" 
                     strokeWidth={2}
-                    dot={{ fill: '#8884d8' }}
+                    dot={{ fill: '#8884d8', r: 3 }}
                   />
                 </LineChart>
               </ResponsiveContainer>
@@ -374,33 +385,48 @@ export default function AnalyticsPage() {
           </Card>
 
           {/* Task Distribution */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Top Tasks by Time</CardTitle>
+          <Card className="col-span-1">
+            <CardHeader className="pb-3 xs:pb-4">
+              <CardTitle className="text-base xs:text-lg">Top Tasks by Time</CardTitle>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
+              <ResponsiveContainer width="100%" height={250}>
                 <BarChart data={timeAnalytics.taskChartData}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="task" />
-                  <YAxis />
-                  <Tooltip />
-                  <Bar dataKey="hours" fill="#82ca9d" />
+                  <XAxis 
+                    dataKey="task" 
+                    tick={{ fontSize: 12 }}
+                    interval={0}
+                    angle={-45}
+                    textAnchor="end"
+                    height={60}
+                  />
+                  <YAxis tick={{ fontSize: 12 }} />
+                  <Tooltip 
+                    contentStyle={{ 
+                      fontSize: '12px',
+                      padding: '8px',
+                      backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                      border: '1px solid #334155',
+                      borderRadius: '6px'
+                    }}
+                  />
+                  <Bar dataKey="hours" fill="#82ca9d" radius={[2, 2, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
           </Card>
 
-          {/* Project Distribution */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Project Time Distribution</CardTitle>
+          {/* Note Categories */}
+          <Card className="col-span-1">
+            <CardHeader className="pb-3 xs:pb-4">
+              <CardTitle className="text-base xs:text-lg">Note Categories</CardTitle>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
+              <ResponsiveContainer width="100%" height={250}>
                 <PieChart>
                   <Pie
-                    data={timeAnalytics.projectChartData}
+                    data={noteAnalytics.categoryChartData}
                     cx="50%"
                     cy="50%"
                     labelLine={false}
@@ -409,62 +435,57 @@ export default function AnalyticsPage() {
                     fill="#8884d8"
                     dataKey="value"
                   >
-                    {timeAnalytics.projectChartData.map((entry, index) => (
+                    {noteAnalytics.categoryChartData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip />
+                  <Tooltip 
+                    contentStyle={{ 
+                      fontSize: '12px',
+                      padding: '8px',
+                      backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                      border: '1px solid #334155',
+                      borderRadius: '6px'
+                    }}
+                  />
                 </PieChart>
               </ResponsiveContainer>
             </CardContent>
           </Card>
 
           {/* Contact Tags */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Contact Categories</CardTitle>
+          <Card className="col-span-1">
+            <CardHeader className="pb-3 xs:pb-4">
+              <CardTitle className="text-base xs:text-lg">Contact Categories</CardTitle>
             </CardHeader>
             <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
+              <ResponsiveContainer width="100%" height={250}>
                 <BarChart data={contactAnalytics.tagChartData}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="tag" />
-                  <YAxis />
-                  <Tooltip />
-                  <Bar dataKey="count" fill="#ffc658" />
+                  <XAxis 
+                    dataKey="tag" 
+                    tick={{ fontSize: 12 }}
+                    interval={0}
+                    angle={-45}
+                    textAnchor="end"
+                    height={60}
+                  />
+                  <YAxis tick={{ fontSize: 12 }} />
+                  <Tooltip 
+                    contentStyle={{ 
+                      fontSize: '12px',
+                      padding: '8px',
+                      backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                      border: '1px solid #334155',
+                      borderRadius: '6px'
+                    }}
+                  />
+                  <Bar dataKey="count" fill="#ffc658" radius={[2, 2, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
           </Card>
         </div>
-
-        {/* Note Categories */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Note Categories Distribution</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={200}>
-              <PieChart>
-                <Pie
-                  data={noteAnalytics.categoryChartData}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="value"
-                >
-                  {noteAnalytics.categoryChartData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
       </div>
     )
   }

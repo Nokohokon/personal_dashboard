@@ -246,64 +246,69 @@ export default function CalendarPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 xs:space-y-5 sm:space-y-6">
         {/* Header */}
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col xs:flex-row xs:justify-between xs:items-center gap-3 xs:gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-white">
+            <h1 className="text-2xl xs:text-3xl sm:text-4xl font-bold text-white">
               Calendar
             </h1>
-            <p className="text-slate-400">
+            <p className="text-slate-400 text-sm xs:text-base sm:text-lg">
               Manage your schedule and important events
             </p>
           </div>
           
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-              <Button onClick={() => openEventDialog()}>
+              <Button onClick={() => openEventDialog()} className="w-full xs:w-auto text-sm xs:text-base">
                 <Plus className="mr-2 h-4 w-4" />
                 Add Event
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="max-w-sm xs:max-w-md sm:max-w-lg mx-4">
               <DialogHeader>
-                <DialogTitle>
+                <DialogTitle className="text-base xs:text-lg">
                   {editingEvent ? "Edit Event" : "Create New Event"}
                 </DialogTitle>
               </DialogHeader>
-              <div className="space-y-4">
+              <div className="space-y-3 xs:space-y-4">
                 <div>
-                  <label className="text-sm font-medium">Title *</label>
+                  <label className="text-sm xs:text-base font-medium">Title *</label>
                   <Input
                     value={eventForm.title}
                     onChange={(e) => setEventForm(prev => ({ ...prev, title: e.target.value }))}
                     placeholder="Event title"
+                    className="text-sm xs:text-base"
                   />
                 </div>
                 
-                <div>
-                  <label className="text-sm font-medium">Date *</label>
-                  <Input
-                    type="date"
-                    value={eventForm.date}
-                    onChange={(e) => setEventForm(prev => ({ ...prev, date: e.target.value }))}
-                  />
-                </div>
-                
-                <div>
-                  <label className="text-sm font-medium">Time</label>
-                  <Input
-                    type="time"
-                    value={eventForm.time}
-                    onChange={(e) => setEventForm(prev => ({ ...prev, time: e.target.value }))}
-                  />
+                <div className="grid grid-cols-1 xs:grid-cols-2 gap-3 xs:gap-4">
+                  <div>
+                    <label className="text-sm xs:text-base font-medium">Date *</label>
+                    <Input
+                      type="date"
+                      value={eventForm.date}
+                      onChange={(e) => setEventForm(prev => ({ ...prev, date: e.target.value }))}
+                      className="text-sm xs:text-base"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="text-sm xs:text-base font-medium">Time</label>
+                    <Input
+                      type="time"
+                      value={eventForm.time}
+                      onChange={(e) => setEventForm(prev => ({ ...prev, time: e.target.value }))}
+                      className="text-sm xs:text-base"
+                    />
+                  </div>
                 </div>
                   <div>
-                  <label className="text-sm font-medium">Type</label>
+                  <label className="text-sm xs:text-base font-medium">Type</label>
                   <select
                     value={eventForm.type}
                     onChange={(e) => setEventForm(prev => ({ ...prev, type: e.target.value as any }))}
-                    className="w-full h-10 px-3 py-2 border border-slate-800 rounded-md bg-slate-950"
+                    className="w-full h-10 xs:h-11 px-3 py-2 text-sm xs:text-base border border-slate-800 rounded-md bg-slate-950"
                   >
                     <option value="meeting">Meeting</option>
                     <option value="task">Task</option>
@@ -312,51 +317,54 @@ export default function CalendarPage() {
                   </select>
                 </div>
 
-                <div>
-                  <label className="text-sm font-medium">Project</label>
-                  <Select value={eventForm.projectId} onValueChange={(value) => setEventForm(prev => ({ ...prev, projectId: value }))}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select project (optional)" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {projects.map((project) => (
-                        <SelectItem key={project._id} value={project._id}>
-                          {project.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+                <div className="grid grid-cols-1 xs:grid-cols-2 gap-3 xs:gap-4">
+                  <div>
+                    <label className="text-sm xs:text-base font-medium">Project</label>
+                    <Select value={eventForm.projectId} onValueChange={(value) => setEventForm(prev => ({ ...prev, projectId: value }))}>
+                      <SelectTrigger className="text-sm xs:text-base">
+                        <SelectValue placeholder="Select project (optional)" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {projects.map((project) => (
+                          <SelectItem key={project._id} value={project._id}>
+                            {project.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-                <div>
-                  <label className="text-sm font-medium">Contact</label>
-                  <Select value={eventForm.contactId} onValueChange={(value) => setEventForm(prev => ({ ...prev, contactId: value }))}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Link to contact (optional)" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {contacts.map((contact) => (
-                        <SelectItem key={contact._id} value={contact._id}>
-                          {contact.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <div>
+                    <label className="text-sm xs:text-base font-medium">Contact</label>
+                    <Select value={eventForm.contactId} onValueChange={(value) => setEventForm(prev => ({ ...prev, contactId: value }))}>
+                      <SelectTrigger className="text-sm xs:text-base">
+                        <SelectValue placeholder="Link to contact (optional)" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {contacts.map((contact) => (
+                          <SelectItem key={contact._id} value={contact._id}>
+                            {contact.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
                 
                 <div>
-                  <label className="text-sm font-medium">Description</label>
+                  <label className="text-sm xs:text-base font-medium">Description</label>
                   <Textarea
                     value={eventForm.description}
                     onChange={(e) => setEventForm(prev => ({ ...prev, description: e.target.value }))}
                     placeholder="Event description (optional)"
                     rows={3}
+                    className="text-sm xs:text-base"
                   />
                 </div>
-                  <div className="flex gap-2">
+                  <div className="flex flex-col xs:flex-row gap-2 xs:gap-3">
                   <Button 
                     onClick={handleCreateEvent} 
-                    className="flex-1"
+                    className="flex-1 text-sm xs:text-base"
                     disabled={!eventForm.title || !eventForm.date}
                   >
                     {editingEvent ? "Update Event" : "Create Event"}
@@ -365,6 +373,7 @@ export default function CalendarPage() {
                     <Button 
                       onClick={() => resetForm()} 
                       variant="outline"
+                      className="text-sm xs:text-base"
                     >
                       Cancel
                     </Button>
@@ -375,35 +384,38 @@ export default function CalendarPage() {
           </Dialog>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 xl:grid-cols-4 gap-4 xs:gap-5 sm:gap-6">
           {/* Calendar */}
-          <div className="lg:col-span-3">
+          <div className="xl:col-span-3">
             <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-xl">
+              <CardHeader className="pb-3 xs:pb-4">
+                <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-3 xs:gap-4">
+                  <CardTitle className="text-lg xs:text-xl sm:text-2xl lg:text-xl">
                     {format(currentDate, 'MMMM yyyy')}
                   </CardTitle>
                   <div className="flex space-x-2">
-                    <Button variant="outline" size="sm" onClick={prevMonth}>
-                      <ChevronLeft className="h-4 w-4" />
+                    <Button variant="outline" size="sm" onClick={prevMonth} className="h-8 xs:h-9 w-8 xs:w-9">
+                      <ChevronLeft className="h-3 w-3 xs:h-4 xs:w-4" />
                     </Button>
-                    <Button variant="outline" size="sm" onClick={nextMonth}>
-                      <ChevronRight className="h-4 w-4" />
+                    <Button variant="outline" size="sm" onClick={nextMonth} className="h-8 xs:h-9 w-8 xs:w-9">
+                      <ChevronRight className="h-3 w-3 xs:h-4 xs:w-4" />
                     </Button>
                   </div>
                 </div>
               </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-7 gap-1 mb-4">
+              <CardContent className="px-3 xs:px-4 sm:px-6">
+                {/* Calendar Header */}
+                <div className="grid grid-cols-7 gap-0.5 xs:gap-1 mb-2 xs:mb-3 sm:mb-4">
                   {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                    <div key={day} className="p-2 text-center text-sm font-medium text-slate-400">
-                      {day}
+                    <div key={day} className="p-1 xs:p-2 text-center text-xs xs:text-sm font-medium text-slate-400">
+                      <span className="hidden xs:inline">{day}</span>
+                      <span className="xs:hidden">{day.charAt(0)}</span>
                     </div>
                   ))}
                 </div>
                 
-                <div className="grid grid-cols-7 gap-1">
+                {/* Calendar Grid */}
+                <div className="grid grid-cols-7 gap-0.5 xs:gap-1">
                   {calendarDays.map(day => {
                     const dayEvents = getEventsForDate(day)
                     const isCurrentMonth = isSameMonth(day, currentDate)
@@ -412,28 +424,28 @@ export default function CalendarPage() {
                     return (
                       <div
                         key={day.toString()}
-                        className={`min-h-[80px] p-1 border rounded-lg cursor-pointer hover:bg-slate-50 hover:bg-slate-800 transition-colors ${
+                        className={`min-h-[60px] xs:min-h-[70px] sm:min-h-[80px] lg:min-h-[90px] p-1 xs:p-1.5 border rounded-md xs:rounded-lg cursor-pointer hover:bg-slate-50 hover:bg-slate-800 transition-colors ${
                           !isCurrentMonth ? 'text-slate-400 text-slate-600' : ''
                         } ${
                           isToday ? 'bg-blue-50 bg-blue-900/20 border-blue-200 border-blue-800' : 'border-slate-700'
                         }`}
                         onClick={() => openEventDialog(day)}
                       >
-                        <div className={`text-sm font-medium mb-1 ${isToday ? 'text-blue-600 text-blue-400' : ''}`}>
+                        <div className={`text-xs xs:text-sm font-medium mb-1 ${isToday ? 'text-blue-600 text-blue-400' : ''}`}>
                           {format(day, 'd')}
                         </div>
-                        <div className="space-y-1">
+                        <div className="space-y-0.5 xs:space-y-1">
                           {dayEvents.slice(0, 2).map(event => (
                             <div
                               key={event._id}
-                              className={`text-xs p-1 rounded truncate ${
+                              className={`text-xs p-0.5 xs:p-1 rounded truncate ${
                                 event.type === 'meeting' ? 'bg-blue-100 bg-blue-900/20 text-blue-800 text-blue-300' :
                                 event.type === 'task' ? 'bg-green-100 bg-green-900/20 text-green-800 text-green-300' :
                                 event.type === 'reminder' ? 'bg-yellow-100 bg-yellow-900/20 text-yellow-800 text-yellow-300' :
                                 'bg-purple-100 bg-purple-900/20 text-purple-800 text-purple-300'
                               }`}
                             >
-                              {event.time && `${event.time} `}{event.title}
+                              <span className="hidden xs:inline">{event.time && `${event.time} `}</span>{event.title}
                             </div>
                           ))}
                           {dayEvents.length > 2 && (
@@ -451,41 +463,43 @@ export default function CalendarPage() {
           </div>
 
           {/* Upcoming Events Sidebar */}
-          <div className="space-y-4">
+          <div className="space-y-3 xs:space-y-4">
             <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Upcoming Events</CardTitle>
+              <CardHeader className="pb-3 xs:pb-4">
+                <CardTitle className="text-base xs:text-lg sm:text-xl lg:text-lg">Upcoming Events</CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
+              <CardContent className="px-3 xs:px-4 sm:px-6">
+                <div className="space-y-2 xs:space-y-3">
                   {events
                     .filter(event => new Date(event.date) >= new Date())
                     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-                    .slice(0, 5)                    .map(event => {
+                    .slice(0, 5)
+                    .map(event => {
                       const linkedProject = getLinkedProject(event.projectId)
                       const linkedContact = getLinkedContact(event.contactId)
-                        return (
-                      <div key={event._id} className="p-3 bg-slate-800 rounded-lg">
-                        <div className="flex justify-between items-start">
-                          <div className="flex-1">
-                            <h4 className="font-medium text-sm">{event.title}</h4>
-                            <div className="flex items-center text-xs text-slate-400 mt-1">
-                              <CalendarIcon className="h-3 w-3 mr-1" />
-                              {format(new Date(event.date), 'MMM dd')}
+                      
+                      return (
+                      <div key={event._id} className="p-2 xs:p-3 bg-slate-800 rounded-lg">
+                        <div className="flex justify-between items-start gap-2">
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-medium text-xs xs:text-sm truncate">{event.title}</h4>
+                            <div className="flex items-center text-xs text-slate-400 mt-1 gap-1">
+                              <CalendarIcon className="h-3 w-3 flex-shrink-0" />
+                              <span>{format(new Date(event.date), 'MMM dd')}</span>
                               {event.time && (
                                 <>
-                                  <Clock className="h-3 w-3 ml-2 mr-1" />
-                                  {event.time}
+                                  <Clock className="h-3 w-3 ml-1 flex-shrink-0" />
+                                  <span>{event.time}</span>
                                 </>
                               )}
                             </div>
                           </div>
-                          <div className="flex gap-1 ml-2">
+                          <div className="flex gap-0.5 xs:gap-1 flex-shrink-0">
                             <Button
                               size="sm"
                               variant="ghost"
                               onClick={() => handleEditEvent(event)}
-                              className="h-6 w-6 p-0 text-slate-400 hover:text-white"
+                              className="h-6 w-6 xs:h-7 xs:w-7 p-0 text-slate-400 hover:text-white"
                             >
                               <Edit className="h-3 w-3" />
                             </Button>
@@ -493,19 +507,19 @@ export default function CalendarPage() {
                               size="sm"
                               variant="ghost"
                               onClick={() => handleDeleteEvent(event._id)}
-                              className="h-6 w-6 p-0 text-slate-400 hover:text-red-400"
+                              className="h-6 w-6 xs:h-7 xs:w-7 p-0 text-slate-400 hover:text-red-400"
                             >
                               <Trash2 className="h-3 w-3" />
                             </Button>
                           </div>
                         </div>
                         {event.description && (
-                          <p className="text-xs text-slate-500 mt-1 line-clamp-2">
+                          <p className="text-xs text-slate-500 mt-1 xs:mt-2 line-clamp-2">
                             {event.description}
                           </p>
                         )}
                         <div className="flex flex-wrap gap-1 mt-2">
-                          <span className={`inline-block px-2 py-1 text-xs rounded-full ${
+                          <span className={`inline-block px-1.5 xs:px-2 py-0.5 xs:py-1 text-xs rounded-full flex-shrink-0 ${
                             event.type === 'meeting' ? 'bg-blue-100 bg-blue-900/20 text-blue-800 text-blue-300' :
                             event.type === 'task' ? 'bg-green-100 bg-green-900/20 text-green-800 text-green-300' :
                             event.type === 'reminder' ? 'bg-yellow-100 bg-yellow-900/20 text-yellow-800 text-yellow-300' :
@@ -514,12 +528,12 @@ export default function CalendarPage() {
                             {event.type}
                           </span>
                           {linkedProject && (
-                            <span className="inline-block px-2 py-1 text-xs rounded-full bg-orange-100 bg-orange-900/20 text-orange-800 text-orange-300">
+                            <span className="inline-block px-1.5 xs:px-2 py-0.5 xs:py-1 text-xs rounded-full bg-orange-100 bg-orange-900/20 text-orange-800 text-orange-300 flex-shrink-0">
                               📁 {linkedProject.name}
                             </span>
                           )}
                           {linkedContact && (
-                            <span className="inline-block px-2 py-1 text-xs rounded-full bg-cyan-100 bg-cyan-900/20 text-cyan-800 text-cyan-300">
+                            <span className="inline-block px-1.5 xs:px-2 py-0.5 xs:py-1 text-xs rounded-full bg-cyan-100 bg-cyan-900/20 text-cyan-800 text-cyan-300 flex-shrink-0">
                               👤 {linkedContact.name}
                             </span>
                           )}
@@ -528,7 +542,7 @@ export default function CalendarPage() {
                       )
                     })}
                   {events.filter(event => new Date(event.date) >= new Date()).length === 0 && (
-                    <p className="text-center text-slate-500 text-slate-400 py-4">
+                    <p className="text-center text-slate-500 text-slate-400 py-3 xs:py-4 text-xs xs:text-sm">
                       No upcoming events
                     </p>
                   )}
@@ -537,32 +551,32 @@ export default function CalendarPage() {
             </Card>
 
             <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Quick Stats</CardTitle>
+              <CardHeader className="pb-3 xs:pb-4">
+                <CardTitle className="text-base xs:text-lg sm:text-xl lg:text-lg">Quick Stats</CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
+              <CardContent className="px-3 xs:px-4 sm:px-6">
+                <div className="space-y-2 xs:space-y-3">
                   <div className="flex justify-between">
-                    <span className="text-sm text-slate-400">Total Events</span>
-                    <span className="font-medium">{events.length}</span>
+                    <span className="text-xs xs:text-sm text-slate-400">Total Events</span>
+                    <span className="font-medium text-xs xs:text-sm">{events.length}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-slate-400">This Month</span>
-                    <span className="font-medium">
+                    <span className="text-xs xs:text-sm text-slate-400">This Month</span>
+                    <span className="font-medium text-xs xs:text-sm">
                       {events.filter(event => 
                         isSameMonth(new Date(event.date), currentDate)
                       ).length}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-slate-400">Meetings</span>
-                    <span className="font-medium">
+                    <span className="text-xs xs:text-sm text-slate-400">Meetings</span>
+                    <span className="font-medium text-xs xs:text-sm">
                       {events.filter(event => event.type === 'meeting').length}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-sm text-slate-400">Tasks</span>
-                    <span className="font-medium">
+                    <span className="text-xs xs:text-sm text-slate-400">Tasks</span>
+                    <span className="font-medium text-xs xs:text-sm">
                       {events.filter(event => event.type === 'task').length}
                     </span>
                   </div>

@@ -176,32 +176,32 @@ export function TeamChat({ projectId, projectName, allMembers }: TeamChatProps) 
   }
 
   return (
-    <Card className="bg-gray-800/60 backdrop-blur-xl border border-gray-700/50 shadow-xl h-full flex flex-col max-h-[calc(100vh-8rem)]">
-      <CardHeader className="pb-3 pt-3">
+    <Card className="bg-gray-800/60 backdrop-blur-xl border border-gray-700/50 shadow-xl h-full flex flex-col min-h-[600px] w-full">
+      <CardHeader className="pb-3 pt-3 flex-shrink-0">
         <div className="flex items-center justify-between">
-          <div>
+          <div className="min-w-0 flex-1">
             <CardTitle className="text-white flex items-center space-x-2 text-lg">
-              <div className="p-1.5 bg-purple-500/20 rounded-lg">
+              <div className="p-1.5 bg-purple-500/20 rounded-lg flex-shrink-0">
                 <MessageSquare className="w-4 h-4 text-purple-400" />
               </div>
-              <span>Team Chat</span>
+              <span className="truncate">Team Chat</span>
             </CardTitle>
-            <CardDescription className="text-gray-400 text-sm">
+            <CardDescription className="text-gray-400 text-sm truncate">
               {projectName} • {allMembers.filter(m => m.isRegistered).length} aktive Mitglieder
             </CardDescription>
           </div>
-          <Badge variant="outline" className="bg-green-500/20 text-green-400 border-green-500/30">
+          <Badge variant="outline" className="bg-green-500/20 text-green-400 border-green-500/30 flex-shrink-0 ml-2">
             <div className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
-            Live
+            <span className="hidden sm:inline">Live</span>
           </Badge>
         </div>
         
         {/* Team Members Status */}
         <div className="flex items-center space-x-2 pt-1">
-          <Users className="w-3 h-3 text-gray-400" />
-          <div className="flex -space-x-1.5">
+          <Users className="w-3 h-3 text-gray-400 flex-shrink-0" />
+          <div className="flex -space-x-1.5 overflow-x-auto scrollbar-hide">
             {allMembers.filter(m => m.isRegistered).slice(0, 5).map((member, index) => (
-              <Avatar key={index} className="w-5 h-5 border-2 border-gray-800">
+              <Avatar key={index} className="w-5 h-5 border-2 border-gray-800 flex-shrink-0">
                 <AvatarImage src={`https://api.dicebear.com/7.x/initials/svg?seed=${member.name || member.email}`} />
                 <AvatarFallback className="bg-gray-600 text-white text-xs">
                   {getInitials(member.name || "", member.email)}
@@ -209,7 +209,7 @@ export function TeamChat({ projectId, projectName, allMembers }: TeamChatProps) 
               </Avatar>
             ))}
             {allMembers.filter(m => m.isRegistered).length > 5 && (
-              <div className="w-5 h-5 bg-gray-600 rounded-full flex items-center justify-center text-xs text-white border-2 border-gray-800">
+              <div className="w-5 h-5 bg-gray-600 rounded-full flex items-center justify-center text-xs text-white border-2 border-gray-800 flex-shrink-0">
                 +{allMembers.filter(m => m.isRegistered).length - 5}
               </div>
             )}
@@ -220,13 +220,13 @@ export function TeamChat({ projectId, projectName, allMembers }: TeamChatProps) 
       <Separator className="bg-gray-700/50" />
 
       {/* Messages Area */}
-      <CardContent className="flex-1 overflow-y-auto p-3 space-y-3 min-h-0 max-h-[50vh]">
+      <CardContent className="flex-1 overflow-y-auto p-3 space-y-3 min-h-0">
         {isLoading ? (
-          <div className="flex items-center justify-center h-full">
+          <div className="flex items-center justify-center h-full min-h-[200px]">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
           </div>
         ) : messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-center">
+          <div className="flex flex-col items-center justify-center h-full min-h-[200px] text-center">
             <MessageSquare className="w-12 h-12 text-gray-500 mb-4" />
             <p className="text-gray-400 text-lg font-medium mb-2">Noch keine Nachrichten</p>
             <p className="text-gray-500 text-sm">
@@ -253,7 +253,7 @@ export function TeamChat({ projectId, projectName, allMembers }: TeamChatProps) 
                   
                   <div className={`flex items-end space-x-3 ${isOwn ? 'flex-row-reverse space-x-reverse' : ''}`}>
                     {showAvatar ? (
-                      <div className="flex flex-col items-center space-y-1">
+                      <div className="flex flex-col items-center space-y-1 flex-shrink-0">
                         <Avatar className="w-8 h-8">
                           <AvatarImage src={`https://api.dicebear.com/7.x/initials/svg?seed=${message.userName || message.userEmail}`} />
                           <AvatarFallback className="bg-gray-600 text-white text-xs">
@@ -265,24 +265,24 @@ export function TeamChat({ projectId, projectName, allMembers }: TeamChatProps) 
                         )}
                       </div>
                     ) : (
-                      <div className="w-8"></div>
+                      <div className="w-8 flex-shrink-0"></div>
                     )}
 
                     <div className={`max-w-[70%] ${isOwn ? 'text-right' : ''}`}>
                       {showAvatar && (
                         <div className={`flex items-center space-x-2 mb-1 ${isOwn ? 'flex-row-reverse space-x-reverse' : ''}`}>
-                          <p className="text-sm font-medium text-white">
+                          <p className="text-sm font-medium text-white truncate">
                             {message.userName || message.userEmail}
                           </p>
                           {member?.role === 'owner' && (
-                            <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30 text-xs">
+                            <Badge className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30 text-xs flex-shrink-0">
                               Owner
                             </Badge>
                           )}
                         </div>
                       )}
                       
-                      <div className={`rounded-lg px-4 py-2 ${
+                      <div className={`rounded-lg px-4 py-2 break-words ${
                         isOwn 
                           ? 'bg-purple-600 text-white' 
                           : 'bg-gray-700/50 text-gray-100'
@@ -309,7 +309,7 @@ export function TeamChat({ projectId, projectName, allMembers }: TeamChatProps) 
       <Separator className="bg-gray-700/50" />
 
       {/* Message Input */}
-      <div className="p-3">
+      <div className="p-3 flex-shrink-0">
         <form onSubmit={sendMessage} className="flex space-x-2">
           <div className="flex-1">
             <Input
@@ -324,15 +324,15 @@ export function TeamChat({ projectId, projectName, allMembers }: TeamChatProps) 
           <Button 
             type="submit" 
             disabled={!newMessage.trim() || isSending}
-            className="bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 h-9 px-3"
+            className="bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 h-9 px-3 flex-shrink-0"
             size="sm"
           >
             {isSending ? (
-              <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white mr-1"></div>
+              <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white sm:mr-1"></div>
             ) : (
-              <Send className="w-3 h-3 mr-1" />
+              <Send className="w-3 h-3 sm:mr-1" />
             )}
-            {isSending ? "..." : "Senden"}
+            <span className="hidden sm:inline">{isSending ? "..." : "Senden"}</span>
           </Button>
         </form>
         
@@ -341,7 +341,7 @@ export function TeamChat({ projectId, projectName, allMembers }: TeamChatProps) 
           <p className="text-xs text-gray-500">
             {newMessage.length}/1000
           </p>
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-gray-500 hidden sm:block">
             Enter zum Senden
           </p>
         </div>

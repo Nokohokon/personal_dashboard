@@ -119,38 +119,39 @@ function TeamChatContent() {
 
   return (
     <div className="h-[80vh] bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 overflow-hidden">
-        <div className="container mx-auto px-6 py-4 h-full flex flex-col max-h-full">
+        <div className="container mx-auto px-3 xs:px-4 sm:px-6 py-3 xs:py-4 h-full flex flex-col max-h-full">
           {/* Header with Project Selection */}
-          <div className="flex items-center justify-between space-x-6 mb-4">
-            <div className="flex items-center space-x-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 xs:gap-4 sm:gap-6 mb-3 xs:mb-4">
+            <div className="flex items-center space-x-2 xs:space-x-3 sm:space-x-4">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => router.back()}
-                className="bg-gray-700/50 border-gray-600 text-gray-300 hover:bg-gray-600"
+                className="bg-gray-700/50 border-gray-600 text-gray-300 hover:bg-gray-600 h-8 xs:h-9 px-2 xs:px-3"
               >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back
+                <ArrowLeft className="w-3 h-3 xs:w-4 xs:h-4 mr-1 xs:mr-2" />
+                <span className="hidden xs:inline">Back</span>
               </Button>
               <div>
-                <h1 className="text-2xl font-bold text-white flex items-center">
-                  <MessageSquare className="w-6 h-6 mr-3 text-purple-400" />
-                  Team Chat
+                <h1 className="text-lg xs:text-xl sm:text-2xl font-bold text-white flex items-center">
+                  <MessageSquare className="w-4 h-4 xs:w-5 xs:h-5 sm:w-6 sm:h-6 mr-2 xs:mr-3 text-purple-400" />
+                  <span className="hidden xs:inline">Team Chat</span>
+                  <span className="xs:hidden">Chat</span>
                 </h1>
-                <p className="text-gray-400 text-sm">
+                <p className="text-gray-400 text-xs xs:text-sm hidden sm:block">
                   Collaborate with your team in real-time
                 </p>
               </div>
             </div>
             
             {/* Project Selection */}
-            <div className="flex items-center space-x-4 min-w-0 flex-1 max-w-md">
+            <div className="flex items-center space-x-2 xs:space-x-3 sm:space-x-4 min-w-0 flex-1 sm:max-w-md">
               <div className="flex-1">
                 <Select
                   value={selectedProject?._id || ""}
                   onValueChange={handleProjectChange}
                 >
-                  <SelectTrigger className="bg-gray-700/50 border-gray-600 text-white h-10">
+                  <SelectTrigger className="bg-gray-700/50 border-gray-600 text-white h-8 xs:h-9 sm:h-10 text-sm xs:text-base">
                     <SelectValue placeholder="Choose a project..." />
                   </SelectTrigger>
                   <SelectContent className="bg-gray-800 border-gray-700">
@@ -161,8 +162,8 @@ function TeamChatContent() {
                         className="text-white hover:bg-gray-700"
                       >
                         <div className="flex items-center space-x-2">
-                          <FolderOpen className="w-4 h-4 text-blue-400" />
-                          <span>{project.name}</span>
+                          <FolderOpen className="w-3 h-3 xs:w-4 xs:h-4 text-blue-400" />
+                          <span className="text-sm xs:text-base">{project.name}</span>
                         </div>
                       </SelectItem>
                     ))}
@@ -170,9 +171,10 @@ function TeamChatContent() {
                 </Select>
               </div>
               {selectedProject && (
-                <div className="flex items-center space-x-2 text-sm text-gray-400 whitespace-nowrap">
-                  <Users className="w-4 h-4" />
-                  <span>{teamMembers.length} members</span>
+                <div className="flex items-center space-x-1 xs:space-x-2 text-xs xs:text-sm text-gray-400 whitespace-nowrap">
+                  <Users className="w-3 h-3 xs:w-4 xs:h-4" />
+                  <span className="hidden xs:inline">{teamMembers.length} members</span>
+                  <span className="xs:hidden">{teamMembers.length}</span>
                 </div>
               )}
             </div>
@@ -180,7 +182,7 @@ function TeamChatContent() {
 
           {/* Team Chat */}
           {selectedProject ? (
-            <div className="h-[70vh] min-h-0">
+            <div className="h-[60vh] xs:h-[65vh] sm:h-[70vh] lg:h-[75vh] min-h-0 relative">
               <TeamChat
                 projectId={selectedProject._id}
                 projectName={selectedProject.name}
@@ -189,21 +191,21 @@ function TeamChatContent() {
             </div>
           ) : (
             <Card className="bg-gray-800/60 backdrop-blur-xl border border-gray-700/50">
-              <CardContent className="flex flex-col items-center justify-center py-12">
-                <MessageSquare className="w-16 h-16 text-gray-400 mb-4" />
-                <h3 className="text-xl font-semibold text-white mb-2">
+              <CardContent className="flex flex-col items-center justify-center py-8 xs:py-10 sm:py-12">
+                <MessageSquare className="w-12 h-12 xs:w-14 xs:h-14 sm:w-16 sm:h-16 text-gray-400 mb-3 xs:mb-4" />
+                <h3 className="text-lg xs:text-xl sm:text-2xl font-semibold text-white mb-2">
                   No Project Selected
                 </h3>
-                <p className="text-gray-400 text-center max-w-md">
+                <p className="text-gray-400 text-center max-w-sm xs:max-w-md text-sm xs:text-base">
                   Select a project from the dropdown above to start chatting with your team members.
                 </p>
                 {projects.length === 0 && (
-                  <div className="mt-6">
+                  <div className="mt-4 xs:mt-5 sm:mt-6">
                     <Button
                       onClick={() => router.push("/dashboard/projects")}
-                      className="bg-purple-600 hover:bg-purple-700"
+                      className="bg-purple-600 hover:bg-purple-700 text-sm xs:text-base"
                     >
-                      <FolderOpen className="w-4 h-4 mr-2" />
+                      <FolderOpen className="w-3 h-3 xs:w-4 xs:h-4 mr-2" />
                       Create Your First Project
                     </Button>
                   </div>

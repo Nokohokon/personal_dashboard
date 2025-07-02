@@ -298,34 +298,34 @@ export default function TimeTrackingPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 xs:space-y-5 sm:space-y-6">
         {/* Header */}
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col xs:flex-row xs:justify-between xs:items-center gap-3 xs:gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-white">
+            <h1 className="text-2xl xs:text-3xl sm:text-4xl font-bold text-white">
               Time Tracking
             </h1>
-            <p className="text-slate-400">
+            <p className="text-slate-400 text-sm xs:text-base sm:text-lg">
               Track your time across projects and tasks
             </p>
           </div>
           
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-              <Button disabled={!!currentTimer}>
+              <Button disabled={!!currentTimer} className="w-full xs:w-auto text-sm xs:text-base">
                 <Plus className="mr-2 h-4 w-4" />
                 Start Timer
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="max-w-sm xs:max-w-md sm:max-w-lg mx-4">
               <DialogHeader>
-                <DialogTitle>Start New Timer</DialogTitle>
+                <DialogTitle className="text-base xs:text-lg">Start New Timer</DialogTitle>
               </DialogHeader>
-              <div className="space-y-4">
+              <div className="space-y-3 xs:space-y-4">
                 <div>
-                  <label className="text-sm font-medium">Project</label>
+                  <label className="text-sm xs:text-base font-medium">Project</label>
                   <Select value={project} onValueChange={setProject}>
-                    <SelectTrigger>
+                    <SelectTrigger className="text-sm xs:text-base">
                       <SelectValue placeholder="Select project" />
                     </SelectTrigger>
                     <SelectContent>
@@ -339,9 +339,9 @@ export default function TimeTrackingPage() {
                 </div>
                 
                 <div>
-                  <label className="text-sm font-medium">Task</label>
+                  <label className="text-sm xs:text-base font-medium">Task</label>
                   <Select value={task} onValueChange={setTask}>
-                    <SelectTrigger>
+                    <SelectTrigger className="text-sm xs:text-base">
                       <SelectValue placeholder="Select task" />
                     </SelectTrigger>
                     <SelectContent>
@@ -355,36 +355,38 @@ export default function TimeTrackingPage() {
                 </div>
                 
                 <div>
-                  <label className="text-sm font-medium">Description (Optional)</label>
+                  <label className="text-sm xs:text-base font-medium">Description (Optional)</label>
                   <Input
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="What are you working on?"
+                    className="text-sm xs:text-base"
                   />
                 </div>
                 
                 <Button 
                   onClick={startTimer} 
-                  className="w-full"
+                  className="w-full text-sm xs:text-base"
                   disabled={!project || !task}
                 >
                   Start Timer
                 </Button>
               </div>
-            </DialogContent>          </Dialog>
+            </DialogContent>
+          </Dialog>
         </div>
 
         {/* Edit Time Entry Dialog */}
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-          <DialogContent className="sm:max-w-[500px]">
+          <DialogContent className="max-w-sm xs:max-w-md sm:max-w-lg mx-4">
             <DialogHeader>
-              <DialogTitle>Edit Time Entry</DialogTitle>
+              <DialogTitle className="text-base xs:text-lg">Edit Time Entry</DialogTitle>
             </DialogHeader>
-            <div className="space-y-4">
+            <div className="space-y-3 xs:space-y-4">
               <div>
-                <label className="text-sm font-medium">Project</label>
+                <label className="text-sm xs:text-base font-medium">Project</label>
                 <Select value={editProject} onValueChange={setEditProject}>
-                  <SelectTrigger>
+                  <SelectTrigger className="text-sm xs:text-base">
                     <SelectValue placeholder="Select project" />
                   </SelectTrigger>
                   <SelectContent>
@@ -398,9 +400,9 @@ export default function TimeTrackingPage() {
               </div>
               
               <div>
-                <label className="text-sm font-medium">Task</label>
+                <label className="text-sm xs:text-base font-medium">Task</label>
                 <Select value={editTask} onValueChange={setEditTask}>
-                  <SelectTrigger>
+                  <SelectTrigger className="text-sm xs:text-base">
                     <SelectValue placeholder="Select task" />
                   </SelectTrigger>
                   <SelectContent>
@@ -414,48 +416,53 @@ export default function TimeTrackingPage() {
               </div>
               
               <div>
-                <label className="text-sm font-medium">Description</label>
+                <label className="text-sm xs:text-base font-medium">Description</label>
                 <Input
                   value={editDescription}
                   onChange={(e) => setEditDescription(e.target.value)}
                   placeholder="What are you working on?"
+                  className="text-sm xs:text-base"
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 xs:grid-cols-2 gap-3 xs:gap-4">
                 <div>
-                  <label className="text-sm font-medium">Start Time</label>
+                  <label className="text-sm xs:text-base font-medium">Start Time</label>
                   <Input
                     type="datetime-local"
                     value={editStartTime}
                     onChange={(e) => setEditStartTime(e.target.value)}
+                    className="text-sm xs:text-base"
                   />
                 </div>
                 
                 <div>
-                  <label className="text-sm font-medium">End Time</label>
+                  <label className="text-sm xs:text-base font-medium">End Time</label>
                   <Input
                     type="datetime-local"
                     value={editEndTime}
                     onChange={(e) => setEditEndTime(e.target.value)}
                     placeholder="Leave empty if ongoing"
+                    className="text-sm xs:text-base"
                   />
                 </div>
               </div>
               
-              <div className="flex justify-end space-x-2">
+              <div className="flex flex-col xs:flex-row justify-end space-y-2 xs:space-y-0 xs:space-x-2">
                 <Button 
                   variant="outline" 
                   onClick={() => {
                     setIsEditDialogOpen(false)
                     resetEditForm()
                   }}
+                  className="text-sm xs:text-base"
                 >
                   Cancel
                 </Button>
                 <Button 
                   onClick={handleEditEntry}
                   disabled={!editProject || !editTask || !editStartTime}
+                  className="text-sm xs:text-base"
                 >
                   Save Changes
                 </Button>
@@ -467,29 +474,29 @@ export default function TimeTrackingPage() {
         {/* Current Timer */}
         {currentTimer && (
           <Card className="border-green-200 border-green-800 bg-green-50 bg-green-900/20">
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
+            <CardHeader className="pb-3 xs:pb-4">
+              <CardTitle className="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-3 xs:gap-4">
                 <div className="flex items-center">
-                  <Clock className="mr-2 h-5 w-5 text-green-600 text-green-400" />
-                  Active Timer
+                  <Clock className="mr-2 h-4 w-4 xs:h-5 xs:w-5 text-green-600 text-green-400 flex-shrink-0" />
+                  <span className="text-base xs:text-lg">Active Timer</span>
                 </div>
-                <Button onClick={stopTimer} variant="destructive" size="sm">
+                <Button onClick={stopTimer} variant="destructive" size="sm" className="w-full xs:w-auto">
                   <Square className="mr-2 h-4 w-4" />
                   Stop
                 </Button>
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex justify-between items-center">
-                <div>
-                  <h3 className="font-semibold text-lg">{currentTimer.project} - {currentTimer.task}</h3>
-                  <p className="text-slate-400">{currentTimer.description}</p>
-                  <p className="text-sm text-slate-500">
+              <div className="flex flex-col xs:flex-row xs:justify-between xs:items-center gap-3 xs:gap-4">
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold text-base xs:text-lg truncate">{currentTimer.project} - {currentTimer.task}</h3>
+                  <p className="text-slate-400 text-sm xs:text-base truncate">{currentTimer.description}</p>
+                  <p className="text-xs xs:text-sm text-slate-500">
                     Started at {format(new Date(currentTimer.startTime), "HH:mm")}
                   </p>
                 </div>
-                <div className="text-right">
-                  <div className="text-3xl font-mono font-bold text-green-600 text-green-400">
+                <div className="text-center xs:text-right">
+                  <div className="text-2xl xs:text-3xl font-mono font-bold text-green-600 text-green-400">
                     {formatDuration(elapsedTime)}
                   </div>
                 </div>
@@ -499,13 +506,13 @@ export default function TimeTrackingPage() {
         )}
 
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 xs:gap-4 sm:gap-5 lg:gap-6">
           <Card>
-            <CardHeader>
-              <CardTitle className="text-sm font-medium">Today's Total</CardTitle>
+            <CardHeader className="pb-2 xs:pb-3">
+              <CardTitle className="text-xs xs:text-sm sm:text-base font-medium">Today's Total</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">
+              <div className="text-lg xs:text-xl sm:text-2xl font-bold">
                 {formatDuration(
                   timeEntries
                     .filter(entry => {
@@ -520,45 +527,46 @@ export default function TimeTrackingPage() {
           </Card>
           
           <Card>
-            <CardHeader>
-              <CardTitle className="text-sm font-medium">This Week</CardTitle>
+            <CardHeader className="pb-2 xs:pb-3">
+              <CardTitle className="text-xs xs:text-sm sm:text-base font-medium">This Week</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">
+              <div className="text-lg xs:text-xl sm:text-2xl font-bold">
                 {formatDuration(getTotalDuration())}
               </div>
             </CardContent>
           </Card>
           
           <Card>
-            <CardHeader>
-              <CardTitle className="text-sm font-medium">Total Entries</CardTitle>
+            <CardHeader className="pb-2 xs:pb-3">
+              <CardTitle className="text-xs xs:text-sm sm:text-base font-medium">Total Entries</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{timeEntries.length}</div>
+              <div className="text-lg xs:text-xl sm:text-2xl font-bold">{timeEntries.length}</div>
             </CardContent>
           </Card>
         </div>
 
         {/* Time Entries List */}
         <Card>
-          <CardHeader>
-            <CardTitle>Recent Time Entries</CardTitle>
+          <CardHeader className="pb-3 xs:pb-4">
+            <CardTitle className="text-base xs:text-lg sm:text-xl">Recent Time Entries</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-4">              {timeEntries.length === 0 ? (
-                <p className="text-center text-slate-500 text-slate-400 py-8">
+          <CardContent className="px-3 xs:px-4 sm:px-6">
+            <div className="space-y-3 xs:space-y-4">
+              {timeEntries.length === 0 ? (
+                <p className="text-center text-slate-500 text-slate-400 py-6 xs:py-8 text-sm xs:text-base">
                   No time entries yet. Start your first timer!
                 </p>
               ) : (
                 timeEntries.map((entry) => (
                   <div
                     key={entry._id}
-                    className="flex items-center justify-between p-4 bg-slate-800 rounded-lg"
+                    className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 xs:gap-4 p-3 xs:p-4 bg-slate-800 rounded-lg"
                   >
-                    <div className="flex-1">
-                      <h4 className="font-medium">{entry.project} - {entry.task}</h4>
-                      <p className="text-sm text-slate-400">
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-medium text-sm xs:text-base truncate">{entry.project} - {entry.task}</h4>
+                      <p className="text-xs xs:text-sm text-slate-400 truncate">
                         {entry.description}
                       </p>
                       <p className="text-xs text-slate-500">
@@ -567,9 +575,11 @@ export default function TimeTrackingPage() {
                           <> - {format(new Date(entry.endTime), "HH:mm")}</>
                         )}
                       </p>
-                    </div>                    <div className="flex items-center space-x-4">
-                      <div className="text-right">
-                        <div className="font-mono font-semibold">
+                    </div>
+                    
+                    <div className="flex flex-col xs:flex-row xs:items-center gap-2 xs:gap-4">
+                      <div className="text-center xs:text-right">
+                        <div className="font-mono font-semibold text-sm xs:text-base">
                           {entry.isActive ? (
                             <span className="text-green-600 text-green-400">Running</span>
                           ) : entry.duration ? (
@@ -579,7 +589,7 @@ export default function TimeTrackingPage() {
                           )}
                         </div>
                       </div>
-                      <div className="flex space-x-2">
+                      <div className="flex space-x-1 xs:space-x-2 justify-center xs:justify-end">
                         {!entry.isActive && (
                           <>
                             <Button
@@ -588,25 +598,27 @@ export default function TimeTrackingPage() {
                               onClick={() => continueEntry(entry)}
                               disabled={!!currentTimer}
                               title="Continue this task"
+                              className="h-8 w-8 xs:h-9 xs:w-9 p-0"
                             >
-                              <RotateCcw className="h-4 w-4" />
+                              <RotateCcw className="h-3 w-3 xs:h-4 xs:w-4" />
                             </Button>
                             <Button
                               size="sm"
                               variant="outline"
                               onClick={() => openEditDialog(entry)}
                               title="Edit entry"
+                              className="h-8 w-8 xs:h-9 xs:w-9 p-0"
                             >
-                              <Edit className="h-4 w-4" />
+                              <Edit className="h-3 w-3 xs:h-4 xs:w-4" />
                             </Button>
                             <Button
                               size="sm"
                               variant="outline"
                               onClick={() => deleteEntry(entry._id)}
                               title="Delete entry"
-                              className="text-red-600 hover:text-red-700"
+                              className="h-8 w-8 xs:h-9 xs:w-9 p-0 text-red-600 hover:text-red-700"
                             >
-                              <Trash2 className="h-4 w-4" />
+                              <Trash2 className="h-3 w-3 xs:h-4 xs:w-4" />
                             </Button>
                           </>
                         )}

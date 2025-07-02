@@ -237,35 +237,35 @@ function DocumentsContent() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 xs:space-y-5 sm:space-y-6">
         {/* Header */}
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col xs:flex-row xs:justify-between xs:items-center gap-3 xs:gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-white">Documents</h1>
-            <p className="text-slate-400 mt-1">Manage your documents and files</p>
+            <h1 className="text-2xl xs:text-3xl sm:text-4xl font-bold text-white">Documents</h1>
+            <p className="text-slate-400 mt-1 text-sm xs:text-base sm:text-lg">Manage your documents and files</p>
           </div>
           <Button
             onClick={() => setIsDocumentDialogOpen(true)}
-            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-sm xs:text-base w-full xs:w-auto"
           >
-            <Plus className="h-4 w-4 mr-2" />
+            <Plus className="h-3 w-3 xs:h-4 xs:w-4 mr-2" />
             New Document
           </Button>
         </div>
 
         {/* Filters */}
-        <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex flex-col sm:flex-row gap-3 xs:gap-4">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 h-3 w-3 xs:h-4 xs:w-4" />
             <Input
               placeholder="Search documents..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 bg-slate-800 border-slate-700 text-white"
+              className="pl-8 xs:pl-10 bg-slate-800 border-slate-700 text-white text-sm xs:text-base"
             />
           </div>
           <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-            <SelectTrigger className="w-48 bg-slate-800 border-slate-700 text-white">
+            <SelectTrigger className="w-full sm:w-48 bg-slate-800 border-slate-700 text-white text-sm xs:text-base">
               <SelectValue placeholder="Filter by category" />
             </SelectTrigger>
             <SelectContent className="bg-slate-800 border-slate-700">
@@ -278,53 +278,53 @@ function DocumentsContent() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 xs:gap-4 sm:gap-5">
           <Card className="bg-slate-800 border-slate-700">
-            <CardContent className="p-4">
-              <div className="flex items-center space-x-2">
-                <FileText className="h-8 w-8 text-blue-400" />
-                <div>
-                  <p className="text-2xl font-bold text-white">{documents.length}</p>
-                  <p className="text-xs text-slate-400">Total Documents</p>
+            <CardContent className="p-3 xs:p-4">
+              <div className="flex items-center space-x-2 xs:space-x-3">
+                <FileText className="h-6 w-6 xs:h-7 xs:w-7 sm:h-8 sm:w-8 text-blue-400 flex-shrink-0" />
+                <div className="min-w-0">
+                  <p className="text-lg xs:text-xl sm:text-2xl font-bold text-white truncate">{documents.length}</p>
+                  <p className="text-xs xs:text-sm text-slate-400">Total Documents</p>
                 </div>
               </div>
             </CardContent>
           </Card>
           <Card className="bg-slate-800 border-slate-700">
-            <CardContent className="p-4">
-              <div className="flex items-center space-x-2">
-                <Folder className="h-8 w-8 text-purple-400" />
-                <div>
-                  <p className="text-2xl font-bold text-white">
+            <CardContent className="p-3 xs:p-4">
+              <div className="flex items-center space-x-2 xs:space-x-3">
+                <Folder className="h-6 w-6 xs:h-7 xs:w-7 sm:h-8 sm:w-8 text-purple-400 flex-shrink-0" />
+                <div className="min-w-0">
+                  <p className="text-lg xs:text-xl sm:text-2xl font-bold text-white truncate">
                     {new Set(documents.map(d => d.category)).size}
                   </p>
-                  <p className="text-xs text-slate-400">Categories</p>
+                  <p className="text-xs xs:text-sm text-slate-400">Categories</p>
                 </div>
               </div>
             </CardContent>
           </Card>
           <Card className="bg-slate-800 border-slate-700">
-            <CardContent className="p-4">
-              <div className="flex items-center space-x-2">
-                <FileText className="h-8 w-8 text-green-400" />
-                <div>
-                  <p className="text-2xl font-bold text-white">
+            <CardContent className="p-3 xs:p-4">
+              <div className="flex items-center space-x-2 xs:space-x-3">
+                <FileText className="h-6 w-6 xs:h-7 xs:w-7 sm:h-8 sm:w-8 text-green-400 flex-shrink-0" />
+                <div className="min-w-0">
+                  <p className="text-lg xs:text-xl sm:text-2xl font-bold text-white truncate">
                     {documents.filter(d => d.fileType === "markdown").length}
                   </p>
-                  <p className="text-xs text-slate-400">Markdown Files</p>
+                  <p className="text-xs xs:text-sm text-slate-400">Markdown Files</p>
                 </div>
               </div>
             </CardContent>
           </Card>
           <Card className="bg-slate-800 border-slate-700">
-            <CardContent className="p-4">
-              <div className="flex items-center space-x-2">
-                <File className="h-8 w-8 text-yellow-400" />
-                <div>
-                  <p className="text-2xl font-bold text-white">
+            <CardContent className="p-3 xs:p-4">
+              <div className="flex items-center space-x-2 xs:space-x-3">
+                <File className="h-6 w-6 xs:h-7 xs:w-7 sm:h-8 sm:w-8 text-yellow-400 flex-shrink-0" />
+                <div className="min-w-0">
+                  <p className="text-lg xs:text-xl sm:text-2xl font-bold text-white truncate">
                     {documents.filter(d => d.fileType === "code").length}
                   </p>
-                  <p className="text-xs text-slate-400">Code Files</p>
+                  <p className="text-xs xs:text-sm text-slate-400">Code Files</p>
                 </div>
               </div>
             </CardContent>
@@ -332,69 +332,71 @@ function DocumentsContent() {
         </div>
 
         {/* Documents Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-3 3xl:grid-cols-4 gap-3 xs:gap-4 sm:gap-4 lg:gap-5 xl:gap-4 2xl:gap-5">
           {filteredDocuments.map((document) => (
             <Card key={document._id} className="bg-slate-800 border-slate-700 hover:border-slate-600 transition-colors">
-              <CardHeader className="pb-2">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center space-x-2">
+              <CardHeader className="pb-2 xs:pb-3">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex items-center space-x-2 min-w-0 flex-1">
                     {getFileIcon(document.fileType)}
-                    <CardTitle className="text-lg text-white truncate">{document.title}</CardTitle>
+                    <CardTitle className="text-base xs:text-lg text-white truncate">{document.title}</CardTitle>
                   </div>
-                  <div className="flex items-center space-x-1">
+                  <div className="flex items-center space-x-0.5 xs:space-x-1 flex-shrink-0">
                     <Button
                       variant="ghost"
                       size="icon"
                       onClick={() => viewDocument(document)}
-                      className="h-8 w-8 text-slate-400 hover:text-white"
+                      className="h-7 w-7 xs:h-8 xs:w-8 text-slate-400 hover:text-white"
                     >
-                      <Eye className="h-4 w-4" />
+                      <Eye className="h-3 w-3 xs:h-4 xs:w-4" />
                     </Button>
                     <Button
                       variant="ghost"
                       size="icon"
                       onClick={() => editDocument(document)}
-                      className="h-8 w-8 text-slate-400 hover:text-white"
+                      className="h-7 w-7 xs:h-8 xs:w-8 text-slate-400 hover:text-white"
                     >
-                      <Edit className="h-4 w-4" />
+                      <Edit className="h-3 w-3 xs:h-4 xs:w-4" />
                     </Button>
                     <Button
                       variant="ghost"
                       size="icon"
                       onClick={() => exportDocument(document)}
-                      className="h-8 w-8 text-slate-400 hover:text-white"
+                      className="h-7 w-7 xs:h-8 xs:w-8 text-slate-400 hover:text-white"
                     >
-                      <Download className="h-4 w-4" />
+                      <Download className="h-3 w-3 xs:h-4 xs:w-4" />
                     </Button>
                     <Button
                       variant="ghost"
                       size="icon"
                       onClick={() => deleteDocument(document._id)}
-                      className="h-8 w-8 text-slate-400 hover:text-red-400"
+                      className="h-7 w-7 xs:h-8 xs:w-8 text-slate-400 hover:text-red-400"
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <Trash2 className="h-3 w-3 xs:h-4 xs:w-4" />
                     </Button>
                   </div>
                 </div>
-                <CardDescription className="text-slate-400">
+                <CardDescription className="text-slate-400 text-xs xs:text-sm">
                   {document.category} • {new Date(document.createdAt).toLocaleDateString()}
                 </CardDescription>
-              </CardHeader>              <CardContent>
-                <p className="text-slate-300 text-sm mb-3 line-clamp-3">
+              </CardHeader>
+              
+              <CardContent className="pt-0">
+                <p className="text-slate-300 text-xs xs:text-sm mb-2 xs:mb-3 line-clamp-3 leading-relaxed">
                   {document.content.substring(0, 120)}...
                 </p>
                 
-                <div className="flex flex-wrap gap-1 mb-2">
+                <div className="flex flex-wrap gap-1 mb-2 xs:mb-3">
                   {document.tags.slice(0, 3).map((tag, index) => (
                     <span
                       key={index}
-                      className="px-2 py-1 bg-slate-700 text-slate-300 text-xs rounded-md"
+                      className="px-1.5 xs:px-2 py-0.5 xs:py-1 bg-slate-700 text-slate-300 text-xs rounded-md"
                     >
                       {tag}
                     </span>
                   ))}
                   {document.tags.length > 3 && (
-                    <span className="px-2 py-1 bg-slate-700 text-slate-300 text-xs rounded-md">
+                    <span className="px-1.5 xs:px-2 py-0.5 xs:py-1 bg-slate-700 text-slate-300 text-xs rounded-md">
                       +{document.tags.length - 3}
                     </span>
                   )}
@@ -406,11 +408,11 @@ function DocumentsContent() {
                     {(() => {
                       const linkedProject = getLinkedProject(document.projectId)
                       return linkedProject ? (
-                        <span className="inline-block px-2 py-1 text-xs rounded-full bg-orange-100 bg-orange-900/20 text-orange-800 text-orange-300">
+                        <span className="inline-block px-1.5 xs:px-2 py-0.5 xs:py-1 text-xs rounded-full bg-orange-100 bg-orange-900/20 text-orange-800 text-orange-300">
                           📁 {linkedProject.name}
                         </span>
                       ) : (
-                        <span className="inline-block px-2 py-1 text-xs rounded-full bg-gray-100 bg-gray-900/20 text-gray-800 text-gray-300">
+                        <span className="inline-block px-1.5 xs:px-2 py-0.5 xs:py-1 text-xs rounded-full bg-gray-100 bg-gray-900/20 text-gray-800 text-gray-300">
                           📁 Project
                         </span>
                       )
@@ -424,10 +426,10 @@ function DocumentsContent() {
 
         {filteredDocuments.length === 0 && (
           <Card className="bg-slate-800 border-slate-700">
-            <CardContent className="p-8 text-center">
-              <FileText className="h-12 w-12 text-slate-600 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-white mb-2">No documents found</h3>
-              <p className="text-slate-400 mb-4">
+            <CardContent className="p-6 xs:p-8 text-center">
+              <FileText className="h-10 w-10 xs:h-12 xs:w-12 text-slate-600 mx-auto mb-3 xs:mb-4" />
+              <h3 className="text-base xs:text-lg font-medium text-white mb-2">No documents found</h3>
+              <p className="text-slate-400 mb-3 xs:mb-4 text-sm xs:text-base">
                 {searchTerm || selectedCategory !== "all" 
                   ? "Try adjusting your search criteria" 
                   : "Create your first document to get started"}
@@ -435,9 +437,9 @@ function DocumentsContent() {
               {!searchTerm && selectedCategory === "all" && (
                 <Button
                   onClick={() => setIsDocumentDialogOpen(true)}
-                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+                  className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-sm xs:text-base"
                 >
-                  <Plus className="h-4 w-4 mr-2" />
+                  <Plus className="h-3 w-3 xs:h-4 xs:w-4 mr-2" />
                   Create Document
                 </Button>
               )}
@@ -447,7 +449,7 @@ function DocumentsContent() {
 
         {/* Create/Edit Document Dialog */}
         <Dialog open={isDocumentDialogOpen} onOpenChange={setIsDocumentDialogOpen}>
-          <DialogContent className="bg-slate-800 border-slate-700 max-w-2xl">
+          <DialogContent className="bg-slate-800 border-slate-700 max-w-sm xs:max-w-md sm:max-w-lg lg:max-w-2xl mx-4">
             <DialogHeader>
               <DialogTitle className="text-white">
                 {editingDocument ? "Edit Document" : "Create New Document"}
@@ -565,47 +567,47 @@ function DocumentsContent() {
 
         {/* View Document Dialog */}
         <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
-          <DialogContent className="bg-slate-800 border-slate-700 max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="bg-slate-800 border-slate-700 max-w-sm xs:max-w-md sm:max-w-lg lg:max-w-4xl mx-4 max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle className="text-white flex items-center space-x-2">
+              <DialogTitle className="text-white flex items-center space-x-2 text-base xs:text-lg">
                 {viewingDocument && getFileIcon(viewingDocument.fileType)}
-                <span>{viewingDocument?.title}</span>
+                <span className="truncate">{viewingDocument?.title}</span>
               </DialogTitle>
             </DialogHeader>
             {viewingDocument && (
-              <div className="space-y-4">
-                <div className="flex items-center space-x-4 text-sm text-slate-400">
+              <div className="space-y-3 xs:space-y-4">
+                <div className="flex flex-wrap items-center gap-2 xs:gap-4 text-xs xs:text-sm text-slate-400">
                   <span>Category: {viewingDocument.category}</span>
-                  <span>•</span>
+                  <span className="hidden xs:inline">•</span>
                   <span>Type: {viewingDocument.fileType}</span>
-                  <span>•</span>
+                  <span className="hidden xs:inline">•</span>
                   <span>Created: {new Date(viewingDocument.createdAt).toLocaleDateString()}</span>
                 </div>
                 
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-1 xs:gap-2">
                   {viewingDocument.tags.map((tag, index) => (
                     <span
                       key={index}
-                      className="px-2 py-1 bg-slate-700 text-slate-300 text-xs rounded-md"
+                      className="px-1.5 xs:px-2 py-0.5 xs:py-1 bg-slate-700 text-slate-300 text-xs rounded-md"
                     >
                       {tag}
                     </span>
                   ))}
                 </div>
 
-                <div className="bg-slate-900 p-4 rounded-lg border border-slate-700">
-                  <pre className="text-slate-300 whitespace-pre-wrap text-sm leading-relaxed">
+                <div className="bg-slate-900 p-3 xs:p-4 rounded-lg border border-slate-700">
+                  <pre className="text-slate-300 whitespace-pre-wrap text-xs xs:text-sm leading-relaxed">
                     {viewingDocument.content}
                   </pre>
                 </div>
 
-                <div className="flex justify-end space-x-2">
+                <div className="flex flex-col xs:flex-row justify-end space-y-2 xs:space-y-0 xs:space-x-2">
                   <Button
                     variant="outline"
                     onClick={() => exportDocument(viewingDocument)}
-                    className="border-slate-600 text-slate-300 hover:bg-slate-700"
+                    className="border-slate-600 text-slate-300 hover:bg-slate-700 text-sm xs:text-base w-full xs:w-auto"
                   >
-                    <Download className="h-4 w-4 mr-2" />
+                    <Download className="h-3 w-3 xs:h-4 xs:w-4 mr-2" />
                     Export
                   </Button>
                   <Button
@@ -613,9 +615,9 @@ function DocumentsContent() {
                       setIsViewDialogOpen(false)
                       editDocument(viewingDocument)
                     }}
-                    className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+                    className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-sm xs:text-base w-full xs:w-auto"
                   >
-                    <Edit className="h-4 w-4 mr-2" />
+                    <Edit className="h-3 w-3 xs:h-4 xs:w-4 mr-2" />
                     Edit
                   </Button>
                 </div>

@@ -345,49 +345,49 @@ function CRMContent() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 xs:space-y-5 sm:space-y-6">
         {/* Header */}
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 xs:gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-white">
+            <h1 className="text-2xl xs:text-3xl sm:text-4xl font-bold text-white">
               CRM & Notes
             </h1>
-            <p className="text-slate-400">
+            <p className="text-slate-400 text-sm xs:text-base sm:text-lg">
               Manage your contacts and keep track of important notes
             </p>
           </div>
         </div>
 
         {/* Search */}
-        <div className="relative max-w-md">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+        <div className="relative max-w-full sm:max-w-md">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 xs:h-5 xs:w-5 text-slate-400" />
           <Input
             placeholder="Search contacts or notes..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
+            className="pl-10 xs:pl-12 text-sm xs:text-base"
           />
         </div>
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <div className="flex justify-between items-center">
-            <TabsList>
-              <TabsTrigger value="contacts">Contacts</TabsTrigger>
-              <TabsTrigger value="notes">Notes</TabsTrigger>
+          <div className="flex flex-col xs:flex-row xs:justify-between xs:items-center gap-3 xs:gap-4">
+            <TabsList className="w-full xs:w-auto">
+              <TabsTrigger value="contacts" className="flex-1 xs:flex-none">Contacts</TabsTrigger>
+              <TabsTrigger value="notes" className="flex-1 xs:flex-none">Notes</TabsTrigger>
             </TabsList>
             
-            <div className="flex space-x-2">
+            <div className="flex flex-col xs:flex-row space-y-2 xs:space-y-0 xs:space-x-2">
               <Dialog open={isContactDialogOpen} onOpenChange={setIsContactDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button onClick={resetContactForm}>
+                  <Button onClick={resetContactForm} className="w-full xs:w-auto text-sm xs:text-base">
                     <Plus className="mr-2 h-4 w-4" />
                     Add Contact
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-md">
+                <DialogContent className="max-w-sm xs:max-w-md sm:max-w-lg mx-4">
                   <DialogHeader>
-                    <DialogTitle>
+                    <DialogTitle className="text-base xs:text-lg">
                       {editingContact ? "Edit Contact" : "Add New Contact"}
                     </DialogTitle>
                   </DialogHeader>
@@ -485,14 +485,14 @@ function CRMContent() {
 
               <Dialog open={isNoteDialogOpen} onOpenChange={setIsNoteDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button variant="outline" onClick={resetNoteForm}>
+                  <Button variant="outline" onClick={resetNoteForm} className="w-full xs:w-auto text-sm xs:text-base">
                     <Plus className="mr-2 h-4 w-4" />
                     Add Note
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-md">
+                <DialogContent className="max-w-sm xs:max-w-md sm:max-w-lg mx-4">
                   <DialogHeader>
-                    <DialogTitle>
+                    <DialogTitle className="text-base xs:text-lg">
                       {editingNote ? "Edit Note" : "Add New Note"}
                     </DialogTitle>
                   </DialogHeader>
@@ -595,61 +595,65 @@ function CRMContent() {
                   </p>
                 </CardContent>
               </Card>
-            ) : (              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            ) : (              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-3 3xl:grid-cols-4 gap-3 xs:gap-4 sm:gap-4 lg:gap-5 xl:gap-4 2xl:gap-5">
                 {filteredContacts.map((contact) => {
                   const linkedProject = projects.find(p => p._id === (contact as any).projectId)
                   
                   return (
                   <Card key={contact._id} className="hover:shadow-md transition-shadow">
-                    <CardHeader className="pb-3">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <CardTitle className="text-lg">{contact.name}</CardTitle>
+                    <CardHeader className="pb-2 xs:pb-3">
+                      <div className="flex justify-between items-start gap-2">
+                        <div className="flex-1 min-w-0">
+                          <CardTitle className="text-base xs:text-lg sm:text-base lg:text-lg truncate">
+                            {contact.name}
+                          </CardTitle>
                           {contact.position && contact.company && (
-                            <p className="text-sm text-slate-400">
+                            <p className="text-xs xs:text-sm text-slate-400 truncate">
                               {contact.position} at {contact.company}
                             </p>
                           )}
                           {linkedProject && (
-                            <p className="text-sm text-blue-600 text-blue-400 mt-1">
+                            <p className="text-xs xs:text-sm text-blue-600 text-blue-400 mt-1 truncate">
                               📁 {linkedProject.name}
                             </p>
                           )}
                         </div>
-                        <div className="flex space-x-1">
+                        <div className="flex space-x-1 flex-shrink-0">
                           <Button 
                             variant="ghost" 
                             size="sm"
                             onClick={() => editContact(contact)}
+                            className="h-7 w-7 xs:h-8 xs:w-8"
                           >
-                            <Edit className="h-4 w-4" />
+                            <Edit className="h-3 w-3 xs:h-4 xs:w-4" />
                           </Button>
                           <Button 
                             variant="ghost" 
                             size="sm"
                             onClick={() => deleteContact(contact._id)}
+                            className="h-7 w-7 xs:h-8 xs:w-8"
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 className="h-3 w-3 xs:h-4 xs:w-4" />
                           </Button>
                         </div>
                       </div>
                     </CardHeader>
-                    <CardContent>
-                      <div className="space-y-2">
-                        <div className="flex items-center text-sm">
-                          <Mail className="h-4 w-4 mr-2 text-slate-400" />
-                          {contact.email}
+                    <CardContent className="pt-0">
+                      <div className="space-y-1.5 xs:space-y-2">
+                        <div className="flex items-center text-xs xs:text-sm">
+                          <Mail className="h-3 w-3 xs:h-4 xs:w-4 mr-2 text-slate-400 flex-shrink-0" />
+                          <span className="truncate">{contact.email}</span>
                         </div>
                         {contact.phone && (
-                          <div className="flex items-center text-sm">
-                            <Phone className="h-4 w-4 mr-2 text-slate-400" />
-                            {contact.phone}
+                          <div className="flex items-center text-xs xs:text-sm">
+                            <Phone className="h-3 w-3 xs:h-4 xs:w-4 mr-2 text-slate-400 flex-shrink-0" />
+                            <span className="truncate">{contact.phone}</span>
                           </div>
                         )}
                         {contact.company && (
-                          <div className="flex items-center text-sm">
-                            <Building className="h-4 w-4 mr-2 text-slate-400" />
-                            {contact.company}
+                          <div className="flex items-center text-xs xs:text-sm">
+                            <Building className="h-3 w-3 xs:h-4 xs:w-4 mr-2 text-slate-400 flex-shrink-0" />
+                            <span className="truncate">{contact.company}</span>
                           </div>
                         )}
                         {contact.tags.length > 0 && (
@@ -657,13 +661,14 @@ function CRMContent() {
                             {contact.tags.map((tag, index) => (
                               <span 
                                 key={index}
-                                className="px-2 py-1 bg-blue-100 bg-blue-900/20 text-blue-800 text-blue-300 text-xs rounded-full"
+                                className="px-1.5 xs:px-2 py-0.5 xs:py-1 bg-blue-100 bg-blue-900/20 text-blue-800 text-blue-300 text-xs rounded-full flex-shrink-0"
                               >
                                 {tag}
                               </span>
                             ))}
                           </div>
-                        )}                        <p className="text-xs text-slate-500 mt-2">
+                        )}
+                        <p className="text-xs text-slate-500 mt-2">
                           Added {format(new Date(contact.createdAt), "MMM dd, yyyy")}
                         </p>
                       </div>
@@ -685,61 +690,66 @@ function CRMContent() {
                   </p>
                 </CardContent>
               </Card>
-            ) : (              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-3 3xl:grid-cols-4 gap-3 xs:gap-4 sm:gap-4 lg:gap-5 xl:gap-4 2xl:gap-5">
                 {filteredNotes.map((note) => {
                   const linkedContact = contacts.find(c => c._id === note.contactId)
                   const linkedProject = projects.find(p => p._id === note.projectId)
                   
                   return (
                     <Card key={note._id} className="hover:shadow-md transition-shadow">
-                      <CardHeader className="pb-3">
-                        <div className="flex justify-between items-start">
-                          <div className="flex-1">
-                            <CardTitle className="text-lg">{note.title}</CardTitle>
-                            <div className="flex items-center gap-2 mt-1">
-                              <span className="px-2 py-1 bg-purple-100 bg-purple-900/20 text-purple-800 text-purple-300 text-xs rounded-full">
+                      <CardHeader className="pb-2 xs:pb-3">
+                        <div className="flex justify-between items-start gap-2">
+                          <div className="flex-1 min-w-0">
+                            <CardTitle className="text-base xs:text-lg sm:text-base lg:text-lg truncate">
+                              {note.title}
+                            </CardTitle>
+                            <div className="flex flex-wrap items-center gap-1 xs:gap-2 mt-1">
+                              <span className="px-1.5 xs:px-2 py-0.5 xs:py-1 bg-purple-100 bg-purple-900/20 text-purple-800 text-purple-300 text-xs rounded-full flex-shrink-0">
                                 {note.category}
                               </span>
                               {linkedContact && (
-                                <span className="px-2 py-1 bg-green-100 bg-green-900/20 text-green-800 text-green-300 text-xs rounded-full">
+                                <span className="px-1.5 xs:px-2 py-0.5 xs:py-1 bg-green-100 bg-green-900/20 text-green-800 text-green-300 text-xs rounded-full flex-shrink-0">
                                   👤 {linkedContact.name}
                                 </span>
                               )}
                               {linkedProject && (
-                                <span className="px-2 py-1 bg-blue-100 bg-blue-900/20 text-blue-800 text-blue-300 text-xs rounded-full">
+                                <span className="px-1.5 xs:px-2 py-0.5 xs:py-1 bg-blue-100 bg-blue-900/20 text-blue-800 text-blue-300 text-xs rounded-full flex-shrink-0">
                                   📁 {linkedProject.name}
                                 </span>
                               )}
                             </div>
                           </div>
-                          <div className="flex space-x-1">
+                          <div className="flex space-x-1 flex-shrink-0">
                             <Button 
                               variant="ghost" 
                               size="sm"
                               onClick={() => editNote(note)}
+                              className="h-7 w-7 xs:h-8 xs:w-8"
                             >
-                              <Edit className="h-4 w-4" />
+                              <Edit className="h-3 w-3 xs:h-4 xs:w-4" />
                             </Button>
                             <Button 
                               variant="ghost" 
                               size="sm"
                               onClick={() => deleteNote(note._id)}
+                              className="h-7 w-7 xs:h-8 xs:w-8"
                             >
-                              <Trash2 className="h-4 w-4" />
+                              <Trash2 className="h-3 w-3 xs:h-4 xs:w-4" />
                             </Button>
                           </div>
                         </div>
                       </CardHeader>
-                      <CardContent>
-                        <p className="text-sm text-slate-400 mb-3 line-clamp-3">
+                      <CardContent className="pt-0">
+                        <p className="text-xs xs:text-sm text-slate-400 mb-2 xs:mb-3 line-clamp-3 leading-relaxed">
                           {note.content}
                         </p>
                         {note.tags.length > 0 && (
-                          <div className="flex flex-wrap gap-1 mb-3">
+                          <div className="flex flex-wrap gap-1 mb-2 xs:mb-3">
                             {note.tags.map((tag, index) => (
                               <span 
                                 key={index}
-                                className="px-2 py-1 bg-slate-100 bg-slate-700 text-slate-700 text-slate-300 text-xs rounded-full"
+                                className="px-1.5 xs:px-2 py-0.5 xs:py-1 bg-slate-100 bg-slate-700 text-slate-700 text-slate-300 text-xs rounded-full flex-shrink-0"
                               >
                                 #{tag}
                               </span>
