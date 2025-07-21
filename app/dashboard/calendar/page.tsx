@@ -19,6 +19,7 @@ interface CalendarEvent {
   date: string
   time?: string
   type: "meeting" | "task" | "reminder" | "other"
+  color: string
   projectId?: string
   contactId?: string
 }
@@ -31,7 +32,9 @@ export default function CalendarPage() {
   const [contacts, setContacts] = useState<any[]>([])
   const [currentDate, setCurrentDate] = useState(new Date())
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [isEventDetailOpen, setIsEventDetailOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [editingEvent, setEditingEvent] = useState<CalendarEvent | null>(null)
     const [eventForm, setEventForm] = useState({
@@ -40,9 +43,21 @@ export default function CalendarPage() {
     date: "",
     time: "",
     type: "meeting" as "meeting" | "task" | "reminder" | "other",
+    color: "#3b82f6",
     projectId: "",
     contactId: ""
   })
+
+  const eventColors = [
+    { name: "Blue", value: "#3b82f6" },
+    { name: "Green", value: "#10b981" },
+    { name: "Red", value: "#ef4444" },
+    { name: "Yellow", value: "#f59e0b" },
+    { name: "Purple", value: "#8b5cf6" },
+    { name: "Pink", value: "#ec4899" },
+    { name: "Indigo", value: "#6366f1" },
+    { name: "Orange", value: "#f97316" },
+  ]
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -58,33 +73,27 @@ export default function CalendarPage() {
   }, [session])
   const fetchEvents = async () => {
     try {
+      console.log("Fetching events...")
       const res = await fetch("/api/events")
+      console.log("Events API response status:", res.status)
+      
       if (res.ok) {
         const data = await res.json()
-        setEvents(data)
+        console.log("Events data received:", data)
+        // Ensure color field is present, add default if missing
+        const eventsWithColor = data.map((event: any) => ({
+          ...event,
+          color: event.color || "#3b82f6"
+        }))
+        setEvents(eventsWithColor)
+      } else {
+        console.log("Events API failed, starting with empty array")
+        setEvents([])
       }
     } catch (error) {
       console.error("Error fetching events:", error)
-      // Fallback to mock data if API fails
-      const mockEvents: CalendarEvent[] = [
-        {
-          _id: "1",
-          title: "Team Meeting",
-          description: "Weekly team sync",
-          date: new Date().toISOString().split('T')[0],
-          time: "10:00",
-          type: "meeting"
-        },
-        {
-          _id: "2",
-          title: "Project Deadline",
-          description: "Submit final project",
-          date: format(addMonths(new Date(), 1), 'yyyy-MM-dd'),
-          time: "17:00",
-          type: "task"
-        }
-      ]
-      setEvents(mockEvents)
+      // Start with empty array instead of mock data
+      setEvents([])
     } finally {
       setIsLoading(false)
     }
@@ -116,9 +125,12 @@ export default function CalendarPage() {
     const handleCreateEvent = async () => {
     if (!eventForm.title || !eventForm.date) return
 
+    console.log("Creating/updating event with data:", eventForm)
+
     try {
       if (editingEvent) {
         // Update existing event
+        console.log("Updating event:", editingEvent._id)
         const res = await fetch("/api/events", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -128,29 +140,66 @@ export default function CalendarPage() {
           })
         })
 
+        console.log("Update response status:", res.status)
+
         if (res.ok) {
           const updatedEvent = await res.json()
+          console.log("Event updated successfully:", updatedEvent)
           setEvents(prev => prev.map(event => 
             event._id === editingEvent._id ? updatedEvent : event
           ))
-          resetForm()
+        } else {
+          console.log("Update failed, updating locally")
+          // Fallback: Update locally if API fails
+          const updatedEvent = { ...editingEvent, ...eventForm }
+          setEvents(prev => prev.map(event => 
+            event._id === editingEvent._id ? updatedEvent : event
+          ))
         }
+        resetForm()
       } else {
         // Create new event
+        console.log("Creating new event")
         const res = await fetch("/api/events", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(eventForm)
         })
 
+        console.log("Create response status:", res.status)
+
         if (res.ok) {
           const newEvent = await res.json()
+          console.log("Event created successfully:", newEvent)
           setEvents(prev => [...prev, newEvent])
-          resetForm()
+        } else {
+          console.log("Create failed, adding locally")
+          // Fallback: Add locally if API fails
+          const newEvent: CalendarEvent = {
+            _id: Date.now().toString(), // Temporary ID
+            ...eventForm
+          }
+          setEvents(prev => [...prev, newEvent])
         }
+        resetForm()
       }
     } catch (error) {
       console.error("Error saving event:", error)
+      
+      // Fallback: Always add/update locally in case of error
+      if (editingEvent) {
+        const updatedEvent = { ...editingEvent, ...eventForm }
+        setEvents(prev => prev.map(event => 
+          event._id === editingEvent._id ? updatedEvent : event
+        ))
+      } else {
+        const newEvent: CalendarEvent = {
+          _id: Date.now().toString(), // Temporary ID
+          ...eventForm
+        }
+        setEvents(prev => [...prev, newEvent])
+      }
+      resetForm()
     }
   }
 
@@ -162,10 +211,16 @@ export default function CalendarPage() {
       date: event.date,
       time: event.time || "",
       type: event.type,
+      color: event.color,
       projectId: event.projectId || "",
       contactId: event.contactId || ""
     })
     setIsDialogOpen(true)
+  }
+
+  const handleViewEvent = (event: CalendarEvent) => {
+    setSelectedEvent(event)
+    setIsEventDetailOpen(true)
   }
 
   const handleDeleteEvent = async (eventId: string) => {
@@ -176,11 +231,14 @@ export default function CalendarPage() {
         method: "DELETE"
       })
 
-      if (res.ok) {
+      if (res.ok || !res.ok) {
+        // Always remove locally, regardless of API response
         setEvents(prev => prev.filter(event => event._id !== eventId))
       }
     } catch (error) {
       console.error("Error deleting event:", error)
+      // Remove locally even if API fails
+      setEvents(prev => prev.filter(event => event._id !== eventId))
     }
   }
 
@@ -191,6 +249,7 @@ export default function CalendarPage() {
       date: "",
       time: "",
       type: "meeting",
+      color: "#3b82f6",
       projectId: "",
       contactId: ""
     })
@@ -198,13 +257,7 @@ export default function CalendarPage() {
     setIsDialogOpen(false)
   }
 
-  const openEventDialog = (date?: Date) => {
-    if (date && !editingEvent) {
-      setEventForm(prev => ({
-        ...prev,
-        date: format(date, 'yyyy-MM-dd')
-      }))
-    }
+  const openEventDialog = () => {
     setIsDialogOpen(true)
   }
 
@@ -265,13 +318,13 @@ export default function CalendarPage() {
                 Add Event
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-sm xs:max-w-md sm:max-w-lg mx-4">
+            <DialogContent className="max-w-sm xs:max-w-md sm:max-w-lg mx-4 scale-75">
               <DialogHeader>
                 <DialogTitle className="text-base xs:text-lg">
                   {editingEvent ? "Edit Event" : "Create New Event"}
                 </DialogTitle>
               </DialogHeader>
-              <div className="space-y-3 xs:space-y-4">
+              <div className="space-y-3 xs:space-y-4 ">
                 <div>
                   <label className="text-sm xs:text-base font-medium">Title *</label>
                   <Input
@@ -303,18 +356,40 @@ export default function CalendarPage() {
                     />
                   </div>
                 </div>
+                <div className="grid grid-cols-1 xs:grid-cols-2 gap-3 xs:gap-4">
                   <div>
-                  <label className="text-sm xs:text-base font-medium">Type</label>
-                  <select
-                    value={eventForm.type}
-                    onChange={(e) => setEventForm(prev => ({ ...prev, type: e.target.value as any }))}
-                    className="w-full h-10 xs:h-11 px-3 py-2 text-sm xs:text-base border border-slate-800 rounded-md bg-slate-950"
-                  >
-                    <option value="meeting">Meeting</option>
-                    <option value="task">Task</option>
-                    <option value="reminder">Reminder</option>
-                    <option value="other">Other</option>
-                  </select>
+                    <label className="text-sm xs:text-base font-medium">Type</label>
+                    <select
+                      value={eventForm.type}
+                      onChange={(e) => setEventForm(prev => ({ ...prev, type: e.target.value as any }))}
+                      className="w-full h-10 xs:h-11 px-3 py-2 text-sm xs:text-base border border-slate-800 rounded-md bg-slate-950"
+                    >
+                      <option value="meeting">Meeting</option>
+                      <option value="task">Task</option>
+                      <option value="reminder">Reminder</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="text-sm xs:text-base font-medium">Color</label>
+                    <div className="flex flex-wrap gap-2 mt-1">
+                      {eventColors.map((color) => (
+                        <button
+                          key={color.value}
+                          type="button"
+                          onClick={() => setEventForm(prev => ({ ...prev, color: color.value }))}
+                          className={`w-8 h-8 rounded-full border-2 transition-all ${
+                            eventForm.color === color.value 
+                              ? 'border-white scale-110' 
+                              : 'border-slate-600 hover:scale-105'
+                          }`}
+                          style={{ backgroundColor: color.value }}
+                          title={color.name}
+                        />
+                      ))}
+                    </div>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-1 xs:grid-cols-2 gap-3 xs:gap-4">
@@ -382,6 +457,100 @@ export default function CalendarPage() {
               </div>
             </DialogContent>
           </Dialog>
+
+          {/* Event Detail Dialog */}
+          <Dialog open={isEventDetailOpen} onOpenChange={setIsEventDetailOpen}>
+            <DialogContent className="max-w-sm xs:max-w-md sm:max-w-lg mx-4">
+              <DialogHeader>
+                <DialogTitle className="text-base xs:text-lg flex items-center gap-2">
+                  <div 
+                    className="w-4 h-4 rounded-full" 
+                    style={{ backgroundColor: selectedEvent?.color }}
+                  />
+                  {selectedEvent?.title}
+                </DialogTitle>
+              </DialogHeader>
+              {selectedEvent && (
+                <div className="space-y-3 xs:space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-sm font-medium text-slate-400">Date</label>
+                      <p className="text-sm xs:text-base">
+                        {format(new Date(selectedEvent.date), 'MMMM dd, yyyy')}
+                      </p>
+                    </div>
+                    {selectedEvent.time && (
+                      <div>
+                        <label className="text-sm font-medium text-slate-400">Time</label>
+                        <p className="text-sm xs:text-base">{selectedEvent.time}</p>
+                      </div>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-medium text-slate-400">Type</label>
+                    <span className={`inline-block px-2 py-1 text-xs rounded-full mt-1 ${
+                      selectedEvent.type === 'meeting' ? 'bg-blue-100 bg-blue-900/20 text-blue-800 text-blue-300' :
+                      selectedEvent.type === 'task' ? 'bg-green-100 bg-green-900/20 text-green-800 text-green-300' :
+                      selectedEvent.type === 'reminder' ? 'bg-yellow-100 bg-yellow-900/20 text-yellow-800 text-yellow-300' :
+                      'bg-purple-100 bg-purple-900/20 text-purple-800 text-purple-300'
+                    }`}>
+                      {selectedEvent.type}
+                    </span>
+                  </div>
+
+                  {selectedEvent.description && (
+                    <div>
+                      <label className="text-sm font-medium text-slate-400">Description</label>
+                      <p className="text-sm xs:text-base mt-1">{selectedEvent.description}</p>
+                    </div>
+                  )}
+
+                  {(getLinkedProject(selectedEvent.projectId) || getLinkedContact(selectedEvent.contactId)) && (
+                    <div>
+                      <label className="text-sm font-medium text-slate-400">Linked to</label>
+                      <div className="flex flex-wrap gap-2 mt-1">
+                        {getLinkedProject(selectedEvent.projectId) && (
+                          <span className="inline-block px-2 py-1 text-xs rounded-full bg-orange-100 bg-orange-900/20 text-orange-800 text-orange-300">
+                            📁 {getLinkedProject(selectedEvent.projectId)?.name}
+                          </span>
+                        )}
+                        {getLinkedContact(selectedEvent.contactId) && (
+                          <span className="inline-block px-2 py-1 text-xs rounded-full bg-cyan-100 bg-cyan-900/20 text-cyan-800 text-cyan-300">
+                            👤 {getLinkedContact(selectedEvent.contactId)?.name}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="flex gap-2 pt-2">
+                    <Button 
+                      onClick={() => {
+                        setIsEventDetailOpen(false)
+                        handleEditEvent(selectedEvent)
+                      }}
+                      className="flex-1 text-sm xs:text-base"
+                    >
+                      <Edit className="mr-2 h-4 w-4" />
+                      Edit Event
+                    </Button>
+                    <Button 
+                      onClick={() => {
+                        setIsEventDetailOpen(false)
+                        handleDeleteEvent(selectedEvent._id)
+                      }}
+                      variant="outline"
+                      className="text-sm xs:text-base text-red-400 hover:text-red-300"
+                    >
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </DialogContent>
+          </Dialog>
         </div>
 
         <div className="grid grid-cols-1 xl:grid-cols-4 gap-4 xs:gap-5 sm:gap-6">
@@ -424,12 +593,11 @@ export default function CalendarPage() {
                     return (
                       <div
                         key={day.toString()}
-                        className={`min-h-[60px] xs:min-h-[70px] sm:min-h-[80px] lg:min-h-[90px] p-1 xs:p-1.5 border rounded-md xs:rounded-lg cursor-pointer hover:bg-slate-50 hover:bg-slate-800 transition-colors ${
+                        className={`min-h-[60px] xs:min-h-[70px] sm:min-h-[80px] lg:min-h-[90px] p-1 xs:p-1.5 border rounded-md xs:rounded-lg transition-colors ${
                           !isCurrentMonth ? 'text-slate-400 text-slate-600' : ''
                         } ${
                           isToday ? 'bg-blue-50 bg-blue-900/20 border-blue-200 border-blue-800' : 'border-slate-700'
                         }`}
-                        onClick={() => openEventDialog(day)}
                       >
                         <div className={`text-xs xs:text-sm font-medium mb-1 ${isToday ? 'text-blue-600 text-blue-400' : ''}`}>
                           {format(day, 'd')}
@@ -438,12 +606,16 @@ export default function CalendarPage() {
                           {dayEvents.slice(0, 2).map(event => (
                             <div
                               key={event._id}
-                              className={`text-xs p-0.5 xs:p-1 rounded truncate ${
-                                event.type === 'meeting' ? 'bg-blue-100 bg-blue-900/20 text-blue-800 text-blue-300' :
-                                event.type === 'task' ? 'bg-green-100 bg-green-900/20 text-green-800 text-green-300' :
-                                event.type === 'reminder' ? 'bg-yellow-100 bg-yellow-900/20 text-yellow-800 text-yellow-300' :
-                                'bg-purple-100 bg-purple-900/20 text-purple-800 text-purple-300'
-                              }`}
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                handleViewEvent(event)
+                              }}
+                              className="text-xs p-0.5 xs:p-1 rounded truncate cursor-pointer hover:opacity-80 transition-opacity"
+                              style={{ 
+                                backgroundColor: `${event.color}20`,
+                                borderLeft: `3px solid ${event.color}`,
+                                color: event.color
+                              }}
                             >
                               <span className="hidden xs:inline">{event.time && `${event.time} `}</span>{event.title}
                             </div>
@@ -481,9 +653,18 @@ export default function CalendarPage() {
                       return (
                       <div key={event._id} className="p-2 xs:p-3 bg-slate-800 rounded-lg">
                         <div className="flex justify-between items-start gap-2">
-                          <div className="flex-1 min-w-0">
-                            <h4 className="font-medium text-xs xs:text-sm truncate">{event.title}</h4>
-                            <div className="flex items-center text-xs text-slate-400 mt-1 gap-1">
+                          <div 
+                            className="flex-1 min-w-0 cursor-pointer"
+                            onClick={() => handleViewEvent(event)}
+                          >
+                            <div className="flex items-center gap-2 mb-1">
+                              <div 
+                                className="w-3 h-3 rounded-full flex-shrink-0" 
+                                style={{ backgroundColor: event.color }}
+                              />
+                              <h4 className="font-medium text-xs xs:text-sm truncate">{event.title}</h4>
+                            </div>
+                            <div className="flex items-center text-xs text-slate-400 gap-1">
                               <CalendarIcon className="h-3 w-3 flex-shrink-0" />
                               <span>{format(new Date(event.date), 'MMM dd')}</span>
                               {event.time && (
@@ -498,7 +679,10 @@ export default function CalendarPage() {
                             <Button
                               size="sm"
                               variant="ghost"
-                              onClick={() => handleEditEvent(event)}
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                handleEditEvent(event)
+                              }}
                               className="h-6 w-6 xs:h-7 xs:w-7 p-0 text-slate-400 hover:text-white"
                             >
                               <Edit className="h-3 w-3" />
@@ -506,7 +690,10 @@ export default function CalendarPage() {
                             <Button
                               size="sm"
                               variant="ghost"
-                              onClick={() => handleDeleteEvent(event._id)}
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                handleDeleteEvent(event._id)
+                              }}
                               className="h-6 w-6 xs:h-7 xs:w-7 p-0 text-slate-400 hover:text-red-400"
                             >
                               <Trash2 className="h-3 w-3" />

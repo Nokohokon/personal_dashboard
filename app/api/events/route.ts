@@ -91,7 +91,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const { title, description, date, time, type, projectId, contactId, recurrence, sharedWith } = await request.json()
+    const { title, description, date, time, type, color, projectId, contactId, recurrence, sharedWith } = await request.json()
 
     if (!title || !date || !type) {
       return NextResponse.json(
@@ -160,6 +160,7 @@ export async function POST(request: NextRequest) {
           date: currentDate.toISOString().split('T')[0],
           time: time || null,
           type,
+          color: color || "#3b82f6",
           projectId: projectId || null,
           contactId: contactId || null,
           sharedWith: validatedSharedWith,
@@ -240,6 +241,7 @@ export async function POST(request: NextRequest) {
         date,
         time: time || null,
         type,
+        color: color || "#3b82f6",
         projectId: projectId || null,
         contactId: contactId || null,
         sharedWith: validatedSharedWith,

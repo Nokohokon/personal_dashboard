@@ -348,9 +348,9 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Charts */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 xs:gap-5 sm:gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 xs:gap-5 sm:gap-6">
           {/* Daily Time Tracking */}
-          <Card className="col-span-1 lg:col-span-2 xl:col-span-1">
+          <Card className="col-span-1 lg:col-span-2 xl:col-span-2">
             <CardHeader className="pb-3 xs:pb-4">
               <CardTitle className="text-base xs:text-lg">Daily Time Tracking</CardTitle>
             </CardHeader>
@@ -381,6 +381,76 @@ export default function AnalyticsPage() {
                   />
                 </LineChart>
               </ResponsiveContainer>
+            </CardContent>
+          </Card>
+
+          {/* Project Time Distribution */}
+          <Card className="col-span-1">
+            <CardHeader className="pb-3 xs:pb-4">
+              <CardTitle className="text-base xs:text-lg">Time by Project</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {timeAnalytics.projectChartData.length > 0 ? (
+                <div className="space-y-4">
+                  <ResponsiveContainer width="100%" height={200}>
+                    <PieChart>
+                      <Pie
+                        data={timeAnalytics.projectChartData}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        label={false}
+                        outerRadius={60}
+                        fill="#8884d8"
+                        dataKey="value"
+                      >
+                        {timeAnalytics.projectChartData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip 
+                        contentStyle={{ 
+                          fontSize: '12px',
+                          padding: '8px',
+                          backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                          border: '1px solid #334155',
+                          borderRadius: '6px'
+                        }}
+                        formatter={(value, name, props) => [
+                          `${Number(value).toFixed(1)}h`, 
+                          props.payload.name
+                        ]}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                  
+                  {/* Project Legend */}
+                  <div className="space-y-2">
+                    {timeAnalytics.projectChartData.map((entry, index) => (
+                      <div key={entry.name} className="flex items-center justify-between text-sm">
+                        <div className="flex items-center gap-2">
+                          <div 
+                            className="w-3 h-3 rounded-full flex-shrink-0" 
+                            style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                          />
+                          <span className="text-slate-300 truncate">{entry.name}</span>
+                        </div>
+                        <div className="text-slate-400 font-medium">
+                          {entry.value.toFixed(1)}h
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="flex items-center justify-center h-[250px] text-slate-400">
+                  <div className="text-center">
+                    <Activity className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                    <p>No project time data available</p>
+                    <p className="text-sm">Start tracking time to see project distribution</p>
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
 
