@@ -19,7 +19,6 @@ import {
   AlertCircle
 } from "lucide-react"
 import { format, isToday, isYesterday, formatDistanceToNow } from "date-fns"
-import { de } from "date-fns/locale"
 
 interface ChatMessage {
   _id: string
@@ -187,7 +186,7 @@ export function TeamChat({ projectId, projectName, allMembers }: TeamChatProps) 
               <span className="truncate">Team Chat</span>
             </CardTitle>
             <CardDescription className="text-gray-400 text-sm truncate">
-              {projectName} • {allMembers.filter(m => m.isRegistered).length} aktive Mitglieder
+              {projectName} • {allMembers.filter(m => m.isRegistered).length} active members
             </CardDescription>
           </div>
           <Badge variant="outline" className="bg-green-500/20 text-green-400 border-green-500/30 flex-shrink-0 ml-2">
@@ -292,7 +291,7 @@ export function TeamChat({ projectId, projectName, allMembers }: TeamChatProps) 
                         </p>
                         {message.isEdited && (
                           <p className="text-xs text-gray-400 mt-1 italic">
-                            bearbeitet
+                            edited
                           </p>
                         )}
                       </div>
@@ -315,7 +314,7 @@ export function TeamChat({ projectId, projectName, allMembers }: TeamChatProps) 
             <Input
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
-              placeholder="Nachricht eingeben..."
+              placeholder="Type a message..."
               className="bg-gray-700/50 border-gray-600 text-white placeholder-gray-400 focus:border-purple-500 h-9"
               disabled={isSending}
               maxLength={1000}
@@ -332,7 +331,7 @@ export function TeamChat({ projectId, projectName, allMembers }: TeamChatProps) 
             ) : (
               <Send className="w-3 h-3 sm:mr-1" />
             )}
-            <span className="hidden sm:inline">{isSending ? "..." : "Senden"}</span>
+            <span className="hidden sm:inline">{isSending ? "..." : "Send"}</span>
           </Button>
         </form>
         
@@ -342,7 +341,7 @@ export function TeamChat({ projectId, projectName, allMembers }: TeamChatProps) 
             {newMessage.length}/1000
           </p>
           <p className="text-xs text-gray-500 hidden sm:block">
-            Enter zum Senden
+            Enter to send
           </p>
         </div>
       </div>

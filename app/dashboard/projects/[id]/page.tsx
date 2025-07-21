@@ -244,11 +244,11 @@ export default function ProjectDetailsPage() {
         fetchProject()
       } else {
         const error = await response.json()
-        alert(error.error || "Fehler beim Teilen des Projekts")
+        alert(error.error || "Error sharing project")
       }
     } catch (error) {
       console.error("Error sharing project:", error)
-      alert("Netzwerkfehler beim Teilen des Projekts")
+      alert("Network error while sharing project")
     } finally {
       setIsSharing(false)
     }
@@ -292,7 +292,7 @@ export default function ProjectDetailsPage() {
   }
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('de-DE', {
+    return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
@@ -300,9 +300,9 @@ export default function ProjectDetailsPage() {
   }
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('de-DE', {
+    return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'EUR'
+      currency: 'USD'
     }).format(amount)
   }
 
@@ -358,68 +358,23 @@ export default function ProjectDetailsPage() {
   }
 
   // Loading state with professional skeleton
-  if (status === "loading" || isLoading) {
-    return (
-      <div className="space-y-6">
-        <div className="animate-pulse space-y-6">
-            {/* Header skeleton */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="flex items-center space-x-4">
-                <div className="h-10 w-32 bg-gray-700 rounded"></div>
-                <div className="space-y-2">
-                  <div className="h-8 w-64 bg-gray-700 rounded"></div>
-                  <div className="h-4 w-48 bg-gray-700 rounded"></div>
-                </div>s
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <div className="h-10 w-24 bg-gray-700 rounded"></div>
-                <div className="h-10 w-24 bg-gray-700 rounded"></div>
-                <div className="h-10 w-24 bg-gray-700 rounded"></div>
-              </div>
-            </div>
-            
-            {/* Stats cards skeleton */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-              {[...Array(4)].map((_, i) => (
-                <div key={i} className="h-32 bg-gray-700/50 rounded-lg"></div>
-              ))}
-            </div>
-            
-            {/* Tabs skeleton */}
-            <div className="h-12 bg-gray-700/50 rounded-lg"></div>
-            
-            {/* Main content skeleton */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2 space-y-6">
-                <div className="h-96 bg-gray-700/50 rounded-lg"></div>
-                <div className="h-64 bg-gray-700/50 rounded-lg"></div>
-              </div>
-              <div className="space-y-6">
-                <div className="h-48 bg-gray-700/50 rounded-lg"></div>
-                <div className="h-32 bg-gray-700/50 rounded-lg"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-  )
-  }
+
 
   // Error state - project not found
   if (!project) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center">
         <AlertCircle className="w-16 h-16 text-red-400 mb-6" />
-        <h1 className="text-2xl sm:text-3xl font-bold mb-4 text-white">Projekt nicht gefunden</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold mb-4 text-white">Project not found</h1>
         <p className="text-gray-400 mb-8 max-w-md">
-          Das gesuchte Projekt existiert nicht oder Sie haben keine Berechtigung darauf zuzugreifen.
+          The requested project does not exist or you do not have permission to access it.
         </p>
         <Button 
           onClick={() => router.push("/dashboard/projects")}
           className="bg-blue-600 hover:bg-blue-700"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
-          Zurück zu Projekten
+          Back to Projects
         </Button>
       </div>
     )
@@ -440,7 +395,7 @@ export default function ProjectDetailsPage() {
               className="text-gray-400 hover:text-white flex-shrink-0 mt-1"
             >
               <ArrowLeft className="w-4 h-4 mr-2" />
-              Projekte
+              Projects
             </Button>
             
             <div className="min-w-0 flex-1">
@@ -451,7 +406,7 @@ export default function ProjectDetailsPage() {
                 {isOwner && (
                   <Badge variant="outline" className="bg-yellow-500/20 text-yellow-400 border-yellow-500/30 flex-shrink-0">
                     <Crown className="w-3 h-3 mr-1" />
-                    Besitzer
+                    Owner
                   </Badge>
                 )}
               </div>
@@ -465,11 +420,11 @@ export default function ProjectDetailsPage() {
                 )}
                 <div className="flex items-center space-x-1">
                   <Calendar className="w-4 h-4" />
-                  <span>Erstellt {formatDate(project.createdAt)}</span>
+                  <span>Created {formatDate(project.createdAt)}</span>
                 </div>
                 <div className="flex items-center space-x-1">
                   <Users className="w-4 h-4" />
-                  <span>{allMembers.filter(m => m.isRegistered).length} Mitglieder</span>
+                  <span>{allMembers.filter(m => m.isRegistered).length} Members</span>
                 </div>
               </div>
             </div>
@@ -481,19 +436,19 @@ export default function ProjectDetailsPage() {
               <DialogTrigger asChild>
                 <Button size="sm" variant="outline" className="border-gray-600 hover:bg-gray-700">
                   <Share2 className="w-4 h-4 mr-2" />
-                  <span className="hidden sm:inline">Teilen</span>
+                  <span className="hidden sm:inline">Share</span>
                 </Button>
               </DialogTrigger>
               <DialogContent className="bg-gray-800 border-gray-700 text-white">
                 <DialogHeader>
-                  <DialogTitle>Projekt teilen</DialogTitle>
+                  <DialogTitle>Share Project</DialogTitle>
                   <DialogDescription className="text-gray-400">
-                    Laden Sie Teammitglieder zu diesem Projekt ein
+                    Invite team members to this project
                   </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleShareProject} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="shareEmail">E-Mail-Adresse</Label>
+                    <Label htmlFor="shareEmail">Email Address</Label>
                     <Input
                       id="shareEmail"
                       type="email"
@@ -505,13 +460,13 @@ export default function ProjectDetailsPage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="sharePermission">Rolle</Label>
+                    <Label htmlFor="sharePermission">Role</Label>
                     <Select value={sharePermission} onValueChange={setSharePermission}>
                       <SelectTrigger className="bg-gray-700 border-gray-600">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="bg-gray-700 border-gray-600">
-                        <SelectItem value="collaborator">Mitarbeiter</SelectItem>
+                        <SelectItem value="collaborator">Collaborator</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -520,7 +475,7 @@ export default function ProjectDetailsPage() {
                     disabled={isSharing}
                     className="w-full bg-blue-600 hover:bg-blue-700"
                   >
-                    {isSharing ? "Wird geteilt..." : "Einladung senden"}
+                    {isSharing ? "Sharing..." : "Send Invitation"}
                   </Button>
                 </form>
               </DialogContent>
@@ -544,7 +499,7 @@ export default function ProjectDetailsPage() {
                 className="border-gray-600 hover:bg-gray-700"
               >
                 <Edit className="w-4 h-4 mr-2" />
-                <span className="hidden sm:inline">Bearbeiten</span>
+                <span className="hidden sm:inline">Edit</span>
               </Button>
             )}
 
@@ -553,29 +508,28 @@ export default function ProjectDetailsPage() {
                 <DialogTrigger asChild>
                   <Button size="sm" variant="destructive">
                     <Trash2 className="w-4 h-4 mr-2" />
-                    <span className="hidden sm:inline">Löschen</span>
+                    <span className="hidden sm:inline">Delete</span>
                   </Button>
-                </DialogTrigger>
-                <DialogContent className="bg-gray-800 border-gray-700 text-white">
-                  <DialogHeader>
-                    <DialogTitle>Projekt löschen</DialogTitle>
-                    <DialogDescription className="text-gray-400">
-                      Diese Aktion kann nicht rückgängig gemacht werden. Alle Daten werden permanent gelöscht.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="flex justify-end space-x-2">
-                    <Button 
-                      variant="outline" 
-                      onClick={() => setIsDeleteDialogOpen(false)}
-                      className="border-gray-600 hover:bg-gray-700"
-                    >
-                      Abbrechen
-                    </Button>
-                    <Button variant="destructive" onClick={handleDeleteProject}>
-                      Permanent löschen
-                    </Button>
-                  </div>
-                </DialogContent>
+                </DialogTrigger>              <DialogContent className="bg-gray-800 border-gray-700 text-white">
+                <DialogHeader>
+                  <DialogTitle>Delete Project</DialogTitle>
+                  <DialogDescription className="text-gray-400">
+                    This action cannot be undone. All data will be permanently deleted.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="flex justify-end space-x-2">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setIsDeleteDialogOpen(false)}
+                    className="border-gray-600 hover:bg-gray-700"
+                  >
+                    Cancel
+                  </Button>
+                  <Button variant="destructive" onClick={handleDeleteProject}>
+                    Delete Permanently
+                  </Button>
+                </div>
+              </DialogContent>
               </Dialog>
             )}
           </div>
@@ -604,7 +558,7 @@ export default function ProjectDetailsPage() {
             <CardContent className="p-4 sm:p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-gray-400 mb-1">Priorität</p>
+                  <p className="text-sm text-gray-400 mb-1">Priority</p>
                   <div className="flex items-center space-x-2">
                     <div className={`w-2 h-2 rounded-full ${getPriorityColor(project.priority)}`}></div>
                     <span className="font-semibold capitalize">{project.priority}</span>
@@ -619,12 +573,12 @@ export default function ProjectDetailsPage() {
           <Card className="bg-gray-800/60 backdrop-blur-xl border border-gray-700/50 shadow-xl">
             <CardContent className="p-4 sm:p-6">
               <div className="flex items-center justify-between mb-2">
-                <p className="text-sm text-gray-400">Fortschritt</p>
+                <p className="text-sm text-gray-400">Progress</p>
                 <Target className="w-5 h-5 text-blue-400" />
               </div>
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span>Aufgaben</span>
+                  <span>Tasks</span>
                   <span>{project.progress || 0}%</span>
                 </div>
                 <Progress value={project.progress || 0} className="h-2" />
@@ -639,7 +593,7 @@ export default function ProjectDetailsPage() {
                 <div>
                   <p className="text-sm text-gray-400 mb-1">Budget</p>
                   <p className="font-semibold">
-                    {project.budget ? formatCurrency(project.budget) : "Nicht festgelegt"}
+                    {project.budget ? formatCurrency(project.budget) : "Not specified"}
                   </p>
                 </div>
                 <DollarSign className="w-5 h-5 text-green-400" />
@@ -654,13 +608,13 @@ export default function ProjectDetailsPage() {
             <CardContent className="p-4 sm:p-6">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4">
                 <div>
-                  <h3 className="font-semibold text-white mb-1">Zeitlicher Fortschritt</h3>
+                  <h3 className="font-semibold text-white mb-1">Time Progress</h3>
                   <p className="text-sm text-gray-400">
                     {formatDate(project.startDate)} - {formatDate(project.endDate)}
                   </p>
                 </div>
                 <div className="text-sm text-gray-400 mt-2 sm:mt-0">
-                  {timeProgress}% der Zeit verstrichen
+                  {timeProgress}% of time elapsed
                 </div>
               </div>
               <Progress value={timeProgress} className="h-3" />
@@ -677,7 +631,7 @@ export default function ProjectDetailsPage() {
                 className="data-[state=active]:bg-gray-700/60 data-[state=active]:text-white px-4 py-2"
               >
                 <Eye className="w-4 h-4 mr-2" />
-                Übersicht
+                Overview
               </TabsTrigger>
               <TabsTrigger 
                 value="analytics" 
@@ -691,14 +645,14 @@ export default function ProjectDetailsPage() {
                 className="data-[state=active]:bg-gray-700/60 data-[state=active]:text-white px-4 py-2"
               >
                 <Activity className="w-4 h-4 mr-2" />
-                Aktivitäten
+                Activity
               </TabsTrigger>
               <TabsTrigger 
                 value="files" 
                 className="data-[state=active]:bg-gray-700/60 data-[state=active]:text-white px-4 py-2"
               >
                 <FileText className="w-4 h-4 mr-2" />
-                Dateien
+                Files
               </TabsTrigger>
               <TabsTrigger 
                 value="chat" 
@@ -712,7 +666,7 @@ export default function ProjectDetailsPage() {
                 className="data-[state=active]:bg-gray-700/60 data-[state=active]:text-white px-4 py-2"
               >
                 <Settings className="w-4 h-4 mr-2" />
-                Einstellungen
+                Settings
               </TabsTrigger>
             </TabsList>
           </div>
@@ -726,12 +680,12 @@ export default function ProjectDetailsPage() {
                   <CardHeader>
                     <CardTitle className="text-white flex items-center space-x-2">
                       <FileText className="w-5 h-5" />
-                      <span>Projektbeschreibung</span>
+                      <span>Project Description</span>
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <p className="text-gray-300 leading-relaxed">
-                      {project.description || "Keine Beschreibung verfügbar."}
+                      {project.description || "No description available."}
                     </p>
                     
                     {project.tags && project.tags.length > 0 && (
@@ -774,7 +728,7 @@ export default function ProjectDetailsPage() {
                               {member.name || member.email}
                             </p>
                             <p className="text-xs text-gray-400 truncate">
-                              {member.role === 'owner' ? 'Besitzer' : 'Mitarbeiter'}
+                              {member.role === 'owner' ? 'Owner' : 'Collaborator'}
                             </p>
                           </div>
                           {member.role === 'owner' && (
@@ -785,13 +739,13 @@ export default function ProjectDetailsPage() {
                       
                       {allMembers.filter(m => m.isRegistered).length > 5 && (
                         <p className="text-sm text-gray-400 text-center pt-2 border-t border-gray-700">
-                          +{allMembers.filter(m => m.isRegistered).length - 5} weitere Mitglieder
+                          +{allMembers.filter(m => m.isRegistered).length - 5} more members
                         </p>
                       )}
                       
                       {allMembers.filter(m => m.isRegistered).length === 0 && (
                         <p className="text-sm text-gray-400 text-center py-4">
-                          Keine Teammitglieder
+                          No team members
                         </p>
                       )}
                     </div>
@@ -803,7 +757,7 @@ export default function ProjectDetailsPage() {
                   <CardHeader>
                     <CardTitle className="text-white flex items-center space-x-2">
                       <Zap className="w-5 h-5" />
-                      <span>Schnellaktionen</span>
+                      <span>Quick Actions</span>
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3">
@@ -813,7 +767,7 @@ export default function ProjectDetailsPage() {
                       className="w-full justify-start text-left hover:bg-gray-700/50"
                     >
                       <MessageSquare className="w-4 h-4 mr-3" />
-                      Team Chat öffnen
+                      Open Team Chat
                     </Button>
                     <Button 
                       onClick={() => setActiveTab("files")} 
@@ -821,7 +775,7 @@ export default function ProjectDetailsPage() {
                       className="w-full justify-start text-left hover:bg-gray-700/50"
                     >
                       <FileText className="w-4 h-4 mr-3" />
-                      Dateien verwalten
+                      Manage Files
                     </Button>
                     <Button 
                       onClick={() => setActiveTab("analytics")} 
@@ -829,7 +783,7 @@ export default function ProjectDetailsPage() {
                       className="w-full justify-start text-left hover:bg-gray-700/50"
                     >
                       <BarChart3 className="w-4 h-4 mr-3" />
-                      Analytics anzeigen
+                      View Analytics
                     </Button>
                   </CardContent>
                 </Card>
@@ -877,15 +831,15 @@ export default function ProjectDetailsPage() {
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
           <DialogContent className="bg-gray-800 border-gray-700 text-white max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Projekt bearbeiten</DialogTitle>
+              <DialogTitle>Edit Project</DialogTitle>
               <DialogDescription className="text-gray-400">
-                Aktualisieren Sie die Projektdetails
+                Update the project details
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleUpdateProject} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="editName">Projektname</Label>
+                  <Label htmlFor="editName">Project Name</Label>
                   <Input
                     id="editName"
                     value={editForm.name}
@@ -895,7 +849,7 @@ export default function ProjectDetailsPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="editClient">Kunde</Label>
+                  <Label htmlFor="editClient">Client</Label>
                   <Input
                     id="editClient"
                     value={editForm.client}
@@ -906,7 +860,7 @@ export default function ProjectDetailsPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="editDescription">Beschreibung</Label>
+                <Label htmlFor="editDescription">Description</Label>
                 <Textarea
                   id="editDescription"
                   value={editForm.description}
@@ -933,7 +887,7 @@ export default function ProjectDetailsPage() {
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="editPriority">Priorität</Label>
+                  <Label htmlFor="editPriority">Priority</Label>
                   <Select value={editForm.priority} onValueChange={(value) => setEditForm({...editForm, priority: value})}>
                     <SelectTrigger className="bg-gray-700 border-gray-600">
                       <SelectValue />
@@ -951,7 +905,7 @@ export default function ProjectDetailsPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="editStartDate">Startdatum</Label>
+                  <Label htmlFor="editStartDate">Start Date</Label>
                   <Input
                     id="editStartDate"
                     type="date"
@@ -961,7 +915,7 @@ export default function ProjectDetailsPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="editEndDate">Enddatum</Label>
+                  <Label htmlFor="editEndDate">End Date</Label>
                   <Input
                     id="editEndDate"
                     type="date"
@@ -986,7 +940,7 @@ export default function ProjectDetailsPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="editProgress">Fortschritt (%)</Label>
+                  <Label htmlFor="editProgress">Progress (%)</Label>
                   <Input
                     id="editProgress"
                     type="number"
@@ -1000,7 +954,7 @@ export default function ProjectDetailsPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="editTags">Tags (kommagetrennt)</Label>
+                <Label htmlFor="editTags">Tags (comma-separated)</Label>
                 <Input
                   id="editTags"
                   value={editForm.tags}
@@ -1017,10 +971,10 @@ export default function ProjectDetailsPage() {
                   onClick={() => setIsEditDialogOpen(false)}
                   className="border-gray-600 hover:bg-gray-700"
                 >
-                  Abbrechen
+                  Cancel
                 </Button>
                 <Button type="submit" className="bg-blue-600 hover:bg-blue-700">
-                  Speichern
+                  Save
                 </Button>
               </div>
             </form>

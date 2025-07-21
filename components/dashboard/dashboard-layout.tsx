@@ -139,7 +139,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                   href="/datenschutz" 
                   className="text-slate-400 hover:text-slate-200 transition-colors"
                 >
-                  Datenschutz
+                  Privacy Policy
                 </Link>
                 <a 
                   href="https://konja-rehm.de/impressum"
@@ -147,7 +147,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                   rel="noopener noreferrer"
                   className="text-slate-400 hover:text-slate-200 transition-colors flex items-center space-x-1"
                 >
-                  <span>Impressum</span>
+                  <span>Imprint</span>
                   <ExternalLink className="h-2.5 w-2.5 xs:h-3 xs:w-3" />
                 </a>
               </div>

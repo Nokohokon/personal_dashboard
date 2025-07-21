@@ -1,141 +1,141 @@
 # Personal Dashboard
 
-Ein hochprofessionelles und modernes Personal Dashboard mit umfassenden Produktivitäts-Features, entwickelt mit Next.js 15, TypeScript, MongoDB und NextAuth.js.
+A highly professional and modern personal dashboard with comprehensive productivity features, built with Next.js 15, TypeScript, MongoDB, and NextAuth.js.
 
 ## 🌟 Features
 
-### 🔐 Authentifizierung & Sicherheit
-- **NextAuth.js Integration** - Sichere Authentifizierung mit E-Mail/Passwort
-- **Magic Link Authentication** - Passwortlose Anmeldung per E-Mail-Link
-- **Passwort-Hashing** - Sichere Speicherung mit bcryptjs
-- **Session Management** - JWT-basierte Sessions
-- **Flexible Anmeldeoptionen** - Wahl zwischen Passwort oder Magic Link
+### 🔐 Authentication & Security
+- **NextAuth.js Integration** - Secure authentication with email/password
+- **Magic Link Authentication** - Passwordless login via email link
+- **Password Hashing** - Secure storage with bcryptjs
+- **Session Management** - JWT-based sessions
+- **Flexible Login Options** - Choice between password or magic link
 
 ### ⏱️ Time Tracking
-- **Projekt-basiertes Zeiterfassung** - Organisiert nach Projekten und Aufgaben
-- **Live Timer** - Echtzeit-Zeiterfassung mit Start/Stop-Funktionalität
-- **Automatische Berechnungen** - Dauer wird automatisch berechnet
-- **Verlauf & Analytics** - Detaillierte Zeiterfassung mit Berichten
+- **Project-based Time Tracking** - Organized by projects and tasks
+- **Live Timer** - Real-time time tracking with start/stop functionality
+- **Automatic Calculations** - Duration calculated automatically
+- **History & Analytics** - Detailed time tracking with reports
 
-### 👥 CRM & Kontakte
-- **Kontakt-Management** - Vollständige Kontaktdatenbank
-- **Tagging System** - Kategorisierung von Kontakten
-- **Firmen-Integration** - Verknüpfung mit Unternehmen und Positionen
-- **Suchfunktion** - Schnelle Kontaktsuche
+### 👥 CRM & Contacts
+- **Contact Management** - Complete contact database
+- **Tagging System** - Contact categorization
+- **Company Integration** - Link to companies and positions
+- **Search Function** - Quick contact search
 
-### 📝 Notizen-System
-- **Kategorisierte Notizen** - Organisiert nach Kategorien
-- **Markdown-Unterstützung** - Rich-Text Notizen
-- **Kontakt-Verknüpfung** - Notizen können mit Kontakten verknüpft werden
-- **Tag-System** - Flexible Kategorisierung
-- **Kollaborative Notizen** - Notizen mit anderen Personen teilen
-- **Projekt-Integration** - Notizen an Projekte koppeln
+### 📝 Notes System
+- **Categorized Notes** - Organized by categories
+- **Markdown Support** - Rich-text notes
+- **Contact Linking** - Notes can be linked to contacts
+- **Tag System** - Flexible categorization
+- **Collaborative Notes** - Share notes with other people
+- **Project Integration** - Link notes to projects
 
-### 🤝 Projekt-Kollaboration
-- **Team-Management** - Teammitglieder per E-Mail hinzufügen
-- **Rollenbasierte Berechtigungen** - Projektbesitzer vs. Kollaborateure
-- **Projektbasierte Zugriffskontrolle** - Automatische Berechtigung für Inhalte
-- **E-Mail-basierte Einladungen** - Registrierte und unregistrierte Benutzer
-- **Kollaborative Inhalte** - Geteilte Notizen, Dokumente, Kontakte und Events
+### 🤝 Project Collaboration
+- **Team Management** - Add team members via email
+- **Role-based Permissions** - Project owners vs. collaborators
+- **Project-based Access Control** - Automatic content permissions
+- **Email-based Invitations** - Registered and unregistered users
+- **Collaborative Content** - Shared notes, documents, contacts, and events
 
-### 🔒 Zugriffs- und Berechtigungsmanagement
-- **Projektbesitzer-Rechte** - Vollzugriff auf alle Projektdaten und Projekt-Bearbeitung
-- **Kollaborateur-Rechte** - Lese-/Schreibzugriff NUR auf projektbezogene Inhalte (NICHT das Projekt selbst)
-- **Klare Trennung** - Kollaborateure können Projekt-Details NICHT bearbeiten
-- **Geschützte Analytics** - Time-Tracking und Analytics nur für Besitzer
-- **Granulare Freigaben** - Einzelne Notizen und Dokumente teilen
+### 🔒 Access and Permission Management
+- **Project Owner Rights** - Full access to all project data and project editing
+- **Collaborator Rights** - Read/write access ONLY to project-related content (NOT the project itself)
+- **Clear Separation** - Collaborators cannot edit project details
+- **Protected Analytics** - Time tracking and analytics only for owners
+- **Granular Sharing** - Share individual notes and documents
 
-#### **📊 Berechtigungsmatrix**
-| Feature | Projektbesitzer | Kollaborateur | Individual Sharing |
+#### **📊 Permission Matrix**
+| Feature | Project Owner | Collaborator | Individual Sharing |
 |---------|----------------|---------------|-------------------|
-| **Projekt bearbeiten** | ✅ | ❌ | ❌ |
-| **Team verwalten** | ✅ | ❌ | ❌ |
-| **Projekt-Details ändern** | ✅ | ❌ | ❌ |
-| **Status/Budget ändern** | ✅ | ❌ | ❌ |
-| **Notizen (projektbezogen)** | ✅ | ✅ | ✅ |
-| **Dokumente (projektbezogen)** | ✅ | ✅ | ✅ |
-| **Kontakte (projektbezogen)** | ✅ | ✅ | ✅ |
-| **Kalender (projektbezogen)** | ✅ | ✅ | ✅ |
+| **Edit Project** | ✅ | ❌ | ❌ |
+| **Manage Team** | ✅ | ❌ | ❌ |
+| **Change Project Details** | ✅ | ❌ | ❌ |
+| **Change Status/Budget** | ✅ | ❌ | ❌ |
+| **Notes (project-related)** | ✅ | ✅ | ✅ |
+| **Documents (project-related)** | ✅ | ✅ | ✅ |
+| **Contacts (project-related)** | ✅ | ✅ | ✅ |
+| **Calendar (project-related)** | ✅ | ✅ | ✅ |
 | **Time-Tracking** | ✅ | ❌ | ❌ |
 | **Analytics** | ✅ | ❌ | ❌ |
 
-**🔐 Wichtige Klarstellung:**
-- Kollaborateure können **NICHT** das Projekt selbst bearbeiten (Name, Status, Budget, etc.)
-- Kollaborateure können **NUR** projektbezogene Inhalte bearbeiten (Notizen, Dokumente, Kontakte, Events)
-- Nur der Projektbesitzer kann das Projekt und Team verwalten
+**🔐 Important Clarification:**
+- Collaborators cannot edit the project itself (name, status, budget, etc.)
+- Collaborators can ONLY edit project-related content (notes, documents, contacts, events)
+- Only the project owner can manage the project and team
 
-### 📊 Analytics & Berichte
-- **Produktivitäts-Dashboard** - Detaillierte Einblicke in Ihre Arbeit
-- **Zeit-Visualisierung** - Charts und Grafiken mit Recharts
-- **Projekt-Verteilung** - Analyse der Zeitverteilung
-- **Trend-Analyse** - Langzeit-Produktivitätstrends
+### 📊 Analytics & Reports
+- **Productivity Dashboard** - Detailed insights into your work
+- **Time Visualization** - Charts and graphs with Recharts
+- **Project Distribution** - Analysis of time allocation
+- **Trend Analysis** - Long-term productivity trends
 
-### 📅 Kalender
-- **Event-Management** - Termine und Aufgaben verwalten
-- **Verschiedene Event-Typen** - Meetings, Tasks, Reminders
-- **Monatsansicht** - Übersichtlicher Kalender
-- **Upcoming Events** - Anstehende Termine im Überblick
-- **Erweiterte Wiederkehrende Events** - Komplexe Wiederholungsmuster
-- **Flexible Wiederholungen** - Täglich, wöchentlich, monatlich, jährlich
-- **Spezielle Wochentage** - Z.B. jeden 2. Montag im Monat
-- **End-Optionen** - Nach Datum, Anzahl oder unendlich
-- **Event-Sharing** - Events mit Team-Mitgliedern teilen
+### 📅 Calendar
+- **Event Management** - Manage appointments and tasks
+- **Various Event Types** - Meetings, tasks, reminders
+- **Month View** - Clear calendar overview
+- **Upcoming Events** - Overview of upcoming appointments
+- **Advanced Recurring Events** - Complex repetition patterns
+- **Flexible Repetitions** - Daily, weekly, monthly, yearly
+- **Special Weekdays** - E.g. every 2nd Monday of the month
+- **End Options** - By date, count, or infinite
+- **Event Sharing** - Share events with team members
 
-### 🎨 Modernes Design
-- **Dark Mode Only** - Konsistentes dunkles Design
-- **Responsive Design** - Optimiert für alle Bildschirmgrößen
-- **Tailwind CSS** - Moderne und konsistente UI
-- **Radix UI Components** - Hochwertige, barrierefreie Komponenten
+### 🎨 Modern Design
+- **Dark Mode Only** - Consistent dark design
+- **Responsive Design** - Optimized for all screen sizes
+- **Tailwind CSS** - Modern and consistent UI
+- **Radix UI Components** - High-quality, accessible components
 
-### ⚙️ Einstellungen
-- **Profil-Management** - Persönliche Daten verwalten
-- **Passwort ändern** - Sichere Passwort-Updates
-- **Theme-Einstellungen** - Personalisierte Darstellung
-- **Daten-Export** - Vollständiger Datenexport als JSON
-- **Benachrichtigungen** - Anpassbare Notification-Einstellungen
+### ⚙️ Settings
+- **Profile Management** - Manage personal data
+- **Change Password** - Secure password updates
+- **Theme Settings** - Personalized display
+- **Data Export** - Complete data export as JSON
+- **Notifications** - Customizable notification settings
 
-## 🛠️ Technologie-Stack
+## 🛠️ Technology Stack
 
 ### Frontend
-- **Next.js 15** - React Framework mit App Router
-- **TypeScript** - Type-sichere Entwicklung
-- **Tailwind CSS** - Utility-first CSS Framework
-- **Radix UI** - Primitive UI Komponenten
-- **Lucide React** - Moderne Icon-Library
-- **Recharts** - Datenvisualisierung
-- **date-fns** - Datum-Utilities
+- **Next.js 15** - React framework with App Router
+- **TypeScript** - Type-safe development
+- **Tailwind CSS** - Utility-first CSS framework
+- **Radix UI** - Primitive UI components
+- **Lucide React** - Modern icon library
+- **Recharts** - Data visualization
+- **date-fns** - Date utilities
 
 ### Backend
-- **Next.js API Routes** - Serverless API Endpunkte
-- **MongoDB** - NoSQL Datenbank
-- **NextAuth.js** - Authentifizierung
-- **bcryptjs** - Passwort-Hashing
+- **Next.js API Routes** - Serverless API endpoints
+- **MongoDB** - NoSQL database
+- **NextAuth.js** - Authentication
+- **bcryptjs** - Password hashing
 
-### Entwicklung
-- **ESLint** - Code-Qualität
-- **TypeScript** - Type-Checking
-- **Turbopack** - Schneller Development Server
+### Development
+- **ESLint** - Code quality
+- **TypeScript** - Type checking
+- **Turbopack** - Fast development server
 
 ## 📦 Installation & Setup
 
-### Voraussetzungen
-- Node.js 18.17.0 oder höher
-- MongoDB (lokal oder Atlas)
+### Prerequisites
+- Node.js 18.17.0 or higher
+- MongoDB (local or Atlas)
 - Git
 
-### 1. Repository klonen
+### 1. Clone repository
 ```bash
 git clone [repository-url]
 cd personal_dashboard
 ```
 
-### 2. Dependencies installieren
+### 2. Install dependencies
 ```bash
 npm install
 ```
 
-### 3. Umgebungsvariablen einrichten
-Erstellen Sie eine `.env.local` Datei im Root-Verzeichnis:
+### 3. Set up environment variables
+Create a `.env.local` file in the root directory:
 
 ```env
 # Auth.js Configuration
@@ -145,7 +145,7 @@ NEXTAUTH_SECRET=your-secret-key-here-change-in-production
 # MongoDB Configuration
 MONGODB_URI=mongodb://localhost:27017/personal-dashboard
 
-# Email Configuration (Optional - für E-Mail Authentifizierung)
+# Email Configuration (Optional - for email authentication)
 EMAIL_SERVER_HOST=smtp.gmail.com
 EMAIL_SERVER_PORT=587
 EMAIL_SERVER_USER=your-email@gmail.com
@@ -153,130 +153,130 @@ EMAIL_SERVER_PASSWORD=your-app-password
 EMAIL_FROM=your-email@gmail.com
 ```
 
-### 4. MongoDB einrichten
+### 4. Set up MongoDB
 
-#### Option A: Lokale MongoDB Installation
-1. Installieren Sie MongoDB Community Server
-2. Starten Sie MongoDB Service
-3. Die Anwendung erstellt automatisch die benötigten Collections
+#### Option A: Local MongoDB Installation
+1. Install MongoDB Community Server
+2. Start MongoDB service
+3. The application will automatically create the required collections
 
 #### Option B: MongoDB Atlas (Cloud)
-1. Erstellen Sie einen Account bei [MongoDB Atlas](https://www.mongodb.com/atlas)
-2. Erstellen Sie ein neues Cluster
-3. Kopieren Sie die Connection String in `MONGODB_URI`
+1. Create an account at [MongoDB Atlas](https://www.mongodb.com/atlas)
+2. Create a new cluster
+3. Copy the connection string to `MONGODB_URI`
 
-### 5. Entwicklungsserver starten
+### 5. Start development server
 ```bash
 npm run dev
 ```
 
-Die Anwendung ist nun unter `http://localhost:3000` verfügbar.
+The application is now available at `http://localhost:3000`.
 
 ## 🚀 Deployment
 
-### Vercel (Empfohlen)
-1. Pushen Sie Ihren Code zu GitHub
-2. Verbinden Sie Ihr Repository mit Vercel
-3. Konfigurieren Sie die Umgebungsvariablen in Vercel
+### Vercel (Recommended)
+1. Push your code to GitHub
+2. Connect your repository with Vercel
+3. Configure environment variables in Vercel
 4. Deploy!
 
-### Andere Hosting-Anbieter
-Die Anwendung kann auf jeder Plattform deployed werden, die Next.js unterstützt:
+### Other Hosting Providers
+The application can be deployed on any platform that supports Next.js:
 - Netlify
 - Railway
 - Digital Ocean
 - AWS
 - Google Cloud
 
-## 📚 Nutzung
+## 📚 Usage
 
-### Erste Schritte
-1. Registrieren Sie sich über `/auth/signup`
-2. Melden Sie sich an über `/auth/signin`
-3. Erkunden Sie das Dashboard
+### Getting Started
+1. Register via `/auth/signup`
+2. Sign in via `/auth/signin`
+3. Explore the dashboard
 
 ### Time Tracking
-1. Klicken Sie auf "Start Timer" im Dashboard
-2. Wählen Sie Projekt und Aufgabe
-3. Starten Sie die Zeiterfassung
-4. Beenden Sie den Timer wenn fertig
+1. Click "Start Timer" in the dashboard
+2. Select project and task
+3. Start time tracking
+4. Stop timer when finished
 
-### CRM & Kontakte
-1. Navigieren Sie zu "CRM Notes"
-2. Fügen Sie neue Kontakte hinzu
-3. Organisieren Sie mit Tags
-4. Erstellen Sie verknüpfte Notizen
+### CRM & Contacts
+1. Navigate to "CRM Notes"
+2. Add new contacts
+3. Organize with tags
+4. Create linked notes
 
 ### Analytics
-1. Besuchen Sie die Analytics-Seite
-2. Wählen Sie den gewünschten Zeitraum
-3. Analysieren Sie Ihre Produktivitätstrends
+1. Visit the Analytics page
+2. Select desired time period
+3. Analyze your productivity trends
 
-## 🔧 Konfiguration
+## 🔧 Configuration
 
-### Theme-Anpassung
-Das Theme kann in `components/providers/theme-provider.tsx` angepasst werden.
+### Theme Customization
+The theme can be customized in `components/providers/theme-provider.tsx`.
 
-### Datenbank-Schema
-Die MongoDB Collections werden automatisch erstellt:
-- `users` - Benutzer-Accounts
-- `accounts` - NextAuth Account-Verknüpfungen
-- `sessions` - Aktive Sessions
-- `timeEntries` - Zeiterfassungs-Einträge
-- `contacts` - CRM Kontakte
-- `notes` - Notizen
+### Database Schema
+MongoDB collections are created automatically:
+- `users` - User accounts
+- `accounts` - NextAuth account links
+- `sessions` - Active sessions
+- `timeEntries` - Time tracking entries
+- `contacts` - CRM contacts
+- `notes` - Notes
 
-### API Endpunkte
-- `/api/auth/*` - Authentifizierung (NextAuth)
-- `/api/time-entries` - Zeiterfassung CRUD
-- `/api/contacts` - Kontakte CRUD
-- `/api/notes` - Notizen CRUD
+### API Endpoints
+- `/api/auth/*` - Authentication (NextAuth)
+- `/api/time-entries` - Time tracking CRUD
+- `/api/contacts` - Contacts CRUD
+- `/api/notes` - Notes CRUD
 
-## 🧪 Entwicklung
+## 🧪 Development
 
-### Code-Struktur
+### Code Structure
 ```
 ├── app/                    # Next.js App Router
 │   ├── api/               # API Routes
-│   ├── auth/              # Authentifizierung Pages
+│   ├── auth/              # Authentication Pages
 │   ├── dashboard/         # Dashboard Pages
-│   └── globals.css        # Globale Styles
-├── components/            # React Komponenten
-│   ├── dashboard/         # Dashboard-spezifische Komponenten
+│   └── globals.css        # Global Styles
+├── components/            # React Components
+│   ├── dashboard/         # Dashboard-specific Components
 │   ├── providers/         # Context Providers
-│   └── ui/                # Wiederverwendbare UI Komponenten
-├── lib/                   # Utilities und Konfiguration
-│   ├── auth.ts           # NextAuth Konfiguration
+│   └── ui/                # Reusable UI Components
+├── lib/                   # Utilities and Configuration
+│   ├── auth.ts           # NextAuth Configuration
 │   ├── mongodb.ts        # MongoDB Connection
-│   └── utils.ts          # Utility Funktionen
-└── public/               # Statische Assets
+│   └── utils.ts          # Utility Functions
+└── public/               # Static Assets
 ```
 
-### Neue Features hinzufügen
-1. Erstellen Sie neue API Routes in `app/api/`
-2. Entwickeln Sie UI Komponenten in `components/`
-3. Fügen Sie neue Seiten in `app/dashboard/` hinzu
-4. Erweitern Sie das Navigation in `dashboard-layout.tsx`
+### Adding New Features
+1. Create new API routes in `app/api/`
+2. Develop UI components in `components/`
+3. Add new pages in `app/dashboard/`
+4. Extend navigation in `dashboard-layout.tsx`
 
-## 🔒 Sicherheit
+## 🔒 Security
 
-- Alle Passwörter werden mit bcryptjs gehasht
-- JWT-basierte Session-Verwaltung
-- CSRF-Protection durch NextAuth.js
-- Input-Validierung auf Server-Seite
-- Sichere HTTP-Only Cookies
+- All passwords are hashed with bcryptjs
+- JWT-based session management
+- CSRF protection through NextAuth.js
+- Server-side input validation
+- Secure HTTP-only cookies
 
-## 📝 Lizenz
+## 📝 License
 
-Dieses Projekt ist für persönliche und kommerzielle Nutzung verfügbar.
+This project is available for personal and commercial use.
 
-## 🤝 Beitragen
+## 🤝 Contributing
 
-Contributions sind willkommen! Bitte:
-1. Forken Sie das Repository
-2. Erstellen Sie einen Feature Branch
-3. Commiten Sie Ihre Änderungen
-4. Erstellen Sie eine Pull Request
+Contributions are welcome! Please:
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Create a pull request
 
 ## 📞 Support
 

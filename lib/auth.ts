@@ -34,7 +34,7 @@ const getEmailProvider = () => {
         const result = await transport.sendMail({
           to: email,
           from: from,
-          subject: `Anmelden bei ${host}`,
+          subject: `Sign in to ${host}`,
           text: text({ url, host }),
           html: html({ url, host, email }),
         })
@@ -67,7 +67,7 @@ function html({ url, host, email }: { url: string; host: string; email: string }
               <tr>
                 <td align="center" style="border-radius: 5px;" bgcolor="#346df1">
                   <a href="${url}" target="_blank" style="font-size: 18px; font-family: Helvetica, Arial, sans-serif; color: #fff; text-decoration: none; border-radius: 5px; padding: 10px 20px; border: 1px solid #346df1; display: inline-block; font-weight: bold;">
-                    Anmelden
+                    Sign In
                   </a>
                 </td>
               </tr>
@@ -76,7 +76,7 @@ function html({ url, host, email }: { url: string; host: string; email: string }
         </tr>
         <tr>
           <td align="center" style="padding: 0px 0px 10px 0px; font-size: 16px; line-height: 22px; font-family: Helvetica, Arial, sans-serif; color: #333;">
-            Wenn Sie sich nicht für ${escapedHost} angemeldet haben, können Sie diese E-Mail ignorieren.
+            If you did not request this email, you can safely ignore it.
           </td>
         </tr>
       </table>
@@ -85,7 +85,7 @@ function html({ url, host, email }: { url: string; host: string; email: string }
 }
 
 function text({ url, host }: { url: string; host: string }) {
-  return `Anmelden bei ${host}\n${url}\n\n`
+  return `Sign in to ${host}\n${url}\n\n`
 }
 
 const providers = [
@@ -205,19 +205,17 @@ export const authOptions: NextAuthOptions = {
         hasUser: !!user,
         accountType: account?.type,
         userId: user?.id
-      });
-      
-      // Für Magic Links (Email Provider)
-      if (account?.provider === "email") {
-        console.log("✅ Magic Link signin approved")
-        return true
-      }
-      
-      // Für Credentials Provider
-      if (account?.provider === "credentials") {
-        console.log("✅ Credentials signin approved")
-        return true
-      }
+      });            // For Magic Links (Email Provider)
+            if (account?.provider === "email") {
+                console.log("✅ Magic Link signin approved")
+                return true
+            }
+            
+            // For Credentials Provider
+            if (account?.provider === "credentials") {
+                console.log("✅ Credentials signin approved")
+                return true
+            }
       
       console.log("✅ Default signin approved")
       return true

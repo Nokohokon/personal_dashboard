@@ -14,138 +14,137 @@ export default function PrivacyPolicyPage() {
               href="/" 
               className="text-purple-600 hover:text-purple-700 text-purple-400 hover:text-purple-300 text-sm font-medium"
             >
-              ← Zurück zur Startseite
+              ← Back to Homepage
             </Link>
           </div>
 
           <Card>
             <CardHeader>
               <CardTitle className="text-3xl font-bold text-white">
-                Datenschutzerklärung
+                Privacy Policy
               </CardTitle>
               <p className="text-slate-400">
-                Zuletzt aktualisiert: {new Date().toLocaleDateString('de-DE')}
+                Last updated: {new Date().toLocaleDateString('en-US')}
               </p>
             </CardHeader>
             
             <CardContent className="prose prose-slate prose-invert max-w-none">
               <section className="mb-8">
-                <h2 className="text-xl font-semibold mb-4">1. Verantwortlicher</h2>
+                <h2 className="text-xl font-semibold mb-4">1. Data Controller</h2>
                 <p className="mb-4">
-                  Verantwortlicher für die Datenverarbeitung auf dieser Website ist:
+                  The data controller for data processing on this website is:
                 </p>
                 <div className="bg-slate-100 bg-slate-800 p-4 rounded-lg">
                   <p>
-                    Weitere Informationen finden Sie im{" "}
+                    For more information, please see the{" "}
                     <a 
                       href="https://konja-rehm.de/impressum" 
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="text-purple-600 hover:text-purple-700 text-purple-400 hover:text-purple-300"
                     >
-                      Impressum
+                      Legal Notice
                     </a>
                   </p>
                 </div>
               </section>
 
               <section className="mb-8">
-                <h2 className="text-xl font-semibold mb-4">2. Erhobene Daten</h2>
+                <h2 className="text-xl font-semibold mb-4">2. Data Collection</h2>
                 <p className="mb-4">
-                  Diese Personal Dashboard Anwendung sammelt und verarbeitet folgende Daten:
+                  This personal dashboard application collects and processes the following data:
                 </p>
                 
                 <div className="space-y-4">
                   <div className="bg-blue-50 bg-blue-900/20 p-4 rounded-lg">
-                    <h3 className="font-semibold text-blue-900 text-blue-300 mb-2">Benutzerkonto-Daten</h3>
+                    <h3 className="font-semibold text-blue-900 text-blue-300 mb-2">User Account Data</h3>
                     <ul className="list-disc pl-5 space-y-1 text-sm">
-                      <li>E-Mail-Adresse (für Anmeldung und Identifikation)</li>
-                      <li>Name (optional, falls angegeben)</li>
-                      <li>Verschlüsseltes Passwort</li>
-                      <li>Erstellungs- und letzte Anmeldungszeit</li>
+                      <li>Email address (for login and identification)</li>
+                      <li>Name (optional, if provided)</li>
+                      <li>Encrypted password</li>
+                      <li>Creation and last login time</li>
                     </ul>
                   </div>
 
                   <div className="bg-green-50 bg-green-900/20 p-4 rounded-lg">
-                    <h3 className="font-semibold text-green-900 text-green-300 mb-2">Zeiterfassungs-Daten</h3>
+                    <h3 className="font-semibold text-green-900 text-green-300 mb-2">Time Tracking Data</h3>
                     <ul className="list-disc pl-5 space-y-1 text-sm">
-                      <li>Projektname und Aufgabenbeschreibung</li>
-                      <li>Start- und Endzeiten der Zeiterfassung</li>
-                      <li>Zusätzliche Notizen zu Zeiteinträgen</li>
+                      <li>Project name and task description</li>
+                      <li>Start and end times of time tracking</li>
+                      <li>Additional notes on time entries</li>
                     </ul>
                   </div>
 
                   <div className="bg-orange-50 bg-orange-900/20 p-4 rounded-lg">
-                    <h3 className="font-semibold text-orange-900 text-orange-300 mb-2">CRM und Kontakt-Daten</h3>
+                    <h3 className="font-semibold text-orange-900 text-orange-300 mb-2">CRM and Contact Data</h3>
                     <ul className="list-disc pl-5 space-y-1 text-sm">
-                      <li>Kontaktinformationen (Name, E-Mail, Telefon, Unternehmen)</li>
-                      <li>Notizen zu Kontakten</li>
-                      <li>Tags und Kategorisierungen</li>
+                      <li>Contact information (name, email, phone, company)</li>
+                      <li>Notes on contacts</li>
+                      <li>Tags and categorizations</li>
                     </ul>
                   </div>
 
                   <div className="bg-purple-50 bg-purple-900/20 p-4 rounded-lg">
-                    <h3 className="font-semibold text-purple-900 text-purple-300 mb-2">Dokumente und Projekte</h3>
+                    <h3 className="font-semibold text-purple-900 text-purple-300 mb-2">Documents and Projects</h3>
                     <ul className="list-disc pl-5 space-y-1 text-sm">
-                      <li>Dokumentinhalte und Metadaten</li>
-                      <li>Projektbeschreibungen und Status</li>
-                      <li>Kalendereinträge und Termine</li>
+                      <li>Document content and metadata</li>
+                      <li>Project descriptions and status</li>
+                      <li>Calendar entries and appointments</li>
                     </ul>
                   </div>
                 </div>
               </section>
 
               <section className="mb-8">
-                <h2 className="text-xl font-semibold mb-4">3. Zweck der Datenverarbeitung</h2>
+                <h2 className="text-xl font-semibold mb-4">3. Purpose of Data Processing</h2>
                 <p className="mb-4">
-                  Ihre Daten werden ausschließlich für folgende Zwecke verarbeitet:
+                  Your data is processed exclusively for the following purposes:
                 </p>
                 <ul className="list-disc pl-5 space-y-2">
-                  <li>Bereitstellung der Personal Dashboard Funktionalitäten</li>
-                  <li>Authentifizierung und Benutzerkontenverwaltung</li>
-                  <li>Speicherung Ihrer persönlichen Produktivitätsdaten</li>
-                  <li>Ermöglichung der zeitlichen Analyse Ihrer Aktivitäten</li>
+                  <li>Providing personal dashboard functionalities</li>
+                  <li>Authentication and user account management</li>
+                  <li>Storing your personal productivity data</li>
+                  <li>Enabling temporal analysis of your activities</li>
                 </ul>
               </section>
 
               <section className="mb-8">
-                <h2 className="text-xl font-semibold mb-4">4. Datenspeicherung und -sicherheit</h2>
+                <h2 className="text-xl font-semibold mb-4">4. Data Storage and Security</h2>
                 <div className="bg-green-50 bg-green-900/20 p-4 rounded-lg mb-4">
-                  <h3 className="font-semibold text-green-900 text-green-300 mb-2">🔒 Lokale Datenspeicherung</h3>
+                  <h3 className="font-semibold text-green-900 text-green-300 mb-2">🔒 Local Data Storage</h3>
                   <p className="text-sm">
-                    Alle Ihre Daten werden in einer MongoDB-Datenbank gespeichert, die ausschließlich 
-                    für diese Anwendung verwendet wird. Die Datenbank ist passwortgeschützt und 
-                    verschlüsselt.
+                    All your data is stored in a MongoDB database that is used exclusively 
+                    for this application. The database is password-protected and encrypted.
                   </p>
                 </div>
                 
                 <div className="bg-blue-50 bg-blue-900/20 p-4 rounded-lg">
-                  <h3 className="font-semibold text-blue-900 text-blue-300 mb-2">🛡️ Sicherheitsmaßnahmen</h3>
+                  <h3 className="font-semibold text-blue-900 text-blue-300 mb-2">🛡️ Security Measures</h3>
                   <ul className="list-disc pl-5 space-y-1 text-sm">
-                    <li>Passwörter werden mit bcrypt gehasht und verschlüsselt</li>
-                    <li>Sichere Session-Verwaltung mit NextAuth.js</li>
-                    <li>HTTPS-Verschlüsselung für alle Datenübertragungen</li>
-                    <li>Zugriffskontrolle - nur Sie können Ihre Daten einsehen</li>
+                    <li>Passwords are hashed and encrypted with bcrypt</li>
+                    <li>Secure session management with NextAuth.js</li>
+                    <li>HTTPS encryption for all data transmissions</li>
+                    <li>Access control - only you can view your data</li>
                   </ul>
                 </div>
               </section>
 
               <section className="mb-8">
-                <h2 className="text-xl font-semibold mb-4">5. Weitergabe von Daten</h2>
+                <h2 className="text-xl font-semibold mb-4">5. Data Sharing</h2>
                 <div className="bg-red-50 bg-red-900/20 p-4 rounded-lg">
-                  <h3 className="font-semibold text-red-900 text-red-300 mb-2">❌ Keine Datenweitergabe</h3>
+                  <h3 className="font-semibold text-red-900 text-red-300 mb-2">❌ No Data Sharing</h3>
                   <p className="text-sm font-medium">
-                    Ihre Daten werden NIEMALS an Dritte weitergegeben, verkauft oder zu 
-                    Marketingzwecken verwendet. Diese Anwendung ist ausschließlich für Ihren 
-                    persönlichen Gebrauch bestimmt.
+                    Your data is NEVER shared with third parties, sold, or used for 
+                    marketing purposes. This application is exclusively for your 
+                    personal use.
                   </p>
                 </div>
               </section>
 
               <section className="mb-8">
-                <h2 className="text-xl font-semibold mb-4">6. Cookies und Tracking</h2>
+                <h2 className="text-xl font-semibold mb-4">6. Cookies and Tracking</h2>
                 <p className="mb-4">
-                  Diese Anwendung verwendet:
+                  This application uses:
                 </p>
                 <ul className="list-disc pl-5 space-y-2">
                   <li>

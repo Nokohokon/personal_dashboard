@@ -1,8 +1,8 @@
 # Mobile Responsive Improvements - Project Details Page
 
-## Übersicht der Verbesserungen
+## Overview of Improvements
 
-Die Projektdetail-Seite wurde erfolgreich für mobile Geräte optimiert. Hier sind die wichtigsten Verbesserungen:
+The project detail page has been successfully optimized for mobile devices. Here are the most important improvements:
 
 ## 📱 Container & Spacing Verbesserungen
 
@@ -13,51 +13,51 @@ Die Projektdetail-Seite wurde erfolgreich für mobile Geräte optimiert. Hier si
 
 ### Responsive Grid Layout
 - **Metrics Cards**: `grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6`
-- **Content Layout**: Bessere Verteilung auf verschiedenen Bildschirmgrößen
+- **Content Layout**: Better distribution across different screen sizes
 
-## 🎨 Typography & Text Verbesserungen
+## 🎨 Typography & Text Improvements
 
 ### Responsive Text Sizes
-- **Haupttitel**: `text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl`
-- **Metriken**: `text-xs sm:text-sm` für Labels
-- **Icons**: `w-3 h-3 sm:w-4 sm:h-4` für bessere Touch-Targets
+- **Main Title**: `text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl`
+- **Metrics**: `text-xs sm:text-sm` for labels
+- **Icons**: `w-3 h-3 sm:w-4 sm:h-4` for better touch targets
 
 ### Text Overflow Handling
-- `break-words`, `truncate`, `overflow-hidden` für bessere Textumbrüche
-- `max-w-[80px] sm:max-w-none` für Badge-Größen auf mobilen Geräten
+- `break-words`, `truncate`, `overflow-hidden` for better text wrapping
+- `max-w-[80px] sm:max-w-none` for badge sizes on mobile devices
 
-## 🎛️ Interaktive Elemente
+## 🎛️ Interactive Elements
 
-### Button Responsivität
-- **Action Buttons**: Bessere Touch-Targets mit `flex-shrink-0`
-- **Hidden Labels**: `hidden lg:inline` für Icons-only auf mobilen Geräten
-- **Flexible Layout**: `flex-wrap` für bessere Button-Anordnung
+### Button Responsiveness
+- **Action Buttons**: Better touch targets with `flex-shrink-0`
+- **Hidden Labels**: `hidden lg:inline` for icons-only on mobile devices
+- **Flexible Layout**: `flex-wrap` for better button arrangement
 
 ### Tabs Navigation
-- **Horizontal Scroll**: Verbesserte Tab-Navigation auf mobilen Geräten
-- **Compact Icons**: `w-3 h-3 sm:w-4 sm:h-4` für Tab-Icons
-- **Shortened Labels**: "Team Chat" → "Chat" auf mobilen Geräten
+- **Horizontal Scroll**: Improved tab navigation on mobile devices
+- **Compact Icons**: `w-3 h-3 sm:w-4 sm:h-4` for tab icons
+- **Shortened Labels**: "Team Chat" → "Chat" on mobile devices
 
-## 🎯 Layout Verbesserungen
+## 🎯 Layout Improvements
 
 ### Header Section
-- **Flex Direction**: `flex-col lg:flex-row` für vertikales Layout auf mobilen Geräten
-- **Badge Layout**: Bessere Anordnung der Status-Badges
-- **Project Info**: Verbesserte Informationsdarstellung
+- **Flex Direction**: `flex-col lg:flex-row` for vertical layout on mobile devices
+- **Badge Layout**: Better arrangement of status badges
+- **Project Info**: Improved information display
 
 ### Metrics Cards
-- **Responsive Grid**: 1 Spalte auf Mobilgeräten, 2 auf Tablets, 5 auf Desktop
-- **Card Padding**: `p-4 sm:p-5` für bessere Touch-Bereiche
-- **Icon Sizes**: Adaptive Icon-Größen je nach Bildschirmgröße
+- **Responsive Grid**: 1 column on mobile devices, 2 on tablets, 5 on desktop
+- **Card Padding**: `p-4 sm:p-5` for better touch areas
+- **Icon Sizes**: Adaptive icon sizes based on screen size
 
 ### Content Areas
-- **Overflow Protection**: `overflow-hidden` für Container
-- **Min-Width**: `min-w-0` für flexible Layouts
-- **Gap Management**: `gap-4 sm:gap-6` für konsistente Abstände
+- **Overflow Protection**: `overflow-hidden` for containers
+- **Min-Width**: `min-w-0` for flexible layouts
+- **Gap Management**: `gap-4 sm:gap-6` for consistent spacing
 
-## 🔧 Technische Verbesserungen
+## 🔧 Technical Improvements
 
-### CSS Classes Optimierung
+### CSS Classes Optimization
 ```css
 /* Container */
 px-3 sm:px-4 md:px-6     /* Responsive padding */
@@ -83,9 +83,9 @@ gap-4 sm:gap-6           /* Responsive grid gaps */
 - **Large**: `lg` - 1024px+
 - **Extra Large**: `xl` - 1280px+
 
-## ✅ Ergebnis
+## ✅ Result
 
-Die Projektdetail-Seite ist jetzt vollständig responsive und bietet eine optimale Nutzererfahrung auf:
+The project detail page is now fully responsive and provides an optimal user experience on:
 
 - **📱 Smartphones** (320px - 640px)
 - **📱 Tablets** (640px - 1024px)
@@ -93,11 +93,11 @@ Die Projektdetail-Seite ist jetzt vollständig responsive und bietet eine optima
 - **🖥️ Desktop** (1280px+)
 
 ### Key Features
-- ✅ Kein horizontaler Overflow
-- ✅ Touch-freundliche Buttons und Links
-- ✅ Lesbare Schriftgrößen auf allen Geräten
-- ✅ Adaptive Grid-Layouts
-- ✅ Intuitive Navigation
-- ✅ Konsistente Abstände und Padding
+- ✅ No horizontal overflow
+- ✅ Touch-friendly buttons and links
+- ✅ Readable font sizes on all devices
+- ✅ Adaptive grid layouts
+- ✅ Intuitive navigation
+- ✅ Consistent spacing and padding
 
 Die Seite behält ihre professionelle Ästhetik bei, während sie gleichzeitig eine hervorragende mobile Nutzererfahrung bietet.
